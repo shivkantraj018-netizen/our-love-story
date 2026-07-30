@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24103d">
+  <title>Our Love Story — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-page">
+  <div id="stars"></div>
+  <main class="admin-shell">
+    <section id="loginPanel" class="auth-card glass">
+      <div class="script-title">Owner's room ♥</div>
+      <h1>Admin Login</h1>
+      <p>Only your Supabase-authenticated owner account can edit the website.</p>
+      <form id="loginForm">
+        <label>Email<input type="email" id="email" required autocomplete="username"></label>
+        <label>Password<input type="password" id="password" required autocomplete="current-password"></label>
+        <button class="glow-btn full" type="submit">Sign in</button>
+      </form>
+      <p class="muted" id="loginMsg"></p>
+    </section>
+
+    <section id="adminPanel" hidden>
+      <div class="admin-header glass">
+        <div>
+          <div class="eyebrow">OWNER ADMIN</div>
+          <h1>Our Love Story <span>♥</span></h1>
+          <p class="muted">Edit, save, add, delete, and reorder anything.</p>
+        </div>
+        <div class="admin-actions">
+          <a class="ghost-btn" href="./" target="_blank" rel="noopener">Open public site</a>
+          <button class="ghost-btn" id="logoutBtn">Log out</button>
+        </div>
+      </div>
+
+      <div id="saveBanner" class="save-banner hidden"></div>
+
+      <section class="admin-card glass">
+        <div class="card-head"><h2>Hero & final message</h2></div>
+        <div class="form-grid">
+          <label>Brand title<input id="heroTitleInput"></label>
+          <label>Headline<textarea id="heroHeadlineInput" rows="3"></textarea></label>
+          <label>Hero subline<input id="heroSublineInput"></label>
+          <label>Final title<textarea id="finalTitleInput" rows="3"></textarea></label>
+          <label>Final text<textarea id="finalTextInput" rows="3"></textarea></label>
+          <label>Countdown title<input id="countdownTitleInput"></label>
+          <label>Countdown date/time<input type="datetime-local" id="countdownAtInput"></label>
+          <label>Music title<input id="musicTitleInput"></label>
+          <label>Music note<input id="musicNoteInput"></label>
+          <label>Music URL<input id="musicUrlInput" placeholder="https://...mp3"></label>
+        </div>
+        <button class="save-btn" id="saveSettingsBtn">Save changes</button>
+        <div class="saved-state" id="settingsSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">CHAPTERS</div>
+            <h2>Every chapter is editable</h2>
+          </div>
+          <button class="glow-btn small" id="addChapterBtn">＋ Add chapter</button>
+        </div>
+        <div id="chapterEditorList"></div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">100 REASONS</div>
+            <h2>Manage every reason</h2>
+          </div>
+          <button class="glow-btn small" id="addReasonBtn">＋ Add reason</button>
+        </div>
+        <div id="reasonEditorList"></div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">PHOTOS</div>
+            <h2>Supabase Storage gallery</h2>
+          </div>
+          <label class="upload-btn">＋ Upload photos<input type="file" id="photoUpload" accept="image/*" multiple hidden></label>
+        </div>
+        <div class="gallery-admin" id="galleryEditorList"></div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head"><h2>Change password</h2></div>
+        <form id="passwordForm" class="password-form">
+          <label>New password<input type="password" id="newPassword" minlength="8" required></label>
+          <label>Confirm password<input type="password" id="confirmPassword" minlength="8" required></label>
+          <button class="save-btn" type="submit">Update password</button>
+        </form>
+        <div class="saved-state" id="passwordSaved"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

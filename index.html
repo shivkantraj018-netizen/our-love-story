@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24103d">
+  <title>Our Love Story ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="stars"></div>
+  <div id="petals"></div>
+
+  <header class="topbar glass">
+    <button class="brand" id="brandButton">Our Love Story <span>♥</span></button>
+    <nav id="chapterNav" aria-label="Chapters"></nav>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="moon"></div>
+      <div class="hero-content">
+        <div class="script-title" id="heroTitle">Our Love Story ♥</div>
+        <h1 id="heroHeadline">Some people spend their whole life searching for someone who makes their heart feel at home.</h1>
+        <p class="hero-sub" id="heroSubline">I found mine.</p>
+        <button class="glow-btn" id="beginBtn">Begin Our Story ❤️</button>
+        <div class="tap-hint">TAP TO ENTER</div>
+      </div>
+      <div class="shooting-star"></div>
+    </section>
+
+    <section class="content-wrap" id="content">
+      <div class="section-intro">
+        <span class="eyebrow">OUR STORY</span>
+        <h2>Every chapter is ours.</h2>
+        <p>Scroll slowly. Every memory is a little piece of home.</p>
+      </div>
+      <div id="chapters"></div>
+
+      <section class="special-section" id="gallerySection">
+        <div class="chapter-card glass">
+          <div class="eyebrow">PHOTOS</div>
+          <h3>Little pieces of us</h3>
+          <div class="gallery-grid" id="gallery"></div>
+        </div>
+      </section>
+
+      <section class="special-section" id="reasonsSection">
+        <div class="chapter-card glass">
+          <div class="eyebrow">100 REASONS</div>
+          <h3>One hundred little reasons</h3>
+          <div class="reason-grid" id="reasons"></div>
+        </div>
+      </section>
+
+      <section class="special-section" id="countdownSection">
+        <div class="chapter-card glass">
+          <div class="eyebrow">UNTIL NEXT TIME</div>
+          <h3 id="countdownTitle">Our next little forever</h3>
+          <div class="countdown" id="countdown">
+            <div><strong id="d">0</strong><span>days</span></div>
+            <div><strong id="h">0</strong><span>hours</span></div>
+            <div><strong id="m">0</strong><span>minutes</span></div>
+            <div><strong id="s">0</strong><span>seconds</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="special-section" id="musicSection">
+        <div class="chapter-card glass">
+          <div class="eyebrow">OUR SONG</div>
+          <h3 id="musicTitle">A song for us</h3>
+          <p id="musicNote"></p>
+          <audio id="music" controls preload="none"></audio>
+        </div>
+      </section>
+
+      <section class="final-section">
+        <div class="final-card">
+          <div class="final-stars"></div>
+          <div class="moon small"></div>
+          <div class="script-title">Forever, my love</div>
+          <h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2>
+          <p id="finalText">Thank you for being my favorite chapter of life.</p>
+          <div class="heart-pulse">♥</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Made with all my love.</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
