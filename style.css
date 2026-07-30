@@ -408,3 +408,38 @@ img#spotlightImage,
   cursor: default !important;
   pointer-events: none !important;
 }
+/* --- RESPONSIVE PHOTO GALLERY FIX --- */
+
+/* 1. Mobile default: Stack photos in 1 single column */
+#gallery, 
+.gallery-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Make photo card boxes fit screen width */
+#gallery > *, 
+.gallery-grid > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#gallery img, 
+.gallery-grid img {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* 3. Laptop / Tablet screens: Switch back to 2 columns */
+@media (min-width: 600px) {
+  #gallery, 
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
