@@ -227,7 +227,7 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
 
 /* v6: quick navigation */
 .section-dock{
-  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+  position: fixed !important; left: 50% !important; bottom: 12px !important; transform: translateX(-50%) !important;
   z-index:999;width:min(94vw,720px);padding:8px;display:flex;gap:7px;
   overflow-x:auto;scrollbar-width:none;border-radius:999px;
   background:rgba(20,10,34,.85);backdrop-filter:blur(18px);
