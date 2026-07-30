@@ -341,3 +341,9 @@ create policy "admins can read comments" on public.comments for select to authen
 drop policy if exists "admins can delete comments" on public.comments;
 create policy "admins can delete comments" on public.comments for delete to authenticated using (exists(select 1 from public.admins a where a.user_id=auth.uid()));
 insert into public.site_settings(key,value) values ('commentTitle','"Your thoughts"'),('gameTitle','"Catch My Heart ❤️"'),('gameIntro','"You have 20 seconds. Catch as many hearts as you can."') on conflict(key) do nothing;
+
+insert into public.site_settings(key,value) values
+('reasonsEyebrow','"100 REASONS"'),
+('reasonsTitle','"100 Reasons I Love You"'),
+('reasonsIntro','"Tap a number to open it. Long messages can be scrolled inside the envelope. 💌"')
+on conflict(key) do nothing;

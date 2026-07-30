@@ -101,3 +101,7 @@ No additional SQL is required for these settings because they use the existing `
 - Viewer comments: public visitors can submit messages; only the authenticated admin can read/delete them.
 - Editable comment-section title and romantic mini-game title/intro.
 - Added a 20-second Catch My Heart game.
+
+\n## v5 polish\n- 100 Reasons are numbered; no "Open me" label. Tapping a reason opens a larger envelope with a scrollable message area for long text.\n- Admin can edit the reasons eyebrow, title, and intro text.\n- Background music has a floating viewer mute/unmute control and starts after the first page interaction when the browser permits playback.\n- Photo cards are larger and show the whole image; tapping a photo opens a full-screen viewer.\n
+## v6 navigation
+Added a floating, scrollable section navigation bar so visitors can jump directly to Story, Photos, Letter, Reasons, Gift, Secret, Game, Notes, Song, or Ending. The active section is highlighted automatically while scrolling.

@@ -75,6 +75,9 @@ function fillAdminFields(){
   $("#finalTextInput").value=cache.settings.finalText||"";
   $("#countdownTitleInput").value=cache.settings.countdownTitle||"";
   $("#commentTitleInput").value=cache.settings.commentTitle||"Your thoughts";
+  $("#reasonsEyebrowInput").value=cache.settings.reasonsEyebrow||"100 REASONS";
+  $("#reasonsTitleInput").value=cache.settings.reasonsTitle||"100 Reasons I Love You";
+  $("#reasonsIntroInput").value=cache.settings.reasonsIntro||"Tap a number to open it. Long messages can be scrolled inside the envelope. 💌";
   $("#gameTitleInput").value=cache.settings.gameTitle||"Catch My Heart ❤️";
   $("#gameIntroInput").value=cache.settings.gameIntro||"You have 20 seconds. Catch as many hearts as you can.";
   const dt=cache.settings.countdownAt;
@@ -140,6 +143,9 @@ $("#saveSettingsBtn").addEventListener("click",()=>saveSettingsGroup({
   countdownTitle:$("#countdownTitleInput").value.trim(),
   countdownAt:$("#countdownAtInput").value?new Date($("#countdownAtInput").value).toISOString():null,
   commentTitle:$("#commentTitleInput").value.trim(),
+  reasonsEyebrow:$("#reasonsEyebrowInput").value.trim(),
+  reasonsTitle:$("#reasonsTitleInput").value.trim(),
+  reasonsIntro:$("#reasonsIntroInput").value.trim(),
   gameTitle:$("#gameTitleInput").value.trim(),
   gameIntro:$("#gameIntroInput").value.trim()
 },"saveSettingsBtn","settingsSaved","Hero, game and viewer comment settings saved."));
