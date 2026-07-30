@@ -247,11 +247,28 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
  .section-dock{width:calc(100% - 18px);padding:7px}
   .section-dock button{padding:8px 10px;font-size:11px}
 }
-/* Force dock to ignore parent transforms and stick to screen bottom */
-.section-dock {
-  position: fixed !important;
-  bottom: 16px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  z-index: 999999 !important;
+/* Fix hidden photo viewer overlay */
+.spotlight-wrap[hidden] {
+  display: none !important;
+}
+
+/* Prevent accidental horizontal overflow on phones */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.public-page main,
+.public-page .content-wrap,
+.public-page section,
+.public-page .chapter-card,
+.public-page .letter-card,
+.public-page .gift-card,
+.public-page .secret-card,
+.public-page .game-card,
+.public-page .comments-card {
+  max-width: 100%;
+  box-sizing: border-box;
 }
