@@ -81,3 +81,15 @@ You can add as many chapters as you want from the admin dashboard.
 ## Music upload
 
 The admin dashboard now has **Upload / Replace Song**. Choose any browser-supported audio file (MP3, M4A, WAV, AAC, OGG, etc.). The file is stored in the `site-music` Supabase Storage bucket. Uploading another song removes the previous one automatically. You can also delete the current song.
+
+
+## New romantic features in v3
+
+- Handwritten-style Love Letter section with an admin-editable section name and letter.
+- 100 Reasons are now individual animated envelopes. Tap an envelope to reveal the reason.
+- "A Gift For You" animated gift box with editable poetry/message and an optional photo upload using Supabase Storage.
+- "A Little Secret" heart button that reveals an editable secret message and creates a heart burst.
+- The photo gallery now includes a larger auto-rotating spotlight memory.
+- Clicking the final heart sends a heart/confetti burst.
+
+No additional SQL is required for these settings because they use the existing `site_settings` table and existing `site-media` bucket. The new fields are created automatically when you save them from the admin panel.

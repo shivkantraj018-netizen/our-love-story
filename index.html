@@ -13,6 +13,7 @@
 <body>
   <div id="stars"></div>
   <div id="petals"></div>
+  <div id="heartBurst"></div>
 
   <header class="topbar glass">
     <button class="brand" id="brandButton">Our Love Story <span>♥</span></button>
@@ -38,6 +39,7 @@
         <h2>Every chapter is ours.</h2>
         <p>Scroll slowly. Every memory is a little piece of home.</p>
       </div>
+
       <div id="chapters"></div>
 
       <section class="special-section" id="gallerySection">
@@ -45,14 +47,65 @@
           <div class="eyebrow">PHOTOS</div>
           <h3>Little pieces of us</h3>
           <div class="gallery-grid" id="gallery"></div>
+          <div class="spotlight-wrap" id="spotlightWrap" hidden>
+            <div class="spotlight-photo glass" id="spotlightPhoto">
+              <img id="spotlightImage" alt="">
+              <div class="spotlight-caption" id="spotlightCaption"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="special-section" id="loveLetterSection">
+        <div class="letter-card glass">
+          <div class="eyebrow">A LETTER FOR YOU</div>
+          <h3 id="loveLetterTitle">A Love Letter</h3>
+          <div class="letter-paper">
+            <div class="letter-ribbon">♥</div>
+            <p id="loveLetterBody"></p>
+          </div>
         </div>
       </section>
 
       <section class="special-section" id="reasonsSection">
         <div class="chapter-card glass">
           <div class="eyebrow">100 REASONS</div>
-          <h3>One hundred little reasons</h3>
-          <div class="reason-grid" id="reasons"></div>
+          <h3>Open them one by one.</h3>
+          <p class="section-note">Each envelope holds a little reason I love you. Tap one to open it. 💌</p>
+          <div class="envelope-grid" id="reasons"></div>
+        </div>
+      </section>
+
+      <section class="special-section" id="giftSection">
+        <div class="gift-card glass">
+          <div class="eyebrow">A LITTLE SURPRISE</div>
+          <h3 id="giftTitle">A Gift For You 🎁</h3>
+          <p id="giftHint">There is something inside. Tap the gift when you are ready.</p>
+
+          <button class="gift-box" id="giftBox" aria-label="Open your gift">
+            <span class="gift-lid"></span>
+            <span class="gift-body"></span>
+            <span class="gift-ribbon-v"></span>
+            <span class="gift-ribbon-h"></span>
+            <span class="gift-bow left"></span>
+            <span class="gift-bow right"></span>
+          </button>
+
+          <div class="gift-reveal glass" id="giftReveal" hidden>
+            <div class="gift-glow"></div>
+            <img id="giftImage" alt="" hidden>
+            <div class="gift-poem" id="giftPoem"></div>
+            <div class="gift-confetti" id="giftConfetti"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="special-section" id="secretSection">
+        <div class="secret-card glass">
+          <div class="eyebrow">A LITTLE SECRET</div>
+          <h3 id="secretTitle">Tap my heart when you miss me.</h3>
+          <button class="secret-heart" id="secretHeart" aria-label="Open secret message">♥</button>
+          <p id="secretMessage" class="secret-message" hidden></p>
         </div>
       </section>
 
@@ -74,7 +127,7 @@
           <div class="eyebrow">OUR SONG</div>
           <h3 id="musicTitle">A song for us</h3>
           <p id="musicNote"></p>
-          <audio id="music" controls preload="none"></audio>
+          <audio id="music" controls preload="metadata"></audio>
         </div>
       </section>
 
@@ -85,7 +138,7 @@
           <div class="script-title">Forever, my love</div>
           <h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2>
           <p id="finalText">Thank you for being my favorite chapter of life.</p>
-          <div class="heart-pulse">♥</div>
+          <button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button>
         </div>
       </section>
     </section>

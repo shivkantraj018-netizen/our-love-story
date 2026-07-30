@@ -41,7 +41,7 @@
       <div id="saveBanner" class="save-banner hidden"></div>
 
       <section class="admin-card glass">
-        <div class="card-head"><h2>Hero & final message</h2></div>
+        <div class="card-head"><h2>Hero, love letter & final message</h2></div>
         <div class="form-grid">
           <label>Brand title<input id="heroTitleInput"></label>
           <label>Headline<textarea id="heroHeadlineInput" rows="3"></textarea></label>
@@ -50,10 +50,67 @@
           <label>Final text<textarea id="finalTextInput" rows="3"></textarea></label>
           <label>Countdown title<input id="countdownTitleInput"></label>
           <label>Countdown date/time<input type="datetime-local" id="countdownAtInput"></label>
-          <label>Music title<input id="musicTitleInput"></label>
-          <label>Music note<input id="musicNoteInput"></label>
         </div>
+        <button class="save-btn" id="saveSettingsBtn">Save hero & final</button>
+        <div class="saved-state" id="settingsSaved">No unsaved changes</div>
+      </section>
 
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div><div class="eyebrow">LOVE LETTER</div><h2>Write it like a handwritten letter</h2></div>
+        </div>
+        <div class="form-grid">
+          <label>Love letter section name<input id="loveLetterTitleInput"></label>
+          <label style="grid-column:1/-1">Letter<textarea id="loveLetterBodyInput" rows="12" placeholder="Write your letter here..."></textarea></label>
+        </div>
+        <button class="save-btn" id="saveLetterBtn">Save love letter</button>
+        <div class="saved-state" id="letterSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div><div class="eyebrow">A GIFT FOR YOU</div><h2>Give her a surprise</h2></div>
+        </div>
+        <div class="form-grid">
+          <label>Gift section name<input id="giftTitleInput"></label>
+          <label>Gift hint<input id="giftHintInput"></label>
+          <label style="grid-column:1/-1">Poetry / message<textarea id="giftPoemInput" rows="8"></textarea></label>
+        </div>
+        <div class="gift-upload-admin">
+          <div class="gift-admin-preview" id="giftAdminPreviewWrap">
+            <img id="giftAdminPreview" alt="" hidden>
+            <div class="muted" id="giftAdminNoImage">No gift photo uploaded.</div>
+          </div>
+          <label class="upload-btn">🎁 Upload / Replace Gift Photo<input type="file" id="giftPhotoUpload" accept="image/*" hidden></label>
+          <button class="mini-btn danger" type="button" id="deleteGiftPhotoBtn">Delete gift photo</button>
+        </div>
+        <button class="save-btn" id="saveGiftBtn">Save gift</button>
+        <div class="saved-state" id="giftSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div><div class="eyebrow">A LITTLE SECRET</div><h2>Tap-my-heart message</h2></div>
+        </div>
+        <div class="form-grid">
+          <label>Secret section title<input id="secretTitleInput"></label>
+          <label style="grid-column:1/-1">Secret message<textarea id="secretMessageInput" rows="5"></textarea></label>
+        </div>
+        <button class="save-btn" id="saveSecretBtn">Save secret</button>
+        <div class="saved-state" id="secretSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">OUR SONG</div>
+            <h2>Upload any song you want</h2>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>Song title<input id="musicTitleInput"></label>
+          <label>Song note<input id="musicNoteInput"></label>
+        </div>
         <div class="music-manager">
           <div class="music-current">
             <div class="eyebrow">CURRENT SONG</div>
@@ -66,26 +123,18 @@
             </div>
             <audio id="adminMusicPreview" controls preload="metadata"></audio>
           </div>
-
           <div class="upload-song-row">
-            <label class="upload-btn">
-              🎵 Upload / Replace Song
-              <input type="file" id="musicUpload" accept="audio/*" hidden>
-            </label>
-            <span class="muted">Replace it anytime with another song.</span>
+            <label class="upload-btn">🎵 Upload / Replace Song<input type="file" id="musicUpload" accept="audio/*" hidden></label>
+            <span class="muted">Replace it anytime.</span>
           </div>
         </div>
-
-        <button class="save-btn" id="saveSettingsBtn">Save changes</button>
-        <div class="saved-state" id="settingsSaved">No unsaved changes</div>
+        <button class="save-btn" id="saveMusicBtn">Save song text</button>
+        <div class="saved-state" id="musicSaved">No unsaved changes</div>
       </section>
 
       <section class="admin-card glass">
         <div class="card-head">
-          <div>
-            <div class="eyebrow">CHAPTERS</div>
-            <h2>Every chapter is editable</h2>
-          </div>
+          <div><div class="eyebrow">CHAPTERS</div><h2>Every chapter is editable</h2></div>
           <button class="glow-btn small" id="addChapterBtn">＋ Add chapter</button>
         </div>
         <div id="chapterEditorList"></div>
@@ -93,10 +142,7 @@
 
       <section class="admin-card glass">
         <div class="card-head">
-          <div>
-            <div class="eyebrow">100 REASONS</div>
-            <h2>Manage every reason</h2>
-          </div>
+          <div><div class="eyebrow">100 REASONS</div><h2>Manage every envelope</h2></div>
           <button class="glow-btn small" id="addReasonBtn">＋ Add reason</button>
         </div>
         <div id="reasonEditorList"></div>
@@ -104,10 +150,7 @@
 
       <section class="admin-card glass">
         <div class="card-head">
-          <div>
-            <div class="eyebrow">PHOTOS</div>
-            <h2>Supabase Storage gallery</h2>
-          </div>
+          <div><div class="eyebrow">PHOTOS</div><h2>Supabase Storage gallery</h2></div>
           <label class="upload-btn">＋ Upload photos<input type="file" id="photoUpload" accept="image/*" multiple hidden></label>
         </div>
         <div class="gallery-admin" id="galleryEditorList"></div>
