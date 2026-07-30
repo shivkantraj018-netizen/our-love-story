@@ -443,3 +443,61 @@ img#spotlightImage,
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+/* --- COMPLETE PHOTO CARD OVERFLOW FIX --- */
+
+/* 1. Stop the outer photo section card from horizontal scrolling */
+#photosSection, 
+#photosSection .chapter-card, 
+#photosSection .glass {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 20px !important;
+}
+
+/* 2. Reset the grid layout for both inner and outer photo containers */
+#photosSection #gallery, 
+#photosSection .gallery-grid,
+#photosSection .photo-card-wrap,
+#photosSection .photo-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important; /* 2 columns on desktop */
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 3. Force individual photo card boxes to fit cleanly inside the grid */
+#photosSection .photo-card, 
+#photosSection .photo-item, 
+#photosSection .glass-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important; /* Prevents flex/grid items from stretching past parents */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 4. Ensure images scale smoothly inside their boxes */
+#photosSection img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 250px !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+  display: block !important;
+}
+
+/* 5. Switch to 1 single column on mobile phone screens */
+@media (max-width: 600px) {
+  #photosSection #gallery, 
+  #photosSection .gallery-grid,
+  #photosSection .photo-card-wrap,
+  #photosSection .photo-grid {
+    grid-template-columns: 1fr !important; /* 1 column on phone */
+  }
+}
