@@ -247,4 +247,11 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
  .section-dock{width:calc(100% - 18px);padding:7px}
   .section-dock button{padding:8px 10px;font-size:11px}
 }
-body { padding-bottom: 140px !important; }
+/* Force dock to ignore parent transforms and stick to screen bottom */
+.section-dock {
+  position: fixed !important;
+  bottom: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 999999 !important;
+}
