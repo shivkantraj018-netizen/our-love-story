@@ -251,24 +251,25 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
 .spotlight-wrap[hidden] {
   display: none !important;
 }
-
-/* Prevent accidental horizontal overflow on phones */
-html,
-body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+/* 1. Fix the invisible text in the Photos section bar */
+#photosSection select,
+#photosSection input,
+#photosSection details,
+#photosSection summary {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  font-size: 16px !important;
+  margin-bottom: 15px !important;
+  display: block !important;
+  position: relative !important;
+  box-sizing: border-box !important;
 }
 
-.public-page main,
-.public-page .content-wrap,
-.public-page section,
-.public-page .chapter-card,
-.public-page .letter-card,
-.public-page .gift-card,
-.public-page .secret-card,
-.public-page .game-card,
-.public-page .comments-card {
-  max-width: 100%;
-  box-sizing: border-box;
+/* 2. Fix the top navigation bar overlapping your first text card */
+main {
+  padding-top: 100px !important; 
 }
