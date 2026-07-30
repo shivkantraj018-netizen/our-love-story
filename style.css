@@ -461,3 +461,56 @@ img#spotlightImage,
   margin-left: 0 !important;
   margin-right: auto !important;
 }
+/* ==========================================
+   💖 PINK THEME OVERRIDE
+   ========================================== */
+
+/* 1. Deep Romantic Pink Background Gradient */
+body {
+  background: linear-gradient(135deg, #2b0c1e 0%, #4a1534 50%, #1f0714 100%) !important;
+  background-attachment: fixed !important;
+  color: #ffffff !important;
+}
+
+/* 2. Soft Pink Glass Cards & Containers */
+.glass, 
+.chapter-card, 
+section, 
+.special-section,
+.content-wrap {
+  background: rgba(255, 192, 203, 0.12) !important;
+  border: 1px solid rgba(255, 182, 193, 0.3) !important;
+  box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.18) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* 3. Header & Navigation Pills */
+header, 
+.nav-bar, 
+.tab-navigation,
+.nav-pill {
+  background: rgba(255, 105, 180, 0.18) !important;
+  border: 1px solid rgba(255, 182, 193, 0.3) !important;
+}
+
+/* 4. Active Pink Buttons & Highlights */
+button, 
+.tab-btn, 
+.active-tab,
+.active {
+  border-color: rgba(255, 182, 193, 0.5) !important;
+}
+
+.active, 
+.tab-btn.active, 
+button:hover {
+  background: linear-gradient(135deg, #ff69b4, #ff1493) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4) !important;
+}
+
+/* 5. Pink Accent Text & Titles */
+h1, h2, h3, .eyebrow, span.heart, .title {
+  color: #ffb6c1 !important;
+  text-shadow: 0 0 10px rgba(255, 105, 180, 0.3) !important;
+}
