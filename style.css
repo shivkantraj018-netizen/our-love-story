@@ -657,3 +657,167 @@ body::after {
     opacity: 0;
   }
 }
+/* ============================================================
+   💖 ULTIMATE ROMANTIC PINK & MOONLIGHT THEME (ALL-IN-ONE)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. ROMANTIC PINK BACKGROUND & GLASS CARDS
+   ------------------------------------------------------------ */
+body {
+  background: linear-gradient(135deg, #230919 0%, #3d102b 40%, #1a0513 100%) !important;
+  background-attachment: fixed !important;
+  color: #ffffff !important;
+  overflow-x: hidden !important;
+}
+
+/* Glass Card Containers */
+.glass, 
+.chapter-card, 
+section, 
+.special-section,
+.content-wrap {
+  background: rgba(255, 192, 203, 0.1) !important;
+  border: 1px solid rgba(255, 182, 193, 0.25) !important;
+  box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.15) !important;
+  backdrop-filter: blur(14px) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* Card Hover Accent */
+.chapter-card:hover, .glass:hover {
+  box-shadow: 0 10px 35px rgba(255, 105, 180, 0.25) !important;
+}
+
+/* Navigation Bars & Tab Pills */
+header, 
+.nav-bar, 
+.tab-navigation,
+.nav-pill {
+  background: rgba(255, 105, 180, 0.15) !important;
+  border: 1px solid rgba(255, 182, 193, 0.3) !important;
+}
+
+/* Buttons & Active Tabs */
+button, .tab-btn, .active-tab, .active {
+  border-color: rgba(255, 182, 193, 0.4) !important;
+}
+
+.active, .tab-btn.active, button:hover {
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 18px rgba(255, 20, 147, 0.45) !important;
+}
+
+/* Title & Accent Typography */
+h1, h2, h3, .eyebrow, .title {
+  color: #ffc0cb !important;
+  text-shadow: 0 0 12px rgba(255, 105, 180, 0.4) !important;
+}
+
+
+/* ------------------------------------------------------------
+   🌙 2. ELEGANT ROMANTIC HERO MOON
+   ------------------------------------------------------------ */
+/* Turns the old circle into a glowing silver-pink romantic moon */
+.moon, 
+#moon, 
+.hero-moon, 
+.moon-glow,
+div[class*="moon"] {
+  background: radial-gradient(circle at 35% 35%, #fff5f7 0%, #ffd1dc 45%, #d47a96 85%, #80304a 100%) !important;
+  box-shadow: 
+    0 0 35px rgba(255, 192, 203, 0.7), 
+    0 0 70px rgba(255, 105, 180, 0.4),
+    inset -10px -10px 25px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 50% !important;
+  opacity: 0.9 !important;
+  filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.5)) !important;
+  animation: moonGlowPulse 6s ease-in-out infinite alternate !important;
+}
+
+@keyframes moonGlowPulse {
+  0% {
+    box-shadow: 0 0 30px rgba(255, 192, 203, 0.6), 0 0 60px rgba(255, 105, 180, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 45px rgba(255, 192, 203, 0.8), 0 0 85px rgba(255, 105, 180, 0.5);
+  }
+}
+
+/* Gentle Heart Pulse Animation */
+.hero-heart, 
+.heart-emoji, 
+.moon-heart,
+span.heart {
+  display: inline-block !important;
+  animation: heartPulse 2.5s ease-in-out infinite !important;
+  filter: drop-shadow(0 0 8px rgba(255, 20, 147, 0.7)) !important;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+
+/* ------------------------------------------------------------
+   🌸 3. VISIBLE YET GENTLE FALLING HEARTS & PETALS
+   ------------------------------------------------------------ */
+
+/* Primary Floating Stream */
+body::before {
+  content: '🌸   💖   ✨   💕   🌺   ✨   💖   🌸';
+  position: fixed;
+  top: -12vh;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-around;
+  opacity: 0.65;
+  animation: romanticFalling 14s linear infinite;
+}
+
+/* Secondary Staggered Stream for continuous flow */
+body::after {
+  content: '✨   💕   🌸   💖   ✨   🌺   💕   ✨';
+  position: fixed;
+  top: -12vh;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-around;
+  opacity: 0.5;
+  animation: romanticFalling 14s linear infinite;
+  animation-delay: 7s;
+}
+
+/* Smooth swaying animation down the whole screen */
+@keyframes romanticFalling {
+  0% {
+    transform: translateY(-10vh) rotate(0deg) translateX(0px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(50vh) rotate(180deg) translateX(25px);
+  }
+  85% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) translateX(-25px);
+    opacity: 0;
+  }
+}
