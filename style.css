@@ -227,7 +227,7 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
 
 /* v6: quick navigation */
 .section-dock{
-  position:fixed;left:50%;bottom:68px;transform:translateX(-50%);
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
   z-index:44;width:min(94vw,720px);padding:8px;display:flex;gap:7px;
   overflow-x:auto;scrollbar-width:none;border-radius:999px;
   background:rgba(20,10,34,.72);backdrop-filter:blur(18px);
@@ -244,6 +244,6 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
   border-color:rgba(255,255,255,.18);box-shadow:0 0 20px rgba(244,182,207,.25)
 }
 @media(max-width:620px){
-  .section-dock{bottom:60px;width:calc(100% - 18px);padding:7px}
+  .section-dock{bottom:12px;width:calc(100% - 18px);padding:7px}
   .section-dock button{padding:8px 10px;font-size:11px}
 }
