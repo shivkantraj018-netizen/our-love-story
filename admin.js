@@ -38,7 +38,7 @@ async function loadAll(){
   ]);
   cache.settings=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
   cache.chapters=chapters||[];cache.reasons=reasons||[];cache.gallery=gallery||[];
-  fillSettings();renderChapterEditors();renderReasonEditors();renderGalleryEditors()
+  fillSettings();renderChapterEditors();renderReasonEditors();renderGalleryEditors();renderMusicState()
 }
 
 function fillSettings(){
@@ -51,7 +51,6 @@ function fillSettings(){
   const dt=cache.settings.countdownAt;$("#countdownAtInput").value=dt?new Date(dt).toISOString().slice(0,16):"";
   $("#musicTitleInput").value=cache.settings.musicTitle||"";
   $("#musicNoteInput").value=cache.settings.musicNote||"";
-  $("#musicUrlInput").value=cache.settings.musicUrl||"";
   $("#settingsSaved").textContent="No unsaved changes";
 }
 
@@ -74,6 +73,83 @@ $("#saveSettingsBtn").addEventListener("click",async()=>{
     await loadAll();
   }catch(err){$("#settingsSaved").textContent="⚠ "+err.message;showBanner(err.message,false)}
   finally{$("#saveSettingsBtn").disabled=false;$("#saveSettingsBtn").textContent="Save changes"}
+});
+
+
+function renderMusicState(){
+  const url=cache.settings.musicUrl||"";
+  const name=cache.settings.musicName||"";
+  const preview=$("#adminMusicPreview");
+  const status=$("#currentMusicStatus");
+  const nameEl=$("#currentMusicName");
+  if(!preview || !status || !nameEl) return;
+
+  if(url){
+    preview.src=url;
+    preview.style.display="block";
+    preview.load();
+    nameEl.textContent=name || "Uploaded song";
+    status.textContent="Ready. You can replace or delete this song anytime.";
+  }else{
+    preview.removeAttribute("src");
+    preview.style.display="none";
+    nameEl.textContent="No song uploaded";
+    status.textContent="Upload any browser-supported audio file.";
+  }
+}
+
+$("#musicUpload").addEventListener("change", async (e)=>{
+  const file=e.target.files && e.target.files[0];
+  if(!file) return;
+
+  try{
+    const ext=(file.name.split(".").pop()||"bin").toLowerCase();
+    const path=`music/${crypto.randomUUID()}.${ext}`;
+
+    const up=await db.storage.from("site-music").upload(path,file,{
+      upsert:false,
+      contentType:file.type || "application/octet-stream",
+      cacheControl:"3600"
+    });
+    if(up.error) throw up.error;
+
+    const {data:pub}=db.storage.from("site-music").getPublicUrl(path);
+    const oldPath=cache.settings.musicStoragePath;
+    if(oldPath) await db.storage.from("site-music").remove([oldPath]);
+
+    await upsertSetting("musicStoragePath",path);
+    await upsertSetting("musicUrl",pub.publicUrl);
+    await upsertSetting("musicName",file.name);
+
+    showBanner("Song uploaded and saved successfully.");
+    await loadAll();
+  }catch(err){
+    showBanner(err.message || String(err), false);
+  }finally{
+    e.target.value="";
+  }
+});
+
+$("#deleteMusicBtn").addEventListener("click", async ()=>{
+  if(!cache.settings.musicUrl){
+    showBanner("There is no uploaded song to delete.", false);
+    return;
+  }
+  if(!confirm("Delete the current song?")) return;
+
+  try{
+    const oldPath=cache.settings.musicStoragePath;
+    if(oldPath) await db.storage.from("site-music").remove([oldPath]);
+
+    await upsertSetting("musicStoragePath","");
+    await upsertSetting("musicUrl","");
+    await upsertSetting("musicName","");
+
+    showBanner("Song deleted.");
+    await loadAll();
+  }catch(err){
+    showBanner(err.message || String(err), false);
+  }
 });
 
 function renderChapterEditors(){

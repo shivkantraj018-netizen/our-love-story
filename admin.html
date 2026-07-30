@@ -52,8 +52,30 @@
           <label>Countdown date/time<input type="datetime-local" id="countdownAtInput"></label>
           <label>Music title<input id="musicTitleInput"></label>
           <label>Music note<input id="musicNoteInput"></label>
-          <label>Music URL<input id="musicUrlInput" placeholder="https://...mp3"></label>
         </div>
+
+        <div class="music-manager">
+          <div class="music-current">
+            <div class="eyebrow">CURRENT SONG</div>
+            <div class="current-song-row">
+              <div>
+                <strong id="currentMusicName">No song uploaded</strong>
+                <div class="muted" id="currentMusicStatus">Upload any browser-supported audio file.</div>
+              </div>
+              <button class="mini-btn danger" id="deleteMusicBtn" type="button">Delete song</button>
+            </div>
+            <audio id="adminMusicPreview" controls preload="metadata"></audio>
+          </div>
+
+          <div class="upload-song-row">
+            <label class="upload-btn">
+              🎵 Upload / Replace Song
+              <input type="file" id="musicUpload" accept="audio/*" hidden>
+            </label>
+            <span class="muted">Replace it anytime with another song.</span>
+          </div>
+        </div>
+
         <button class="save-btn" id="saveSettingsBtn">Save changes</button>
         <div class="saved-state" id="settingsSaved">No unsaved changes</div>
       </section>

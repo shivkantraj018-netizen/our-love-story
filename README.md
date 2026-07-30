@@ -76,3 +76,8 @@ The first content is already seeded from your story:
 There is no Chapter 7.
 
 You can add as many chapters as you want from the admin dashboard.
+
+
+## Music upload
+
+The admin dashboard now has **Upload / Replace Song**. Choose any browser-supported audio file (MP3, M4A, WAV, AAC, OGG, etc.). The file is stored in the `site-music` Supabase Storage bucket. Uploading another song removes the previous one automatically. You can also delete the current song.

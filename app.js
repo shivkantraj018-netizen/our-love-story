@@ -46,7 +46,15 @@ async function loadAll(){
     $("#countdownTitle").textContent = map.countdownTitle || "Our next little forever";
     $("#musicTitle").textContent = map.musicTitle || "A song for us";
     $("#musicNote").textContent = map.musicNote || "";
-    const audio=$("#music"); if(map.musicUrl){audio.src=map.musicUrl;audio.style.display="block"} else {audio.removeAttribute("src");audio.style.display="none"}
+    const audio=$("#music");
+    if(map.musicUrl){
+      audio.src=map.musicUrl;
+      audio.style.display="block";
+      audio.load();
+    } else {
+      audio.removeAttribute("src");
+      audio.style.display="none";
+    }
     startCountdown(map.countdownAt);
   }
   renderNav(chapters || []);

@@ -278,3 +278,50 @@ begin
     execute 'alter publication supabase_realtime add table public.gallery_items';
   end if;
 end $$;
+
+
+-- Dedicated public audio bucket for the current song.
+insert into storage.buckets(id,name,public) values ('site-music','site-music',true)
+on conflict(id) do nothing;
+
+drop policy if exists "public can view site music" on storage.objects;
+create policy "public can view site music"
+on storage.objects
+for select
+using (bucket_id='site-music');
+
+drop policy if exists "admins can upload site music" on storage.objects;
+create policy "admins can upload site music"
+on storage.objects
+for insert to authenticated
+with check (
+  bucket_id='site-music'
+  and exists(select 1 from public.admins a where a.user_id=auth.uid())
+);
+
+drop policy if exists "admins can update site music" on storage.objects;
+create policy "admins can update site music"
+on storage.objects
+for update to authenticated
+using (
+  bucket_id='site-music'
+  and exists(select 1 from public.admins a where a.user_id=auth.uid())
+)
+with check (
+  bucket_id='site-music'
+  and exists(select 1 from public.admins a where a.user_id=auth.uid())
+);
+
+drop policy if exists "admins can delete site music" on storage.objects;
+create policy "admins can delete site music"
+on storage.objects
+for delete to authenticated
+using (
+  bucket_id='site-music'
+  and exists(select 1 from public.admins a where a.user_id=auth.uid())
+);
+
+insert into public.site_settings(key,value) values
+('musicName','""'),
+('musicStoragePath','""')
+on conflict(key) do nothing;
