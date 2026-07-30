@@ -105,3 +105,6 @@ No additional SQL is required for these settings because they use the existing `
 \n## v5 polish\n- 100 Reasons are numbered; no "Open me" label. Tapping a reason opens a larger envelope with a scrollable message area for long text.\n- Admin can edit the reasons eyebrow, title, and intro text.\n- Background music has a floating viewer mute/unmute control and starts after the first page interaction when the browser permits playback.\n- Photo cards are larger and show the whole image; tapping a photo opens a full-screen viewer.\n
 ## v6 navigation
 Added a floating, scrollable section navigation bar so visitors can jump directly to Story, Photos, Letter, Reasons, Gift, Secret, Game, Notes, Song, or Ending. The active section is highlighted automatically while scrolling.
+
+## v7 bug fix
+Fixed duplicate HTML IDs introduced by the section navigation. This restores public rendering of the 100 Reasons and other sections while keeping the navigation bar.
