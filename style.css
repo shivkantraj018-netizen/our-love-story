@@ -273,3 +273,19 @@ input:focus,textarea:focus{border-color:rgba(249,197,219,.65);box-shadow:0 0 0 3
 main {
   padding-top: 100px !important; 
 }
+/* Force white text on all dropdown menus and option items */
+select, 
+option, 
+input {
+  color: #ffffff !important;
+  background-color: #231638 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Force dropdown option text to stay white */
+select option {
+  color: #ffffff !important;
+  background-color: #231638 !important;
+}
