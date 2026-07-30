@@ -394,3 +394,17 @@ img#spotlightImage,
   display: block !important;
   margin: 0 auto !important;
 }
+/* 1. Permanently hide the spotlight modal pop-up */
+#spotlightWrap, 
+.spotlight-wrap {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* 2. Remove the pointer cursor so photos don't look clickable */
+#gallery img, 
+.gallery-grid img, 
+.chapter-card img {
+  cursor: default !important;
+  pointer-events: none !important;
+}
