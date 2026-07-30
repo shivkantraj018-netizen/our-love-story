@@ -325,3 +325,19 @@ insert into public.site_settings(key,value) values
 ('musicName','""'),
 ('musicStoragePath','""')
 on conflict(key) do nothing;
+
+-- Viewer comments: public users may submit, only authenticated admins may read/delete.
+create table if not exists public.comments (
+  id uuid primary key default gen_random_uuid(),
+  name text not null default 'Anonymous',
+  message text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.comments enable row level security;
+drop policy if exists "public can submit comments" on public.comments;
+create policy "public can submit comments" on public.comments for insert to anon, authenticated with check (char_length(message) between 1 and 1000 and char_length(name) between 1 and 60);
+drop policy if exists "admins can read comments" on public.comments;
+create policy "admins can read comments" on public.comments for select to authenticated using (exists(select 1 from public.admins a where a.user_id=auth.uid()));
+drop policy if exists "admins can delete comments" on public.comments;
+create policy "admins can delete comments" on public.comments for delete to authenticated using (exists(select 1 from public.admins a where a.user_id=auth.uid()));
+insert into public.site_settings(key,value) values ('commentTitle','"Your thoughts"'),('gameTitle','"Catch My Heart ❤️"'),('gameIntro','"You have 20 seconds. Catch as many hearts as you can."') on conflict(key) do nothing;

@@ -93,3 +93,11 @@ The admin dashboard now has **Upload / Replace Song**. Choose any browser-suppor
 - Clicking the final heart sends a heart/confetti burst.
 
 No additional SQL is required for these settings because they use the existing `site_settings` table and existing `site-media` bucket. The new fields are created automatically when you save them from the admin panel.
+
+## v4 upgrades
+- Portrait-first public layout on phones and desktop; photos use contain-style display to avoid cropping.
+- Gallery spotlight only appears when a photo is tapped, preventing the same photo from appearing twice by default.
+- 100 Reasons are numbered envelopes with a flap/open animation; mobile uses a single column for readability.
+- Viewer comments: public visitors can submit messages; only the authenticated admin can read/delete them.
+- Editable comment-section title and romantic mini-game title/intro.
+- Added a 20-second Catch My Heart game.

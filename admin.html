@@ -50,6 +50,9 @@
           <label>Final text<textarea id="finalTextInput" rows="3"></textarea></label>
           <label>Countdown title<input id="countdownTitleInput"></label>
           <label>Countdown date/time<input type="datetime-local" id="countdownAtInput"></label>
+          <label>Viewer comment section name<input id="commentTitleInput"></label>
+          <label>Game title<input id="gameTitleInput"></label>
+          <label>Game intro text<input id="gameIntroInput"></label>
         </div>
         <button class="save-btn" id="saveSettingsBtn">Save hero & final</button>
         <div class="saved-state" id="settingsSaved">No unsaved changes</div>
@@ -154,6 +157,11 @@
           <label class="upload-btn">＋ Upload photos<input type="file" id="photoUpload" accept="image/*" multiple hidden></label>
         </div>
         <div class="gallery-admin" id="galleryEditorList"></div>
+      </section>
+
+      <section class="admin-card glass">
+        <div class="card-head"><div><div class="eyebrow">VIEWER MESSAGES</div><h2>Private comments</h2><p class="muted">Only you can read these messages.</p></div><button class="mini-btn danger" id="clearAllCommentsBtn" type="button">Delete all</button></div>
+        <div id="commentAdminList" class="comment-admin-list"></div>
       </section>
 
       <section class="admin-card glass">

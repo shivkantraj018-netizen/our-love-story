@@ -64,6 +64,7 @@ async function loadAll(){
   renderChapterEditors();
   renderReasonEditors();
   renderGalleryEditors();
+  await loadComments();
 }
 
 function fillAdminFields(){
@@ -73,6 +74,9 @@ function fillAdminFields(){
   $("#finalTitleInput").value=cache.settings.finalTitle||"";
   $("#finalTextInput").value=cache.settings.finalText||"";
   $("#countdownTitleInput").value=cache.settings.countdownTitle||"";
+  $("#commentTitleInput").value=cache.settings.commentTitle||"Your thoughts";
+  $("#gameTitleInput").value=cache.settings.gameTitle||"Catch My Heart ❤️";
+  $("#gameIntroInput").value=cache.settings.gameIntro||"You have 20 seconds. Catch as many hearts as you can.";
   const dt=cache.settings.countdownAt;
   $("#countdownAtInput").value=dt?new Date(dt).toISOString().slice(0,16):"";
 
@@ -134,8 +138,11 @@ $("#saveSettingsBtn").addEventListener("click",()=>saveSettingsGroup({
   finalTitle:$("#finalTitleInput").value.trim(),
   finalText:$("#finalTextInput").value.trim(),
   countdownTitle:$("#countdownTitleInput").value.trim(),
-  countdownAt:$("#countdownAtInput").value?new Date($("#countdownAtInput").value).toISOString():null
-},"saveSettingsBtn","settingsSaved","Hero and final settings saved."));
+  countdownAt:$("#countdownAtInput").value?new Date($("#countdownAtInput").value).toISOString():null,
+  commentTitle:$("#commentTitleInput").value.trim(),
+  gameTitle:$("#gameTitleInput").value.trim(),
+  gameIntro:$("#gameIntroInput").value.trim()
+},"saveSettingsBtn","settingsSaved","Hero, game and viewer comment settings saved."));
 
 $("#saveLetterBtn").addEventListener("click",()=>saveSettingsGroup({
   loveLetterTitle:$("#loveLetterTitleInput").value.trim(),
@@ -514,6 +521,19 @@ $("#photoUpload").addEventListener("change",async e=>{
   await loadAll();
   showBanner("Photo upload complete.");
 });
+
+async function loadComments(){
+  const wrap=$("#commentAdminList"); if(!wrap)return;
+  const {data,error}=await db.from("comments").select("*").order("created_at",{ascending:false});
+  if(error){wrap.innerHTML='<div class="muted">Could not load comments.</div>';return;}
+  if(!data?.length){wrap.innerHTML='<div class="muted">No viewer messages yet.</div>';return;}
+  wrap.innerHTML=""; data.forEach(c=>{
+    const card=document.createElement("article"); card.className="comment-admin-card";
+    card.innerHTML=`<div class="comment-meta"><strong>${escapeHtml(c.name||"Anonymous")}</strong><span>${escapeHtml(new Date(c.created_at).toLocaleString())}</span></div><p>${escapeHtml(c.message||"")}</p><button class="mini-btn danger" type="button">Delete</button>`;
+    card.querySelector("button").onclick=async()=>{if(!confirm("Delete this viewer message?"))return;const {error}=await db.from("comments").delete().eq("id",c.id);if(error){showBanner(error.message,false);return;}showBanner("Viewer message deleted.");await loadComments();}; wrap.appendChild(card);
+  });
+}
+$("#clearAllCommentsBtn").addEventListener("click",async()=>{if(!confirm("Delete ALL viewer messages? This cannot be undone."))return;const {error}=await db.from("comments").delete().neq("id","00000000-0000-0000-0000-000000000000");if(error){showBanner(error.message,false);return;}showBanner("All viewer messages deleted.");await loadComments();});
 
 $("#passwordForm").addEventListener("submit",async e=>{
   e.preventDefault();
