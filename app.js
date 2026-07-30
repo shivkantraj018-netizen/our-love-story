@@ -1,5 +1,5 @@
 const { createClient } = supabase; const db = createClient(window.APP_CONFIG.SUPABASE_URL, window.APP_CONFIG.SUPABASE_ANON_KEY); const $=s=>document.querySelector(s);
-let galleryItems=[],spotlightTimer=null,countdownTimer=null,gameTimer=null,gamePlaying=false,gameScore=0,gameSeconds=20;
+let galleryItems=[],spotlightTimer=null,countdownTimer=null,gameTimer=null,gamePlaying=false,gameScore=0,gameSeconds=20,backgroundMusicStarted=false;
 
 function initSectionDock(){
   const dock=$("#sectionDock");
@@ -62,17 +62,17 @@ function confetti(n=24){const w=$("#giftConfetti");for(let i=0;i<n;i++){const c=
 async function toggleBackgroundMusic(){
   const audio=$("#music"); if(!audio.src)return;
   if(audio.paused){
-    try{await audio.play(); $("#musicFabIcon").textContent="🔊"; $("#musicFabText").textContent="Music on"; backgroundMusicStarted=true;}
+    try{await audio.play(); const i=$("#musicFabIcon"),t=$("#musicFabText");if(i)i.textContent="🔊";if(t)t.textContent="Music on"; backgroundMusicStarted=true;}
     catch{ $("#musicFabIcon").textContent="🔇"; $("#musicFabText").textContent="Music off"; }
   } else {
-    audio.pause(); $("#musicFabIcon").textContent="🔇"; $("#musicFabText").textContent="Music off";
+    audio.pause(); const i=$("#musicFabIcon"),t=$("#musicFabText");if(i)i.textContent="🔇";if(t)t.textContent="Music off";
   }
 }
-$("#musicFab").addEventListener("click",toggleBackgroundMusic);
+const musicFab=$("#musicFab"); if(musicFab) musicFab.addEventListener("click",toggleBackgroundMusic);
 async function tryStartMusic(){
   const audio=$("#music");
   if(!audio.src||backgroundMusicStarted)return;
-  try{audio.volume=.28;await audio.play();backgroundMusicStarted=true;$("#musicFabIcon").textContent="🔊";$("#musicFabText").textContent="Music on";}
+  try{audio.volume=.28;await audio.play();backgroundMusicStarted=true;const i=$("#musicFabIcon"),t=$("#musicFabText");if(i)i.textContent="🔊";if(t)t.textContent="Music on";}
   catch{}
 }
 ["click","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,tryStartMusic,{once:true,passive:true}));

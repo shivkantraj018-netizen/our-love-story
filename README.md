@@ -108,3 +108,6 @@ Added a floating, scrollable section navigation bar so visitors can jump directl
 
 ## v7 bug fix
 Fixed duplicate HTML IDs introduced by the section navigation. This restores public rendering of the 100 Reasons and other sections while keeping the navigation bar.
+
+## v8 public render fix
+Fixed the missing music control element that was stopping public JavaScript from running, and restored the section navigation markup. No Supabase data or SQL changes are required.
