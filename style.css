@@ -34,7 +34,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 .glow-btn.small{padding:10px 16px;font-size:14px}.glow-btn.full{width:100%}
 .tap-hint{margin-top:24px;color:#d8cce4;letter-spacing:.35em;font-size:12px}
 .shooting-star{position:absolute;right:7%;bottom:25%;width:180px;height:2px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(-28deg);opacity:.65;filter:drop-shadow(0 0 12px #fff)}
-.content-wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:30px 16px 90px}
+.content-wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:30px 16px 180px}
 .section-intro{text-align:center;margin:40px auto 45px;max-width:650px}
 .eyebrow{letter-spacing:.28em;font-size:11px;color:#e8bfe4;text-transform:uppercase}
 .section-intro h2,.chapter-card h3,.final-card h2,.admin-card h2,.auth-card h1,.admin-header h1{font-family:"Cormorant Garamond",serif}
