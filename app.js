@@ -24,7 +24,6 @@ function initSectionDock(){
 function seedStars(){const wrap=$("#stars");if(!wrap||wrap.dataset.ready)return;wrap.dataset.ready="1";for(let i=0;i<100;i++){const e=document.createElement("span");e.className="star";const z=Math.random()*2.8+1;e.style.width=`${z}px`;e.style.height=`${z}px`;e.style.left=`${Math.random()*100}%`;e.style.top=`${Math.random()*100}%`;e.style.animationDelay=`${Math.random()*4}s`;wrap.appendChild(e)}const petals=$("#petals");for(let i=0;i<18;i++){const p=document.createElement("span");p.className="petal";p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${12+Math.random()*12}s`;p.style.animationDelay=`-${Math.random()*18}s`;petals.appendChild(p)}}seedStars();
 initSectionDock();
 
-const GALLERY_STATE_KEY="our-love-story.gallery-privacy-state";
 function parseBool(v){return v===true||v==="true"||v===1||v==="1";}
 function parseNum(v,def=0){const n=Number.parseInt(v,10);return Number.isFinite(n)?n:def;}
 function getGalleryPrivacyFromSettings(m){return {
@@ -39,24 +38,10 @@ function getGalleryPrivacyFromSettings(m){return {
   maxAttempts:Math.max(1,parseNum(m.galleryLockMaxAttempts,3)),
   cooldownMinutes:Math.max(0,parseNum(m.galleryLockCooldownMinutes,15))
 };}
-function readGalleryState(){
-  try{const raw=localStorage.getItem(GALLERY_STATE_KEY);return raw?JSON.parse(raw):null;}catch{return null;}
-}
-function writeGalleryState(state){
-  try{localStorage.setItem(GALLERY_STATE_KEY,JSON.stringify(state));}catch{}
-}
-function normalizedGalleryState(state,privacy){
-  const now=Date.now();
-  const base={unlocked:false,attemptsLeft:privacy.maxAttempts,cooldownUntil:0};
-  if(!privacy.enabled) return {...base,unlocked:true};
-  const s=state&&typeof state==="object"?state:{};
-  const cooldownUntil=Number(s.cooldownUntil||0);
-  if(cooldownUntil && cooldownUntil>now){
-    return {unlocked:false,attemptsLeft:0,cooldownUntil};
-  }
-  const unlocked=!!s.unlocked;
-  const attemptsLeft=Math.max(0,parseNum(s.attemptsLeft,privacy.maxAttempts));
-  return {unlocked,attemptsLeft: attemptsLeft||privacy.maxAttempts, cooldownUntil:0};
+function resetGalleryState(privacy){
+  return privacy.enabled
+    ? {unlocked:false,attemptsLeft:privacy.maxAttempts,cooldownUntil:0}
+    : {unlocked:true,attemptsLeft:privacy.maxAttempts,cooldownUntil:0};
 }
 function syncGalleryPrivacyUI(){
   const banner=$("#galleryPrivacyBanner");
@@ -112,7 +97,6 @@ function updateGalleryUnlockModal(){
 }
 function setGalleryState(state){
   galleryPrivacyState=state;
-  writeGalleryState(state);
   syncGalleryPrivacyUI();
   renderGallery(galleryItems);
 }
@@ -185,10 +169,10 @@ async function loadAll(){const [{data:settings},{data:chapters},{data:gallery},{
 const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow"];
 TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
 
-["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle","galleryLockWrongMessage"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);const stored=readGalleryState();galleryPrivacyState=normalizedGalleryState(stored,galleryPrivacy);writeGalleryState(galleryPrivacyState);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
+["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle","galleryLockWrongMessage"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
-function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x,i)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.src=x.public_url;img.alt=x.caption||"A memory";const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("click",()=>locked?openGalleryUnlockModal():showSpotlight(i));w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
+function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.draggable=false;img.src=x.public_url;img.alt=x.caption||"A memory";img.addEventListener("contextmenu",e=>e.preventDefault());const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("contextmenu",e=>e.preventDefault());d.addEventListener("click",()=>{if(locked)openGalleryUnlockModal();});w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
 function showSpotlight(i){if(galleryPrivacy.enabled&&!galleryPrivacyState.unlocked){openGalleryUnlockModal();return;}return;}
 $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=true;clearInterval(spotlightTimer)});
 function renderReasons(items){
@@ -277,7 +261,6 @@ $("#beginBtn").onclick=()=>document.querySelector(".section-intro")?.scrollIntoV
 $("#commentForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("#commentSubmit"),st=$("#commentStatus");btn.disabled=true;btn.textContent="Sending…";const name=$("#commentName").value.trim()||"Anonymous",message=$("#commentText").value.trim();if(!message){st.textContent="Please write a little message.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}const {error}=await db.from("comments").insert({name,message});if(error){st.textContent="Something went wrong. Please try again.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}e.target.reset();st.textContent="❤️ Your message was sent.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";setTimeout(()=>st.textContent="",3500)});
 loadAll().catch(console.error);
 db.channel("public-live-updates").on("postgres_changes",{event:"*",schema:"public",table:"site_settings"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"chapters"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"gallery_items"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"love_reasons"},loadAll).subscribe();
-setInterval(()=>{if(galleryPrivacy.enabled){const state=normalizedGalleryState(readGalleryState(),galleryPrivacy);if(state.cooldownUntil!==galleryPrivacyState.cooldownUntil||state.attemptsLeft!==galleryPrivacyState.attemptsLeft||state.unlocked!==galleryPrivacyState.unlocked){galleryPrivacyState=state;syncGalleryPrivacyUI();}}},1000);
 
 function tinyHeartBurstAt(x,y,count=6){
   const wrap=$("#heartBurst");if(!wrap)return;
@@ -289,9 +272,6 @@ function tinyHeartBurstAt(x,y,count=6){
     h.style.animationDelay=`${Math.random()*.05}s`;
     wrap.appendChild(h);setTimeout(()=>h.remove(),1400);
   }
-}
-if(document.body.classList.contains("public-page")){
-  document.addEventListener("click",e=>{if(!e.target.closest("input,textarea,select,audio"))tinyHeartBurstAt(e.clientX,e.clientY,e.target.closest("button")?10:5);},{passive:true});
 }
 function initHeroRomance(){
   const hero=$("#hero");if(!hero)return;
