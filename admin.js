@@ -13,6 +13,7 @@ const TEXT_FIELDS=[
 
 let currentUser = null;
 let cache = { settings:{}, chapters:[], reasons:[], gallery:[] };
+const GALLERY_PRIVACY_DEFAULTS = { enabled:false, title:"Our Precious Memories ❤️", description:"Only someone who truly knows our journey can unlock these memories.", question:"What is our special password?", hint:"Use the answer you know from our journey.", answer:"", wrongTitle:"Wrong answer", wrongMessage:"That is not the correct answer. Try again.", maxAttempts:3, cooldownMinutes:15 };
 
 function showBanner(text,ok=true){
   const el=$("#saveBanner");
@@ -119,6 +120,17 @@ function fillAdminFields(){
   $("#secretTitleInput").value=cache.settings.secretTitle||"Tap my heart when you miss me.";
   $("#secretMessageInput").value=cache.settings.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
 
+  $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
+  $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
+  $("#galleryLockDescriptionInput").value=cache.settings.galleryLockDescription||GALLERY_PRIVACY_DEFAULTS.description;
+  $("#galleryLockQuestionInput").value=cache.settings.galleryLockQuestion||GALLERY_PRIVACY_DEFAULTS.question;
+  $("#galleryLockHintInput").value=cache.settings.galleryLockHint||GALLERY_PRIVACY_DEFAULTS.hint;
+  $("#galleryLockAnswerInput").value=cache.settings.galleryLockAnswer||GALLERY_PRIVACY_DEFAULTS.answer;
+  $("#galleryLockWrongTitleInput").value=cache.settings.galleryLockWrongTitle||GALLERY_PRIVACY_DEFAULTS.wrongTitle;
+  $("#galleryLockWrongMessageInput").value=cache.settings.galleryLockWrongMessage||GALLERY_PRIVACY_DEFAULTS.wrongMessage;
+  $("#galleryLockMaxAttemptsInput").value=cache.settings.galleryLockMaxAttempts||GALLERY_PRIVACY_DEFAULTS.maxAttempts;
+  $("#galleryLockCooldownInput").value=cache.settings.galleryLockCooldownMinutes||GALLERY_PRIVACY_DEFAULTS.cooldownMinutes;
+
   $("#musicTitleInput").value=cache.settings.musicTitle||"A song for us";
   $("#musicNoteInput").value=cache.settings.musicNote||"";
 
@@ -156,6 +168,7 @@ async function saveSettingsGroup(values,buttonId,statusId,successMessage){
       :buttonId==="saveLetterBtn"?"Save love letter"
       :buttonId==="saveGiftBtn"?"Save gift"
       :buttonId==="saveSecretBtn"?"Save secret"
+      :buttonId==="saveGalleryPrivacyBtn"?"Save gallery privacy"
       :"Save song text";
   }
 }
@@ -191,6 +204,21 @@ $("#saveSecretBtn").addEventListener("click",()=>saveSettingsGroup({
   secretTitle:$("#secretTitleInput").value.trim(),
   secretMessage:$("#secretMessageInput").value
 },"saveSecretBtn","secretSaved","Secret message saved."));
+
+
+
+$("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
+  galleryLockEnabled:$("#galleryLockEnabledInput").checked,
+  galleryLockTitle:$("#galleryLockTitleInput").value.trim(),
+  galleryLockDescription:$("#galleryLockDescriptionInput").value.trim(),
+  galleryLockQuestion:$("#galleryLockQuestionInput").value.trim(),
+  galleryLockHint:$("#galleryLockHintInput").value.trim(),
+  galleryLockAnswer:$("#galleryLockAnswerInput").value.trim(),
+  galleryLockWrongTitle:$("#galleryLockWrongTitleInput").value.trim(),
+  galleryLockWrongMessage:$("#galleryLockWrongMessageInput").value.trim(),
+  galleryLockMaxAttempts:Math.max(1,parseInt($("#galleryLockMaxAttemptsInput").value||"3",10)),
+  galleryLockCooldownMinutes:Math.max(0,parseInt($("#galleryLockCooldownInput").value||"15",10))
+},"saveGalleryPrivacyBtn","galleryPrivacySaved","Gallery privacy saved."));
 
 $("#saveMusicBtn").addEventListener("click",()=>saveSettingsGroup({
   musicTitle:$("#musicTitleInput").value.trim(),

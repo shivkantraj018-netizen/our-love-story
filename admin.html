@@ -49,6 +49,7 @@
         <button type="button" data-admin-section="adminChapters">Chapters</button>
         <button type="button" data-admin-section="adminReasons">Reasons</button>
         <button type="button" data-admin-section="adminPhotos">Photos</button>
+        <button type="button" data-admin-section="adminGalleryPrivacy">Gallery Privacy</button>
         <button type="button" data-admin-section="adminComments">Comments</button>
         <button type="button" data-admin-section="adminPassword">Password</button>
       </div>
@@ -182,6 +183,27 @@
           <label class="upload-btn">＋ Upload photos<input type="file" id="photoUpload" accept="image/*" multiple hidden></label>
         </div>
         <div class="gallery-admin" id="galleryEditorList"></div>
+      </section>
+
+
+      <section class="admin-card glass" id="adminGalleryPrivacy">
+        <div class="card-head">
+          <div><div class="eyebrow">GALLERY PRIVACY</div><h2>Lock or unlock the photo gallery</h2></div>
+        </div>
+        <div class="form-grid">
+          <label class="toggle-field"><span>Enable Gallery Lock</span><input type="checkbox" id="galleryLockEnabledInput"></label>
+          <label>Popup Title<input id="galleryLockTitleInput"></label>
+          <label style="grid-column:1/-1">Popup Description<textarea id="galleryLockDescriptionInput" rows="3"></textarea></label>
+          <label>Question<input id="galleryLockQuestionInput"></label>
+          <label>Hint<input id="galleryLockHintInput"></label>
+          <label>Answer / password<input id="galleryLockAnswerInput"></label>
+          <label>Wrong Title<input id="galleryLockWrongTitleInput"></label>
+          <label style="grid-column:1/-1">Wrong Message<textarea id="galleryLockWrongMessageInput" rows="3"></textarea></label>
+          <label>Max Attempts<input id="galleryLockMaxAttemptsInput" type="number" min="1" step="1"></label>
+          <label>Cooldown Minutes<input id="galleryLockCooldownInput" type="number" min="0" step="1"></label>
+        </div>
+        <button class="save-btn" id="saveGalleryPrivacyBtn">Save gallery privacy</button>
+        <div class="saved-state" id="galleryPrivacySaved">No unsaved changes</div>
       </section>
 
       <section class="admin-card glass">
