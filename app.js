@@ -65,7 +65,10 @@ function syncGalleryPrivacyUI(){
   const locked=galleryPrivacy.enabled && !galleryPrivacyState.unlocked;
   document.body.classList.toggle("gallery-privacy-locked",locked);
   if(banner) banner.hidden=!galleryPrivacy.enabled;
-  if(openBtn) openBtn.textContent=locked?"Unlock gallery":"Gallery open";
+  if(openBtn){
+    openBtn.textContent=locked?"Unlock gallery":"Gallery open";
+    openBtn.setAttribute("aria-label",locked?"Unlock gallery":"Gallery open");
+  }
   if(modal && !modal.hidden) updateGalleryUnlockModal();
   updateGalleryLockMeta();
 }
@@ -185,7 +188,7 @@ TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m
 ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle","galleryLockWrongMessage"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);const stored=readGalleryState();galleryPrivacyState=normalizedGalleryState(stored,galleryPrivacy);writeGalleryState(galleryPrivacyState);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
-function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x,i)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.src=x.public_url;img.alt=x.caption||"A memory";const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.onclick=()=>locked?openGalleryUnlockModal():showSpotlight(i);w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
+function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x,i)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.src=x.public_url;img.alt=x.caption||"A memory";const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("click",()=>locked?openGalleryUnlockModal():showSpotlight(i));w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
 function showSpotlight(i){if(galleryPrivacy.enabled&&!galleryPrivacyState.unlocked){openGalleryUnlockModal();return;}if(!galleryItems.length)return;const x=galleryItems[i%galleryItems.length],w=$("#spotlightWrap"),im=$("#spotlightImage"),cap=$("#spotlightCaption");w.hidden=false;im.src=x.public_url;im.alt=x.caption||"A memory";cap.textContent=x.caption||"";clearInterval(spotlightTimer);if(galleryItems.length>1){let j=(i+1)%galleryItems.length;spotlightTimer=setInterval(()=>{const n=galleryItems[j%galleryItems.length];im.classList.remove("spotlight-fade");void im.offsetWidth;im.classList.add("spotlight-fade");im.src=n.public_url;cap.textContent=n.caption||"";j++},7000)}}
 $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=true;clearInterval(spotlightTimer)});
 function renderReasons(items){
@@ -207,7 +210,14 @@ function renderReasons(items){
       if(e.target.closest('.envelope-close')) return;
       const was=card.classList.contains('open');
       document.querySelectorAll('.real-envelope.open').forEach(el=>el.classList.remove('open'));
-      if(!was){card.classList.add('open');playPaperSound();heartBurst(7);}
+      document.querySelectorAll('.real-envelope.open-final').forEach(el=>el.classList.remove('open-final'));
+      if(!was){
+        card.classList.add('open');
+        playPaperSound();
+        heartBurst(7);
+        clearTimeout(card._reasonTimer);
+        card._reasonTimer=setTimeout(()=>card.classList.add('open-final'),680);
+      }
     });
     close.addEventListener('click',e=>{e.stopPropagation();card.classList.remove('open');});
     wrap.appendChild(card);
@@ -295,12 +305,16 @@ function initHeroRomance(){
 initHeroRomance();
 function openLoveLetter(){
   const card=$("#loveLetterCard");if(!card||card.classList.contains("opened")) return;
-  card.classList.add("opened");card.classList.remove("opened-final");playPaperSound();heartBurst(12);
+  card.classList.add("opened");
+  card.classList.remove("opened-final");
+  playPaperSound();
+  heartBurst(12);
   clearTimeout(card._letterTimer);
-  card._letterTimer=setTimeout(()=>card.classList.add("opened-final"),760);
+  card._letterTimer=setTimeout(()=>card.classList.add("opened-final"),740);
 }
 function closeLoveLetter(){
   const card=$("#loveLetterCard");if(!card)return;
+  clearTimeout(card._letterTimer);
   card.classList.remove("opened","opened-final");
 }
 $("#loveLetterCard")?.addEventListener("click",()=>openLoveLetter());

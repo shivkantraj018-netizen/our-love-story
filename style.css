@@ -394,20 +394,6 @@ img#spotlightImage,
   display: block !important;
   margin: 0 auto !important;
 }
-/* 1. Permanently hide the spotlight modal pop-up */
-#spotlightWrap, 
-.spotlight-wrap {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-/* 2. Remove the pointer cursor so photos don't look clickable */
-#gallery img, 
-.gallery-grid img, 
-.chapter-card img {
-  cursor: default !important;
-  pointer-events: none !important;
-}
 /* --- RESPONSIVE PHOTO GALLERY FIX --- */
 
 /* 1. Mobile default: Stack photos in 1 single column */
@@ -967,3 +953,36 @@ body::before {
 #loveLetterCard.opened-final .letter-seal-button{display:none}
 @media(max-width:860px){.gallery-privacy-banner{flex-direction:column;align-items:flex-start}.gallery-unlock-card h3{font-size:46px}.gallery-privacy-banner h4{font-size:32px}}
 @media(max-width:620px){.gallery-unlock-card{padding:22px 16px 18px}.gallery-unlock-footer{flex-direction:column;align-items:stretch}.gallery-unlock-footer .glow-btn{width:100%}.gallery-privacy-banner{padding:16px}.gallery-privacy-banner p{max-width:none}}
+
+/* Final deployment overrides */
+#spotlightWrap[hidden]{display:none!important}
+#spotlightWrap:not([hidden]){display:grid!important;visibility:visible!important;pointer-events:auto!important}
+.gallery-privacy-locked #gallery .gallery-item{position:relative;overflow:hidden}
+.gallery-privacy-locked #gallery .gallery-item img{opacity:.58!important;filter:saturate(.92) brightness(.87) contrast(.98)!important;transform:scale(1.01)!important;transition:opacity .45s ease,transform .45s ease,filter .45s ease!important}
+.gallery-privacy-locked #gallery .gallery-item::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,243,246,.08),rgba(24,11,34,.18));color:#fff;font-size:42px;text-shadow:0 8px 25px rgba(0,0,0,.4);pointer-events:none}
+.gallery-privacy-locked #gallery .gallery-item figcaption{opacity:.82!important}
+.gallery-privacy-locked #spotlightWrap{display:none!important}
+#loveLetterCard{position:relative!important;overflow:hidden!important;cursor:pointer!important;padding:34px!important;border-radius:34px!important;background:linear-gradient(180deg,rgba(255,248,235,.96),rgba(245,229,206,.92))!important;box-shadow:0 20px 50px rgba(0,0,0,.18)!important}
+#loveLetterCard::before{content:"";position:absolute;left:4.5%;right:4.5%;bottom:10px;height:64%;z-index:2;border-radius:10px 10px 24px 24px;background:linear-gradient(180deg,#f8ecd8 0%,#efe0c6 100%);border:1px solid rgba(130,95,70,.15);box-shadow:0 14px 28px rgba(0,0,0,.18);clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);pointer-events:none}
+#loveLetterCard::after{content:"";position:absolute;left:4.5%;right:4.5%;top:24px;height:52%;z-index:3;background:linear-gradient(180deg,#fff7ea,#f2dfc1 65%,#e8d2ad);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .78s cubic-bezier(.16,.82,.2,1),opacity .4s ease;box-shadow:inset 0 -1px 0 rgba(120,90,60,.08);pointer-events:none}
+#loveLetterCard .letter-seal-button{width:68px;height:68px;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.85),rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 55%,#cf4d6f 0,#b83256 70%,#972342 100%);color:#fff7fb;box-shadow:0 0 0 8px rgba(255,213,224,.2),0 0 28px rgba(219,88,126,.35);border:1px solid rgba(255,255,255,.22)}
+#loveLetterCard.opened::before{opacity:0;transform:scale(.98)}
+#loveLetterCard.opened::after{transform:rotateX(180deg) translateY(-4px);opacity:.12}
+#loveLetterCard.opened .letter-paper{opacity:1!important;transform:translateY(-82px) scale(1)!important;pointer-events:auto!important}
+#loveLetterCard.opened .letter-seal-button{transform:translate(-50%,-50%) scale(.22) rotate(18deg)!important;opacity:0!important}
+#loveLetterCard.opened .letter-sound-hint{opacity:.08!important}
+#loveLetterCard.opened-final{background:transparent!important;box-shadow:none!important;overflow:visible!important;padding-top:18px!important;pointer-events:auto!important}
+#loveLetterCard.opened-final::before,#loveLetterCard.opened-final::after{opacity:0!important;transform:none!important;pointer-events:none!important}
+#loveLetterCard.opened-final .eyebrow,#loveLetterCard.opened-final h3,#loveLetterCard.opened-final .letter-sound-hint{opacity:0!important;transition:opacity .35s ease}
+#loveLetterCard.opened-final .letter-paper{transform:translateY(0) scale(1)!important;opacity:1!important}
+#loveLetterCard.opened-final .letter-seal-button{display:none!important}
+.real-envelope.open-final .envelope-body,.real-envelope.open-final .envelope-left-fold,.real-envelope.open-final .envelope-right-fold,.real-envelope.open-final .envelope-flap,.real-envelope.open-final .envelope-front,.real-envelope.open-final .envelope-seal{opacity:0!important;transform:none!important;pointer-events:none!important}
+.real-envelope.open-final{background:transparent!important;box-shadow:none!important;min-height:auto!important;overflow:visible!important}
+.real-envelope.open-final .envelope-paper{opacity:1!important;transform:translateY(-14px) scale(1)!important}
+.real-envelope .envelope-paper{background:radial-gradient(circle at 12px 12px,rgba(88,58,43,.06) 1.2px,transparent 1.5px) 0 0/18px 18px,linear-gradient(180deg,#fffaf1,#f3e2c9)!important;border:1px solid rgba(135,95,66,.16)!important;color:#54383d!important}
+.real-envelope .envelope-flap{background:linear-gradient(180deg,#fff0dc,#e8d2ad)!important}
+.real-envelope .envelope-seal{background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8),rgba(255,255,255,0) 24%),radial-gradient(circle at 50% 56%,#d94f6d 0,#bf2d51 72%,#8f1f3b 100%)!important;color:#fff7fb!important;box-shadow:0 0 0 7px rgba(255,212,224,.18),0 0 26px rgba(219,79,109,.32)!important}
+.real-envelope .envelope-paper-text{font-size:29px!important;color:#573a49!important}
+.gallery-privacy-banner{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.gallery-unlock-card{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+
