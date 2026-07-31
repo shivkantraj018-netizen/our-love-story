@@ -1,7 +1,7 @@
 const { createClient } = supabase; const db = createClient(window.APP_CONFIG.SUPABASE_URL, window.APP_CONFIG.SUPABASE_ANON_KEY); const $=s=>document.querySelector(s);
 let galleryItems=[],spotlightTimer=null,countdownTimer=null,gameTimer=null,gamePlaying=false,gameScore=0,gameSeconds=20,backgroundMusicStarted=false;
 let galleryPrivacyTimer=null;
-let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Oops, cutie",wrongMessage:"Only someone else can access this.",maxAttempts:3,cooldownMinutes:15};
+let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Oops, cutie",wrongMessage1:"Oops, you missed 💗",wrongMessage2:"Keep going, if you know us you can open it ✨",wrongMessage3:"Try one more time, cutie — last chance 🌷",wrongMessage:"Only someone else can access this.",maxAttempts:3,cooldownMinutes:15};
 let galleryPrivacyState={unlocked:false,attemptsLeft:3,cooldownUntil:0};
 let paperAudioCtx=null;
 
@@ -23,6 +23,34 @@ function initSectionDock(){
 
 function seedStars(){const wrap=$("#stars");if(!wrap||wrap.dataset.ready)return;wrap.dataset.ready="1";for(let i=0;i<100;i++){const e=document.createElement("span");e.className="star";const z=Math.random()*2.8+1;e.style.width=`${z}px`;e.style.height=`${z}px`;e.style.left=`${Math.random()*100}%`;e.style.top=`${Math.random()*100}%`;e.style.animationDelay=`${Math.random()*4}s`;wrap.appendChild(e)}const petals=$("#petals");for(let i=0;i<18;i++){const p=document.createElement("span");p.className="petal";p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${12+Math.random()*12}s`;p.style.animationDelay=`-${Math.random()*18}s`;petals.appendChild(p)}}seedStars();
 initSectionDock();
+
+function tapHeartsAt(x,y,count=7){
+  const wrap=$("#heartBurst");
+  if(!wrap) return;
+  for(let i=0;i<count;i++){
+    const h=document.createElement("span");
+    h.className="burst-heart tap-heart";
+    h.textContent=i%4===0?"✦":"♥";
+    h.style.left=`${x}px`;
+    h.style.top=`${y}px`;
+    h.style.setProperty("--dx",`${(Math.random()-.5)*140}px`);
+    h.style.setProperty("--dy",`${-20-Math.random()*140}px`);
+    h.style.animationDelay=`${Math.random()*.05}s`;
+    wrap.appendChild(h);
+    setTimeout(()=>h.remove(),1400);
+  }
+}
+if(document.body.classList.contains("public-page")){
+  document.addEventListener("pointerdown",(e)=>{
+    if(e.button!==undefined && e.button!==0) return;
+    const x=e.clientX||window.innerWidth/2;
+    const y=e.clientY||window.innerHeight/2;
+    tapHeartsAt(x,y,e.target?.closest("button")?4:7);
+  },{passive:true});
+  ["copy","cut","contextmenu","dragstart"].forEach(evt=>{
+    document.addEventListener(evt,e=>e.preventDefault());
+  });
+}
 
 function parseBool(v){return v===true||v==="true"||v===1||v==="1";}
 function parseNum(v,def=0){const n=Number.parseInt(v,10);return Number.isFinite(n)?n:def;}
@@ -215,7 +243,7 @@ async function loadAll(){const [{data:settings},{data:chapters},{data:gallery},{
 const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow"];
 TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
 
-["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle","galleryLockWrongMessage"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
+["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
 function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.draggable=false;img.src=x.public_url;img.alt=x.caption||"A memory";img.addEventListener("contextmenu",e=>e.preventDefault());const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("contextmenu",e=>e.preventDefault());d.addEventListener("click",()=>{if(locked)openGalleryUnlockModal();});w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}

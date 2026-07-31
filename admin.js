@@ -98,6 +98,7 @@ function fillAdminFields(){
   $("#heroTitleInput").value=cache.settings.heroTitle||"";
   $("#heroHeadlineInput").value=cache.settings.heroHeadline||"";
   $("#heroSublineInput").value=cache.settings.heroSubline||"";
+  $("#romanticNoteInput").value=cache.settings.romanticNote||"Every tap leaves a little heart behind.";
   $("#finalTitleInput").value=cache.settings.finalTitle||"";
   $("#finalTextInput").value=cache.settings.finalText||"";
   $("#countdownTitleInput").value=cache.settings.countdownTitle||"";
@@ -127,7 +128,9 @@ function fillAdminFields(){
   $("#galleryLockHintInput").value=cache.settings.galleryLockHint||GALLERY_PRIVACY_DEFAULTS.hint;
   $("#galleryLockAnswerInput").value=cache.settings.galleryLockAnswer||GALLERY_PRIVACY_DEFAULTS.answer;
   $("#galleryLockWrongTitleInput").value=cache.settings.galleryLockWrongTitle||GALLERY_PRIVACY_DEFAULTS.wrongTitle;
-  $("#galleryLockWrongMessageInput").value=cache.settings.galleryLockWrongMessage||GALLERY_PRIVACY_DEFAULTS.wrongMessage;
+  $("#galleryLockWrongMessage1Input").value=cache.settings.galleryLockWrongMessage1||cache.settings.galleryLockWrongMessage||"Oops, you missed 💗";
+  $("#galleryLockWrongMessage2Input").value=cache.settings.galleryLockWrongMessage2||cache.settings.galleryLockWrongMessage||"Keep going, if you know us you can open it ✨";
+  $("#galleryLockWrongMessage3Input").value=cache.settings.galleryLockWrongMessage3||cache.settings.galleryLockWrongMessage||"Try one more time, cutie — last chance 🌷";
   $("#galleryLockMaxAttemptsInput").value=cache.settings.galleryLockMaxAttempts||GALLERY_PRIVACY_DEFAULTS.maxAttempts;
   $("#galleryLockCooldownInput").value=cache.settings.galleryLockCooldownMinutes||GALLERY_PRIVACY_DEFAULTS.cooldownMinutes;
 
@@ -177,6 +180,7 @@ $("#saveSettingsBtn").addEventListener("click",()=>saveSettingsGroup({
   heroTitle:$("#heroTitleInput").value.trim(),
   heroHeadline:$("#heroHeadlineInput").value.trim(),
   heroSubline:$("#heroSublineInput").value.trim(),
+  romanticNote:$("#romanticNoteInput").value.trim(),
   finalTitle:$("#finalTitleInput").value.trim(),
   finalText:$("#finalTextInput").value.trim(),
   countdownTitle:$("#countdownTitleInput").value.trim(),
@@ -215,7 +219,10 @@ $("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
   galleryLockHint:$("#galleryLockHintInput").value.trim(),
   galleryLockAnswer:$("#galleryLockAnswerInput").value.trim(),
   galleryLockWrongTitle:$("#galleryLockWrongTitleInput").value.trim(),
-  galleryLockWrongMessage:$("#galleryLockWrongMessageInput").value.trim(),
+  galleryLockWrongMessage1:$("#galleryLockWrongMessage1Input").value.trim(),
+  galleryLockWrongMessage2:$("#galleryLockWrongMessage2Input").value.trim(),
+  galleryLockWrongMessage3:$("#galleryLockWrongMessage3Input").value.trim(),
+  galleryLockWrongMessage:$("#galleryLockWrongMessage1Input").value.trim(),
   galleryLockMaxAttempts:Math.max(1,parseInt($("#galleryLockMaxAttemptsInput").value||"3",10)),
   galleryLockCooldownMinutes:Math.max(0,parseInt($("#galleryLockCooldownInput").value||"15",10))
 },"saveGalleryPrivacyBtn","galleryPrivacySaved","Gallery privacy saved."));

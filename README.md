@@ -123,3 +123,7 @@ Admin countdown display now preserves local date/time, a quick admin navigation 
 
 ## v14 quick fix
 Locked photos are blurred more heavily, the wrong-password flow now shows a cute popup on each failed try with a cooldown after 3 tries, and the Love Letter text is darker for readability.
+
+
+## v15
+Added heart-shower tap animations across the public site, disabled text copying on the public page, made the photo lock use three customizable wrong-password messages with cooldown, added a customizable romantic hero note, and improved Love Letter contrast.
