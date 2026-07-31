@@ -119,3 +119,7 @@ Admin countdown display now preserves local date/time, a quick admin navigation 
 
 ## v11 romantic envelope update
 100 Reasons now use a sealed-envelope front with the number, flap animation, rising paper, scrollable handwritten message, and paper-rustle sound. The Love Letter uses a matching envelope/seal interaction. The existing Supabase data and admin editing remain unchanged.
+
+
+## v14 quick fix
+Locked photos are blurred more heavily, the wrong-password flow now shows a cute popup on each failed try with a cooldown after 3 tries, and the Love Letter text is darker for readability.

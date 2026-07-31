@@ -1,7 +1,7 @@
 const { createClient } = supabase; const db = createClient(window.APP_CONFIG.SUPABASE_URL, window.APP_CONFIG.SUPABASE_ANON_KEY); const $=s=>document.querySelector(s);
 let galleryItems=[],spotlightTimer=null,countdownTimer=null,gameTimer=null,gamePlaying=false,gameScore=0,gameSeconds=20,backgroundMusicStarted=false;
 let galleryPrivacyTimer=null;
-let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Wrong answer",wrongMessage:"That is not the correct answer. Try again.",maxAttempts:3,cooldownMinutes:15};
+let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Oops, cutie",wrongMessage:"Only someone else can access this.",maxAttempts:3,cooldownMinutes:15};
 let galleryPrivacyState={unlocked:false,attemptsLeft:3,cooldownUntil:0};
 let paperAudioCtx=null;
 
@@ -111,6 +111,35 @@ function openGalleryUnlockModal(){
 function closeGalleryUnlockModal(){
   const modal=$("#galleryUnlockModal"); if(modal) modal.hidden=true;
 }
+
+function showCuteGalleryPopup(title,message,subtext=""){
+  let popup=$("#galleryCutePopup");
+  if(!popup){
+    popup=document.createElement("div");
+    popup.id="galleryCutePopup";
+    popup.className="gallery-cute-popup";
+    popup.hidden=true;
+    popup.innerHTML=`<div class="gallery-cute-card glass">
+      <div class="gallery-cute-hearts">♥ ✦ ♥</div>
+      <h4></h4>
+      <p></p>
+      <small></small>
+    </div>`;
+    document.body.appendChild(popup);
+  }
+  popup.querySelector("h4").textContent=title||"Oops, cutie";
+  popup.querySelector("p").textContent=message||"Only someone else can access this.";
+  popup.querySelector("small").textContent=subtext||"";
+  popup.hidden=false;
+  popup.classList.remove("show");
+  void popup.offsetWidth;
+  popup.classList.add("show");
+  clearTimeout(popup._timer);
+  popup._timer=setTimeout(()=>{
+    popup.classList.remove("show");
+    setTimeout(()=>{popup.hidden=true;},240);
+  },2600);
+}
 function playPaperSound(){
   try{
     const C=window.AudioContext||window.webkitAudioContext;
@@ -137,6 +166,11 @@ function submitGalleryUnlock(){
   if(!galleryPrivacy.enabled) return;
   if(galleryPrivacyState.cooldownUntil && galleryPrivacyState.cooldownUntil>Date.now()){
     updateGalleryUnlockModal();
+    showCuteGalleryPopup(
+      "Take a tiny break 💗",
+      "The photo lock is cooling down right now.",
+      "Please wait a little and try again."
+    );
     return;
   }
   const input=$("#galleryUnlockAnswer");
@@ -150,18 +184,30 @@ function submitGalleryUnlock(){
     unlockGallery();
     heartBurst(12);
     playPaperSound();
+    showCuteGalleryPopup("Unlocked ❤️","Your memory gate opened successfully.","Enjoy the photos.");
     return;
   }
   const nextLeft=Math.max(0,galleryPrivacyState.attemptsLeft-1);
+  const mins=galleryPrivacy.cooldownMinutes||15;
   if(nextLeft<=0){
-    const cooldownUntil=Date.now()+galleryPrivacy.cooldownMinutes*60000;
+    const cooldownUntil=Date.now()+mins*60000;
     setGalleryState({unlocked:false,attemptsLeft:0,cooldownUntil});
     updateGalleryUnlockModal();
+    showCuteGalleryPopup(
+      galleryPrivacy.wrongTitle||"Oops, cutie",
+      galleryPrivacy.wrongMessage||"Only someone else can access this.",
+      `Too many tries. Come back in about ${mins} minute${mins===1?"":"s"}.`
+    );
     return;
   }
   setGalleryState({unlocked:false,attemptsLeft:nextLeft,cooldownUntil:0});
   const st=$("#galleryUnlockStatus");
   if(st) st.textContent=`${galleryPrivacy.wrongTitle}: ${galleryPrivacy.wrongMessage}`;
+  showCuteGalleryPopup(
+    galleryPrivacy.wrongTitle||"Oops, cutie",
+    galleryPrivacy.wrongMessage||"Only someone else can access this.",
+    `Attempts left: ${nextLeft}`
+  );
   updateGalleryUnlockModal();
 }
 
