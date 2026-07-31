@@ -889,7 +889,7 @@ body::before {
 .real-envelope .envelope-seal{position:absolute!important;left:50%;top:59%;transform:translate(-50%,-50%);width:58px;height:58px;z-index:9;display:grid;place-items:center;border-radius:50%;background:#f2abc3;color:#6a314d;box-shadow:0 0 28px rgba(242,171,195,.42);transition:transform .5s ease,opacity .4s ease!important}
 .real-envelope .envelope-paper{position:absolute!important;left:14px;right:14px;bottom:28px;height:190px;z-index:3;padding:23px 22px;border-radius:10px 10px 5px 5px;background:radial-gradient(circle at 12px 12px,rgba(100,75,80,.08) 1.2px,transparent 1.5px) 0 0/18px 18px,linear-gradient(180deg,#fffaf2,#f4e6d5);color:#56354c;box-shadow:0 16px 28px rgba(0,0,0,.3);opacity:0;transform:translateY(95px) rotate(-1.2deg) scale(.97);transition:transform .72s cubic-bezier(.16,.82,.2,1),opacity .38s ease!important;pointer-events:none!important}
 .real-envelope .envelope-paper:before{content:"";position:absolute;inset:10px;border:1px solid rgba(110,76,92,.17);border-radius:6px;pointer-events:none}.real-envelope .envelope-paper-text{display:block;position:relative;width:100%;height:100%;max-height:140px;overflow:auto;padding:4px 7px 4px 1px;white-space:pre-wrap;text-align:left;font:31px/1.42 Allura,cursive;color:#5b3a50!important;scrollbar-width:thin}.real-envelope .envelope-close{position:absolute;right:7px;top:5px;width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:rgba(90,50,73,.08);color:#6b3c55;font-size:22px;z-index:10}
-.real-envelope.open{z-index:20!important}.real-envelope.open .envelope-paper{opacity:1;transform:translateY(-82px) rotate(-.4deg) scale(1);pointer-events:auto}.real-envelope.open .envelope-flap{transform:rotateX(180deg);opacity:.42}.real-envelope.open .envelope-seal{transform:translate(-50%,-50%) scale(.25) rotate(18deg);opacity:0}.real-envelope.open .envelope-name,.real-envelope.open .envelope-number{opacity:.18}
+.real-envelope.open{z-index:20!important}.real-envelope.open .envelope-paper{opacity:1;transform:translateY(0) rotate(-.4deg) scale(1);pointer-events:auto}.real-envelope.open .envelope-flap{transform:rotateX(180deg);opacity:.42}.real-envelope.open .envelope-seal{transform:translate(-50%,-50%) scale(.25) rotate(18deg);opacity:0}.real-envelope.open .envelope-name,.real-envelope.open .envelope-number{opacity:.18}
 
 /* Real love-letter envelope */
 #loveLetterCard{position:relative!important;cursor:default!important;overflow:visible!important}
@@ -927,7 +927,7 @@ body::before {
 .gallery-privacy-locked #gallery .gallery-item{cursor:pointer}
 .gallery-privacy-locked #spotlightWrap{display:none!important}
 .gallery-item img,.gallery-item figcaption{transition:opacity .5s ease,filter .5s ease,transform .5s ease}
-.gallery-item.locked img{opacity:.42}
+.gallery-item.locked img{opacity:.48;filter:blur(5px) saturate(.9) brightness(.88)}
 .gallery-item.locked figcaption{opacity:.72}
 .gallery-item.locked{overflow:hidden}
 .gallery-item.locked::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(6,3,10,.2));pointer-events:none;z-index:1}
@@ -943,7 +943,7 @@ body::before {
 #loveLetterCard .letter-seal-button{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);z-index:10;width:64px;height:64px;border:0;border-radius:50%;background:#f4b1c7;color:#6a314d;font-size:24px;box-shadow:0 0 30px rgba(242,171,195,.5);cursor:pointer;transition:transform .45s ease,opacity .35s ease}
 #loveLetterCard.opened::before{opacity:0;transform:scale(.98)}
 #loveLetterCard.opened::after{transform:rotateX(180deg);opacity:.18}
-#loveLetterCard.opened .letter-paper{opacity:1;transform:translateY(-80px) scale(1);pointer-events:auto}
+#loveLetterCard.opened .letter-paper{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
 #loveLetterCard.opened .letter-seal-button{transform:translate(-50%,-50%) scale(.22) rotate(18deg);opacity:0}
 #loveLetterCard.opened .letter-sound-hint{opacity:.08}
 #loveLetterCard.opened-final::before,#loveLetterCard.opened-final::after{opacity:0;pointer-events:none}
@@ -956,16 +956,16 @@ body::before {
 
 /* Final deployment overrides */
 #spotlightWrap[hidden]{display:none!important}
-#spotlightWrap:not([hidden]){display:grid!important;visibility:visible!important;pointer-events:auto!important}
+#spotlightWrap:not([hidden]){display:none!important;visibility:hidden!important;pointer-events:none!important}
 .gallery-privacy-locked #gallery .gallery-item{position:relative;overflow:hidden}
-.gallery-privacy-locked #gallery .gallery-item img{opacity:.58!important;filter:saturate(.92) brightness(.87) contrast(.98)!important;transform:scale(1.01)!important;transition:opacity .45s ease,transform .45s ease,filter .45s ease!important}
+.gallery-privacy-locked #gallery .gallery-item img{opacity:.52!important;filter:blur(5px) saturate(.92) brightness(.87) contrast(.98)!important;transform:scale(1.01)!important;transition:opacity .45s ease,transform .45s ease,filter .45s ease!important}
 .gallery-privacy-locked #gallery .gallery-item::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,243,246,.08),rgba(24,11,34,.18));color:#fff;font-size:42px;text-shadow:0 8px 25px rgba(0,0,0,.4);pointer-events:none}
-.gallery-privacy-locked #gallery .gallery-item figcaption{opacity:.82!important}
+.gallery-privacy-locked #gallery .gallery-item figcaption{opacity:.8!important}
 .gallery-privacy-locked #spotlightWrap{display:none!important}
-#loveLetterCard{position:relative!important;overflow:hidden!important;cursor:pointer!important;padding:34px!important;border-radius:34px!important;background:linear-gradient(180deg,rgba(255,248,235,.96),rgba(245,229,206,.92))!important;box-shadow:0 20px 50px rgba(0,0,0,.18)!important}
-#loveLetterCard::before{content:"";position:absolute;left:4.5%;right:4.5%;bottom:10px;height:64%;z-index:2;border-radius:10px 10px 24px 24px;background:linear-gradient(180deg,#f8ecd8 0%,#efe0c6 100%);border:1px solid rgba(130,95,70,.15);box-shadow:0 14px 28px rgba(0,0,0,.18);clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);pointer-events:none}
-#loveLetterCard::after{content:"";position:absolute;left:4.5%;right:4.5%;top:24px;height:52%;z-index:3;background:linear-gradient(180deg,#fff7ea,#f2dfc1 65%,#e8d2ad);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .78s cubic-bezier(.16,.82,.2,1),opacity .4s ease;box-shadow:inset 0 -1px 0 rgba(120,90,60,.08);pointer-events:none}
-#loveLetterCard .letter-seal-button{width:68px;height:68px;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.85),rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 55%,#cf4d6f 0,#b83256 70%,#972342 100%);color:#fff7fb;box-shadow:0 0 0 8px rgba(255,213,224,.2),0 0 28px rgba(219,88,126,.35);border:1px solid rgba(255,255,255,.22)}
+#loveLetterCard{position:relative!important;overflow:hidden!important;cursor:pointer!important;padding:34px!important;border-radius:34px!important;background:linear-gradient(180deg,rgba(68,22,42,.98),rgba(34,9,23,.98))!important;box-shadow:0 20px 50px rgba(0,0,0,.22)!important}
+#loveLetterCard::before{content:"";position:absolute;left:4.5%;right:4.5%;bottom:10px;height:64%;z-index:2;border-radius:10px 10px 24px 24px;background:linear-gradient(180deg,#f0d7d1 0%,#d9b7b0 100%);border:1px solid rgba(130,95,70,.15);box-shadow:0 14px 28px rgba(0,0,0,.18);clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);pointer-events:none}
+#loveLetterCard::after{content:"";position:absolute;left:4.5%;right:4.5%;top:24px;height:52%;z-index:3;background:linear-gradient(180deg,#8b2f4d,#5d1c35 65%,#341020);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .78s cubic-bezier(.16,.82,.2,1),opacity .4s ease;box-shadow:inset 0 -1px 0 rgba(255,255,255,.08);pointer-events:none}
+#loveLetterCard .letter-seal-button{width:68px;height:68px;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.88),rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 55%,#f7b8c9 0,#ef93af 70%,#dc6f8f 100%);color:#fff7fb;box-shadow:0 0 0 8px rgba(255,213,224,.22),0 0 28px rgba(241,162,188,.38);border:1px solid rgba(255,255,255,.22)}
 #loveLetterCard.opened::before{opacity:0;transform:scale(.98)}
 #loveLetterCard.opened::after{transform:rotateX(180deg) translateY(-4px);opacity:.12}
 #loveLetterCard.opened .letter-paper{opacity:1!important;transform:translateY(-82px) scale(1)!important;pointer-events:auto!important}
@@ -978,11 +978,14 @@ body::before {
 #loveLetterCard.opened-final .letter-seal-button{display:none!important}
 .real-envelope.open-final .envelope-body,.real-envelope.open-final .envelope-left-fold,.real-envelope.open-final .envelope-right-fold,.real-envelope.open-final .envelope-flap,.real-envelope.open-final .envelope-front,.real-envelope.open-final .envelope-seal{opacity:0!important;transform:none!important;pointer-events:none!important}
 .real-envelope.open-final{background:transparent!important;box-shadow:none!important;min-height:auto!important;overflow:visible!important}
-.real-envelope.open-final .envelope-paper{opacity:1!important;transform:translateY(-14px) scale(1)!important}
+.real-envelope.open-final .envelope-paper{opacity:1!important;transform:translateY(0) scale(1)!important}
 .real-envelope .envelope-paper{background:radial-gradient(circle at 12px 12px,rgba(88,58,43,.06) 1.2px,transparent 1.5px) 0 0/18px 18px,linear-gradient(180deg,#fffaf1,#f3e2c9)!important;border:1px solid rgba(135,95,66,.16)!important;color:#54383d!important}
 .real-envelope .envelope-flap{background:linear-gradient(180deg,#fff0dc,#e8d2ad)!important}
-.real-envelope .envelope-seal{background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8),rgba(255,255,255,0) 24%),radial-gradient(circle at 50% 56%,#d94f6d 0,#bf2d51 72%,#8f1f3b 100%)!important;color:#fff7fb!important;box-shadow:0 0 0 7px rgba(255,212,224,.18),0 0 26px rgba(219,79,109,.32)!important}
+.real-envelope .envelope-seal{background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.85),rgba(255,255,255,0) 24%),radial-gradient(circle at 50% 56%,#f7b8c9 0,#ef93af 72%,#dc6f8f 100%)!important;color:#fff7fb!important;box-shadow:0 0 0 7px rgba(255,220,232,.2),0 0 26px rgba(241,162,188,.34)!important}
 .real-envelope .envelope-paper-text{font-size:29px!important;color:#573a49!important}
 .gallery-privacy-banner{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .gallery-unlock-card{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 
+
+/* Reduce flashing from full-screen decorative overlays */
+body::before, body::after{content:none!important;display:none!important;animation:none!important;opacity:0!important;}
