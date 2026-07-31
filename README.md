@@ -111,3 +111,7 @@ Fixed duplicate HTML IDs introduced by the section navigation. This restores pub
 
 ## v8 public render fix
 Fixed the missing music control element that was stopping public JavaScript from running, and restored the section navigation markup. No Supabase data or SQL changes are required.
+
+
+## Master edit v10
+Admin countdown display now preserves local date/time, a quick admin navigation bar and All Website Text editor were added, and the public site gained a richer hero, Love Letter interaction with generated paper-rustle sound, and heart/sparkle tap effects. New text settings are upserted from the admin panel, so no new SQL is required.

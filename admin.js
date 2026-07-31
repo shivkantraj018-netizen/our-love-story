@@ -2,6 +2,15 @@ const { createClient } = supabase;
 const db = createClient(window.APP_CONFIG.SUPABASE_URL, window.APP_CONFIG.SUPABASE_ANON_KEY);
 
 const $ = (s) => document.querySelector(s);
+const TEXT_FIELDS=[
+["storyEyebrow","Story eyebrow","OUR STORY"],["storyTitle","Story title","Every chapter is ours."],["storyIntro","Story intro","Scroll slowly. Every memory is a little piece of home."],
+["photosEyebrow","Photos eyebrow","PHOTOS"],["photosTitle","Photos title","Little pieces of us"],["letterEyebrow","Love Letter eyebrow","A LETTER FOR YOU"],["letterSoundHint","Letter hint","Tap to open ♥"],
+["reasonsEyebrow","100 Reasons eyebrow","100 REASONS"],["reasonsTitle","100 Reasons title","Open them one by one."],["reasonsIntro","100 Reasons intro","Every envelope has a little piece of my heart. Tap one to open it. 💌"],
+["giftEyebrow","Gift eyebrow","A LITTLE SURPRISE"],["secretEyebrow","Secret eyebrow","A LITTLE SECRET"],["gameEyebrow","Game eyebrow","A LITTLE GAME"],
+["commentEyebrow","Comments eyebrow","A LITTLE NOTE FROM YOU"],["commentIntro","Comments intro","Leave me a message. Only I can read what you write. ❤️"],
+["countdownEyebrow","Countdown eyebrow","UNTIL NEXT TIME"],["musicEyebrow","Music eyebrow","OUR SONG"],["endingEyebrow","Ending eyebrow","Forever, my love"],["footerText","Footer text","Made with all my love."]
+];
+
 let currentUser = null;
 let cache = { settings:{}, chapters:[], reasons:[], gallery:[] };
 
@@ -64,7 +73,24 @@ async function loadAll(){
   renderChapterEditors();
   renderReasonEditors();
   renderGalleryEditors();
+  renderTextSettings();
   await loadComments();
+}
+
+function formatLocalDateTime(iso){
+  if(!iso)return "";
+  const d=new Date(iso);if(Number.isNaN(d.getTime()))return "";
+  const p=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function renderTextSettings(){
+  const wrap=$("#textSettingsList");if(!wrap)return;wrap.innerHTML="";
+  TEXT_FIELDS.forEach(([key,label,def])=>{
+    const row=document.createElement("label");row.className="text-setting-row";
+    row.innerHTML=`<span>${escapeHtml(label)}</span><input data-text-key="${escapeAttr(key)}">`;
+    row.querySelector("input").value=cache.settings[key]??def;wrap.appendChild(row);
+  });
 }
 
 function fillAdminFields(){
@@ -81,7 +107,7 @@ function fillAdminFields(){
   $("#gameTitleInput").value=cache.settings.gameTitle||"Catch My Heart ❤️";
   $("#gameIntroInput").value=cache.settings.gameIntro||"You have 20 seconds. Catch as many hearts as you can.";
   const dt=cache.settings.countdownAt;
-  $("#countdownAtInput").value=dt?new Date(dt).toISOString().slice(0,16):"";
+  $("#countdownAtInput").value=dt?formatLocalDateTime(dt):"";
 
   $("#loveLetterTitleInput").value=cache.settings.loveLetterTitle||"A Love Letter";
   $("#loveLetterBodyInput").value=cache.settings.loveLetterBody||"";
@@ -541,6 +567,17 @@ async function loadComments(){
 }
 $("#clearAllCommentsBtn").addEventListener("click",async()=>{if(!confirm("Delete ALL viewer messages? This cannot be undone."))return;const {error}=await db.from("comments").delete().neq("id","00000000-0000-0000-0000-000000000000");if(error){showBanner(error.message,false);return;}showBanner("All viewer messages deleted.");await loadComments();});
 
+$("#saveTextBtn").addEventListener("click",async()=>{
+  const btn=$("#saveTextBtn"),status=$("#textSaved");
+  try{
+    btn.disabled=true;btn.textContent="Saving…";
+    for(const input of document.querySelectorAll("[data-text-key]")) await upsertSetting(input.dataset.textKey,input.value);
+    status.textContent="✓ All website text saved successfully — just now";
+    showBanner("All website text saved.");await loadAll();
+  }catch(err){status.textContent="⚠ "+(err.message||String(err));showBanner(err.message||String(err),false);}
+  finally{btn.disabled=false;btn.textContent="Save all website text";}
+});
+
 $("#passwordForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const a=$("#newPassword").value;
@@ -557,4 +594,11 @@ function escapeHtml(s){
 }
 function escapeAttr(s){return escapeHtml(s).replace(/'/g,"&#39;");}
 
+function initAdminDock(){
+  const dock=$("#adminDock");if(!dock)return;
+  dock.querySelectorAll("[data-admin-section]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.getElementById(btn.dataset.adminSection)?.scrollIntoView({behavior:"smooth",block:"start"});
+  }));
+}
+initAdminDock();
 checkSession();

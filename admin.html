@@ -39,8 +39,22 @@
       </div>
 
       <div id="saveBanner" class="save-banner hidden"></div>
+      <div class="admin-dock glass" id="adminDock">
+        <button type="button" data-admin-section="adminGeneral">General</button>
+        <button type="button" data-admin-section="adminText">All Text</button>
+        <button type="button" data-admin-section="adminLetter">Love Letter</button>
+        <button type="button" data-admin-section="adminGift">Gift</button>
+        <button type="button" data-admin-section="adminSecret">Secret</button>
+        <button type="button" data-admin-section="adminMusic">Music</button>
+        <button type="button" data-admin-section="adminChapters">Chapters</button>
+        <button type="button" data-admin-section="adminReasons">Reasons</button>
+        <button type="button" data-admin-section="adminPhotos">Photos</button>
+        <button type="button" data-admin-section="adminComments">Comments</button>
+        <button type="button" data-admin-section="adminPassword">Password</button>
+      </div>
 
-      <section class="admin-card glass">
+
+      <section class="admin-card glass" id="adminGeneral">
         <div class="card-head"><h2>Hero, love letter & final message</h2></div>
         <div class="form-grid">
           <label>Brand title<input id="heroTitleInput"></label>
@@ -61,7 +75,15 @@
         <div class="saved-state" id="settingsSaved">No unsaved changes</div>
       </section>
 
-      <section class="admin-card glass">
+            <section class="admin-card glass" id="adminText">
+        <div class="card-head"><div><div class="eyebrow">EVERY WORD</div><h2>All website text</h2>
+        <p class="muted">Change visible labels, headings, helper text and buttons from one place.</p></div></div>
+        <div id="textSettingsList" class="text-settings-list"></div>
+        <button class="save-btn" id="saveTextBtn" type="button">Save all website text</button>
+        <div class="saved-state" id="textSaved">No unsaved changes</div>
+      </section>
+
+<section class="admin-card glass" id="adminLetter">
         <div class="card-head">
           <div><div class="eyebrow">LOVE LETTER</div><h2>Write it like a handwritten letter</h2></div>
         </div>
@@ -73,7 +95,7 @@
         <div class="saved-state" id="letterSaved">No unsaved changes</div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminGift">
         <div class="card-head">
           <div><div class="eyebrow">A GIFT FOR YOU</div><h2>Give her a surprise</h2></div>
         </div>
@@ -94,7 +116,7 @@
         <div class="saved-state" id="giftSaved">No unsaved changes</div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminSecret">
         <div class="card-head">
           <div><div class="eyebrow">A LITTLE SECRET</div><h2>Tap-my-heart message</h2></div>
         </div>
@@ -106,7 +128,7 @@
         <div class="saved-state" id="secretSaved">No unsaved changes</div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminMusic">
         <div class="card-head">
           <div>
             <div class="eyebrow">OUR SONG</div>
@@ -138,7 +160,7 @@
         <div class="saved-state" id="musicSaved">No unsaved changes</div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminChapters">
         <div class="card-head">
           <div><div class="eyebrow">CHAPTERS</div><h2>Every chapter is editable</h2></div>
           <button class="glow-btn small" id="addChapterBtn">＋ Add chapter</button>
@@ -146,7 +168,7 @@
         <div id="chapterEditorList"></div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminReasons">
         <div class="card-head">
           <div><div class="eyebrow">100 REASONS</div><h2>Manage every envelope</h2></div>
           <button class="glow-btn small" id="addReasonBtn">＋ Add reason</button>
@@ -154,7 +176,7 @@
         <div id="reasonEditorList"></div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminPhotos">
         <div class="card-head">
           <div><div class="eyebrow">PHOTOS</div><h2>Supabase Storage gallery</h2></div>
           <label class="upload-btn">＋ Upload photos<input type="file" id="photoUpload" accept="image/*" multiple hidden></label>
@@ -167,7 +189,7 @@
         <div id="commentAdminList" class="comment-admin-list"></div>
       </section>
 
-      <section class="admin-card glass">
+      <section class="admin-card glass" id="adminPassword">
         <div class="card-head"><h2>Change password</h2></div>
         <form id="passwordForm" class="password-form">
           <label>New password<input type="password" id="newPassword" minlength="8" required></label>

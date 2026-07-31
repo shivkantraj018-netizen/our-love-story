@@ -20,6 +20,9 @@ function initSectionDock(){
 function seedStars(){const wrap=$("#stars");if(!wrap||wrap.dataset.ready)return;wrap.dataset.ready="1";for(let i=0;i<100;i++){const e=document.createElement("span");e.className="star";const z=Math.random()*2.8+1;e.style.width=`${z}px`;e.style.height=`${z}px`;e.style.left=`${Math.random()*100}%`;e.style.top=`${Math.random()*100}%`;e.style.animationDelay=`${Math.random()*4}s`;wrap.appendChild(e)}const petals=$("#petals");for(let i=0;i<18;i++){const p=document.createElement("span");p.className="petal";p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${12+Math.random()*12}s`;p.style.animationDelay=`-${Math.random()*18}s`;petals.appendChild(p)}}seedStars();
 initSectionDock();
 async function loadAll(){const [{data:settings},{data:chapters},{data:gallery},{data:reasons}]=await Promise.all([db.from("site_settings").select("*"),db.from("chapters").select("*").eq("visible",true).order("sort_order"),db.from("gallery_items").select("*").eq("visible",true).order("sort_order"),db.from("love_reasons").select("*").eq("visible",true).order("sort_order")]);const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
+const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText"];
+TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
+
 ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[])}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
@@ -27,27 +30,21 @@ function renderGallery(items){const w=$("#gallery");w.innerHTML="";if(!items.len
 function showSpotlight(i){if(!galleryItems.length)return;const x=galleryItems[i%galleryItems.length],w=$("#spotlightWrap"),im=$("#spotlightImage"),cap=$("#spotlightCaption");w.hidden=false;im.src=x.public_url;im.alt=x.caption||"A memory";cap.textContent=x.caption||"";clearInterval(spotlightTimer);if(galleryItems.length>1){let j=(i+1)%galleryItems.length;spotlightTimer=setInterval(()=>{const n=galleryItems[j%galleryItems.length];im.classList.remove("spotlight-fade");void im.offsetWidth;im.classList.add("spotlight-fade");im.src=n.public_url;cap.textContent=n.caption||"";j++},7000)}}
 $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=true;clearInterval(spotlightTimer)});
 function renderReasons(items){
-  const wrap=$("#reasons"); wrap.innerHTML="";
+  const wrap=$("#reasons");wrap.innerHTML="";
   items.forEach((x,i)=>{
     const button=document.createElement("button");
-    button.type="button"; button.className="envelope-card";
-    button.setAttribute("aria-label",`Open reason ${i+1}`);
-    button.innerHTML=`
-      <span class="envelope-flap"></span>
-      <span class="envelope-number-big">${i+1}</span>
-      <span class="envelope-front-title">Reason</span>
-      <span class="envelope-seal">♥</span>
-      <span class="envelope-reveal">
-        <span class="envelope-scroll-text"></span>
-        <span class="envelope-close">×</span>
-      </span>`;
-    button.querySelector(".envelope-scroll-text").textContent=x.reason||"";
+    button.type="button";button.className="envelope-card";
+    button.innerHTML=`<span class="envelope-number-big">${i+1}</span>
+      <span class="envelope-paper"><span class="envelope-paper-text"></span><span class="envelope-close">×</span></span>
+      <span class="envelope-pocket"></span><span class="envelope-fold left"></span><span class="envelope-fold right"></span>
+      <span class="envelope-flap"></span><span class="envelope-seal">♥</span><span class="envelope-front-title">Reason ${i+1}</span>`;
+    button.querySelector(".envelope-paper-text").textContent=x.reason||"";
     const close=button.querySelector(".envelope-close");
     button.addEventListener("click",e=>{
-      if(e.target===close){button.classList.remove("open");return;}
+      if(e.target===close){e.stopPropagation();button.classList.remove("open");return;}
+      const was=button.classList.contains("open");
       document.querySelectorAll(".envelope-card.open").forEach(el=>el.classList.remove("open"));
-      button.classList.add("open");
-      heartBurst(5);
+      if(!was){button.classList.add("open");paperSound();heartBurst(5);}
     });
     close.addEventListener("click",e=>{e.stopPropagation();button.classList.remove("open");});
     wrap.appendChild(button);
@@ -77,7 +74,23 @@ async function tryStartMusic(){
 }
 ["click","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,tryStartMusic,{once:true,passive:true}));
 
-function startCountdown(iso){clearInterval(countdownTimer);if(!iso){$("#countdownSection").style.display="none";return}$("#countdownSection").style.display="";const t=()=>{const ms=new Date(iso).getTime()-Date.now();if(ms<=0){["d","h","m","s"].forEach(id=>$("#"+id).textContent="0");return}$("#d").textContent=Math.floor(ms/86400000);$("#h").textContent=Math.floor(ms%86400000/3600000);$("#m").textContent=Math.floor(ms%3600000/60000);$("#s").textContent=Math.floor(ms%60000/1000)};t();countdownTimer=setInterval(t,1000)}
+function startCountdown(iso){
+  clearInterval(countdownTimer);
+  if(!iso){$("#countdownSection").style.display="none";return;}
+  const target=new Date(iso).getTime();
+  if(!Number.isFinite(target)){$("#countdownSection").style.display="none";return;}
+  $("#countdownSection").style.display="";
+  const tick=()=>{
+    const ms=target-Date.now();
+    if(ms<=0){["d","h","m","s"].forEach(id=>$("#"+id).textContent="0");clearInterval(countdownTimer);return;}
+    $("#d").textContent=Math.floor(ms/86400000);
+    $("#h").textContent=String(Math.floor((ms%86400000)/3600000)).padStart(2,"0");
+    $("#m").textContent=String(Math.floor((ms%3600000)/60000)).padStart(2,"0");
+    $("#s").textContent=String(Math.floor((ms%60000)/1000)).padStart(2,"0");
+  };
+  tick();countdownTimer=setInterval(tick,1000);
+}
+
 function placeGameHeart(){const h=$("#gameHeart"),b=$("#gameBoard"),x=Math.max(8,b.clientWidth-h.offsetWidth-8),y=Math.max(8,b.clientHeight-h.offsetHeight-8);h.style.left=`${8+Math.random()*x}px`;h.style.top=`${8+Math.random()*y}px`}
 function endGame(){gamePlaying=false;clearInterval(gameTimer);$("#gameMessage").textContent=`You caught ${gameScore} heart${gameScore===1?"":"s"} 💗`;$("#startGameBtn").textContent="Play Again";$("#gameHeart").style.display="none";heartBurst(Math.min(18,Math.max(6,gameScore)))}
 function startGame(){gamePlaying=true;gameScore=0;gameSeconds=20;$("#gameScore").textContent="0";$("#gameTime").textContent="20";$("#gameMessage").textContent="Catch me! 💕";$("#startGameBtn").textContent="Restart";$("#gameHeart").style.display="block";placeGameHeart();clearInterval(gameTimer);gameTimer=setInterval(()=>{gameSeconds--;$("#gameTime").textContent=gameSeconds;if(gameSeconds<=0)endGame()},1000)}
@@ -86,3 +99,34 @@ $("#beginBtn").onclick=()=>document.querySelector(".section-intro")?.scrollIntoV
 $("#commentForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("#commentSubmit"),st=$("#commentStatus");btn.disabled=true;btn.textContent="Sending…";const name=$("#commentName").value.trim()||"Anonymous",message=$("#commentText").value.trim();if(!message){st.textContent="Please write a little message.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}const {error}=await db.from("comments").insert({name,message});if(error){st.textContent="Something went wrong. Please try again.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}e.target.reset();st.textContent="❤️ Your message was sent.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";setTimeout(()=>st.textContent="",3500)});
 loadAll().catch(console.error);
 db.channel("public-live-updates").on("postgres_changes",{event:"*",schema:"public",table:"site_settings"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"chapters"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"gallery_items"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"love_reasons"},loadAll).subscribe();
+
+function tinyHeartBurstAt(x,y,count=6){
+  const wrap=$("#heartBurst");if(!wrap)return;
+  for(let i=0;i<count;i++){
+    const h=document.createElement("span");h.className="burst-heart tap-heart";h.textContent=i%4===0?"✦":"♥";
+    h.style.left=`${x}px`;h.style.top=`${y}px`;
+    h.style.setProperty("--dx",`${(Math.random()-.5)*120}px`);
+    h.style.setProperty("--dy",`${-20-Math.random()*120}px`);
+    h.style.animationDelay=`${Math.random()*.05}s`;
+    wrap.appendChild(h);setTimeout(()=>h.remove(),1400);
+  }
+}
+if(document.body.classList.contains("public-page")){
+  document.addEventListener("click",e=>{if(!e.target.closest("input,textarea,select,audio"))tinyHeartBurstAt(e.clientX,e.clientY,e.target.closest("button")?10:5);},{passive:true});
+}
+function initHeroRomance(){
+  const hero=$("#hero");if(!hero)return;
+  for(let i=0;i<14;i++){
+    const h=document.createElement("span");h.className="hero-heart";h.textContent=i%5===0?"✦":"♥";
+    h.style.left=`${8+Math.random()*84}%`;h.style.top=`${18+Math.random()*62}%`;
+    h.style.animationDelay=`${Math.random()*5}s`;h.style.animationDuration=`${6+Math.random()*5}s`;
+    hero.appendChild(h);
+  }
+}
+initHeroRomance();
+function openLoveLetter(){
+  const card=$("#loveLetterCard");if(!card)return;
+  const opened=card.classList.toggle("opened");if(opened)paperSound();
+}
+$("#loveLetterCard")?.addEventListener("click",openLoveLetter);
+$("#loveLetterCard")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openLoveLetter();}});
