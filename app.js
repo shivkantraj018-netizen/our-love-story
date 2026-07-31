@@ -32,22 +32,26 @@ $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=tr
 function renderReasons(items){
   const wrap=$("#reasons");wrap.innerHTML="";
   items.forEach((x,i)=>{
-    const button=document.createElement("button");
-    button.type="button";button.className="envelope-card";
-    button.innerHTML=`<span class="envelope-number-big">${i+1}</span>
-      <span class="envelope-paper"><span class="envelope-paper-text"></span><span class="envelope-close">×</span></span>
-      <span class="envelope-pocket"></span><span class="envelope-fold left"></span><span class="envelope-fold right"></span>
-      <span class="envelope-flap"></span><span class="envelope-seal">♥</span><span class="envelope-front-title">Reason ${i+1}</span>`;
-    button.querySelector(".envelope-paper-text").textContent=x.reason||"";
-    const close=button.querySelector(".envelope-close");
-    button.addEventListener("click",e=>{
-      if(e.target===close){e.stopPropagation();button.classList.remove("open");return;}
-      const was=button.classList.contains("open");
-      document.querySelectorAll(".envelope-card.open").forEach(el=>el.classList.remove("open"));
-      if(!was){button.classList.add("open");paperSound();heartBurst(5);}
+    const card=document.createElement("button");
+    card.type="button";card.className="real-envelope";
+    card.setAttribute("aria-label",`Open reason ${i+1}`);
+    card.innerHTML=`
+      <span class="envelope-paper"><span class="envelope-paper-text"></span><span class="envelope-close" aria-label="Close">×</span></span>
+      <span class="envelope-body"></span>
+      <span class="envelope-left-fold"></span><span class="envelope-right-fold"></span>
+      <span class="envelope-flap"></span>
+      <span class="envelope-front"><span class="envelope-number">${i+1}</span><span class="envelope-name">Reason ${i+1}</span></span>
+      <span class="envelope-seal">♥</span>`;
+    card.querySelector('.envelope-paper-text').textContent=x.reason||"";
+    const close=card.querySelector('.envelope-close');
+    card.addEventListener('click',e=>{
+      if(e.target.closest('.envelope-close')) return;
+      const was=card.classList.contains('open');
+      document.querySelectorAll('.real-envelope.open').forEach(el=>el.classList.remove('open'));
+      if(!was){card.classList.add('open');paperSound();heartBurst(7);}
     });
-    close.addEventListener("click",e=>{e.stopPropagation();button.classList.remove("open");});
-    wrap.appendChild(button);
+    close.addEventListener('click',e=>{e.stopPropagation();card.classList.remove('open');});
+    wrap.appendChild(card);
   });
 }
 
@@ -130,3 +134,11 @@ function openLoveLetter(){
 }
 $("#loveLetterCard")?.addEventListener("click",openLoveLetter);
 $("#loveLetterCard")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openLoveLetter();}});
+
+function toggleLoveLetter(){
+  const card=$("#loveLetterCard");if(!card)return;
+  const opened=card.classList.toggle("opened");
+  if(opened){paperSound();heartBurst(12);}
+}
+$("#letterSeal")?.addEventListener("click",e=>{e.stopPropagation();toggleLoveLetter();});
+$("#loveLetterCard")?.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target===e.currentTarget){e.preventDefault();toggleLoveLetter();}});

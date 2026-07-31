@@ -115,3 +115,7 @@ Fixed the missing music control element that was stopping public JavaScript from
 
 ## Master edit v10
 Admin countdown display now preserves local date/time, a quick admin navigation bar and All Website Text editor were added, and the public site gained a richer hero, Love Letter interaction with generated paper-rustle sound, and heart/sparkle tap effects. New text settings are upserted from the admin panel, so no new SQL is required.
+
+
+## v11 romantic envelope update
+100 Reasons now use a sealed-envelope front with the number, flap animation, rising paper, scrollable handwritten message, and paper-rustle sound. The Love Letter uses a matching envelope/seal interaction. The existing Supabase data and admin editing remain unchanged.
