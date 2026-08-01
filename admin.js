@@ -121,6 +121,14 @@ function fillAdminFields(){
   $("#secretTitleInput").value=cache.settings.secretTitle||"Tap my heart when you miss me.";
   $("#secretMessageInput").value=cache.settings.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
 
+  $("#siteThemeEnabledInput").checked=cache.settings.siteThemeEnabled===undefined ? true : (cache.settings.siteThemeEnabled===true || cache.settings.siteThemeEnabled==="true" || cache.settings.siteThemeEnabled===1 || cache.settings.siteThemeEnabled==="1");
+  $("#siteThemePresetInput").value=cache.settings.siteThemePreset||"cherry";
+  $("#starsEnabledInput").checked=cache.settings.starsEnabled===undefined ? true : (cache.settings.starsEnabled===true || cache.settings.starsEnabled==="true" || cache.settings.starsEnabled===1 || cache.settings.starsEnabled==="1");
+  $("#petalsEnabledInput").checked=cache.settings.petalsEnabled===undefined ? true : (cache.settings.petalsEnabled===true || cache.settings.petalsEnabled==="true" || cache.settings.petalsEnabled===1 || cache.settings.petalsEnabled==="1");
+  $("#firefliesEnabledInput").checked=cache.settings.firefliesEnabled===undefined ? true : (cache.settings.firefliesEnabled===true || cache.settings.firefliesEnabled==="true" || cache.settings.firefliesEnabled===1 || cache.settings.firefliesEnabled==="1");
+  $("#tapEffectsEnabledInput").checked=cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1");
+  $("#journeyRibbonEnabledInput").checked=cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1");
+
   $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
   $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
   $("#galleryLockDescriptionInput").value=cache.settings.galleryLockDescription||GALLERY_PRIVACY_DEFAULTS.description;
@@ -211,6 +219,16 @@ $("#saveSecretBtn").addEventListener("click",()=>saveSettingsGroup({
 
 
 
+
+$("#saveMagicBtn").addEventListener("click",()=>saveSettingsGroup({
+  siteThemeEnabled:$("#siteThemeEnabledInput").checked,
+  siteThemePreset:$("#siteThemePresetInput").value,
+  starsEnabled:$("#starsEnabledInput").checked,
+  petalsEnabled:$("#petalsEnabledInput").checked,
+  firefliesEnabled:$("#firefliesEnabledInput").checked,
+  tapEffectsEnabled:$("#tapEffectsEnabledInput").checked,
+  journeyRibbonEnabled:$("#journeyRibbonEnabledInput").checked
+},"saveMagicBtn","magicSaved","Magic settings saved."));
 $("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
   galleryLockEnabled:$("#galleryLockEnabledInput").checked,
   galleryLockTitle:$("#galleryLockTitleInput").value.trim(),

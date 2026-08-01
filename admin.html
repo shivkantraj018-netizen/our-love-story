@@ -50,6 +50,7 @@
         <button type="button" data-admin-section="adminReasons">Reasons</button>
         <button type="button" data-admin-section="adminPhotos">Photos</button>
         <button type="button" data-admin-section="adminGalleryPrivacy">Gallery Privacy</button>
+        <button type="button" data-admin-section="adminMagic">Magic & Themes</button>
         <button type="button" data-admin-section="adminComments">Comments</button>
         <button type="button" data-admin-section="adminPassword">Password</button>
       </div>
@@ -77,7 +78,32 @@
         <div class="saved-state" id="settingsSaved">No unsaved changes</div>
       </section>
 
-            <section class="admin-card glass" id="adminText">
+            
+      <section class="admin-card glass" id="adminMagic">
+        <div class="card-head">
+          <div><div class="eyebrow">MAGIC & THEMES</div><h2>Enable or disable the romantic effects</h2></div>
+        </div>
+        <div class="form-grid">
+          <label class="toggle-field"><span>Enable theme system</span><input type="checkbox" id="siteThemeEnabledInput"></label>
+          <label>Theme preset
+            <select id="siteThemePresetInput">
+              <option value="cherry">Cherry Blossom</option>
+              <option value="rose">Rose Garden</option>
+              <option value="blush">Blush Autumn</option>
+              <option value="snow">Snow Romance</option>
+            </select>
+          </label>
+          <label class="toggle-field"><span>Enable star field</span><input type="checkbox" id="starsEnabledInput"></label>
+          <label class="toggle-field"><span>Enable petals</span><input type="checkbox" id="petalsEnabledInput"></label>
+          <label class="toggle-field"><span>Enable fireflies</span><input type="checkbox" id="firefliesEnabledInput"></label>
+          <label class="toggle-field"><span>Enable tap effects</span><input type="checkbox" id="tapEffectsEnabledInput"></label>
+          <label class="toggle-field"><span>Enable journey ribbon</span><input type="checkbox" id="journeyRibbonEnabledInput"></label>
+        </div>
+        <button class="save-btn" id="saveMagicBtn" type="button">Save magic settings</button>
+        <div class="saved-state" id="magicSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass" id="adminText">
         <div class="card-head"><div><div class="eyebrow">EVERY WORD</div><h2>All website text</h2>
         <p class="muted">Change visible labels, headings, helper text and buttons from one place.</p></div></div>
         <div id="textSettingsList" class="text-settings-list"></div>

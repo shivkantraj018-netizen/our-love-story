@@ -127,3 +127,7 @@ Locked photos are blurred more heavily, the wrong-password flow now shows a cute
 
 ## v15
 Added heart-shower tap animations across the public site, disabled text copying on the public page, made the photo lock use three customizable wrong-password messages with cooldown, added a customizable romantic hero note, and improved Love Letter contrast.
+
+
+## v16
+Added a theme engine with preset toggles, fireflies, a journey ribbon progress tracker, and fixed the gallery wrong-password messages so the first, second, and third attempts can each show a different customizable message.

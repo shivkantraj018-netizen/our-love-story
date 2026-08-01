@@ -1060,3 +1060,51 @@ body::before, body::after{content:none!important;display:none!important;animatio
 @media (max-width:620px){.gallery-cute-card h4{font-size:38px}}
 
 .letter-paper .letter-ribbon{color:#d84f7c}
+
+/* v16 theme engine */
+body.theme-cherry{background:radial-gradient(circle at 20% 10%,#4b204e 0,#23102f 42%,#100815 100%);}
+body.theme-rose{background:radial-gradient(circle at 20% 10%,#5a2141 0,#2a0f23 42%,#10060d 100%);}
+body.theme-blush{background:radial-gradient(circle at 20% 10%,#6a3553 0,#341421 42%,#14080f 100%);}
+body.theme-snow{background:radial-gradient(circle at 20% 10%,#493463 0,#20182f 42%,#0d0a14 100%);}
+body.theme-cherry .petal, body.theme-rose .petal, body.theme-blush .petal, body.theme-snow .petal{
+  background:linear-gradient(145deg,#f8c0d1,#cf9ac4);
+}
+
+#fireflies{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.firefly{
+  position:absolute;border-radius:50%;background:rgba(248,166,193,.9);
+  box-shadow:0 0 10px rgba(248,166,193,.9),0 0 20px rgba(248,166,193,.35);
+  animation:fireflyFloat linear infinite;opacity:.75;
+}
+@keyframes fireflyFloat{
+  0%{transform:translate3d(0,0,0) scale(.9);opacity:.12}
+  25%{opacity:.9}
+  50%{transform:translate3d(20px,-60px,0) scale(1.15);opacity:.35}
+  75%{opacity:.85}
+  100%{transform:translate3d(-14px,-120px,0) scale(.85);opacity:.1}
+}
+
+.journey-ribbon{
+  position:fixed;left:50%;top:72px;transform:translateX(-50%);
+  z-index:40;width:min(94vw,760px);padding:10px 14px 12px;border-radius:999px;
+  background:rgba(28,12,36,.7);backdrop-filter:blur(16px);box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+.journey-top{display:flex;align-items:center;justify-content:center;margin-bottom:8px;font:600 12px Inter,system-ui,sans-serif;letter-spacing:.03em;color:#f7e8ff}
+.journey-track{width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.journey-fill{width:8%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f2adc7,#d2b2ff);box-shadow:0 0 12px rgba(242,173,199,.45);transition:width .3s ease}
+
+@media (max-width:620px){
+  .journey-ribbon{top:64px;width:calc(100% - 16px);padding:9px 12px 10px;}
+}
+
+.letter-paper p{
+  color:#26131d!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.65)!important;
+}
+
+body.theme-cherry .star, body.theme-rose .star, body.theme-blush .star, body.theme-snow .star{
+  background:#fff;
+  opacity:.55;
+}
