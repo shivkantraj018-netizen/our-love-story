@@ -135,3 +135,7 @@ Added a theme engine with preset toggles, fireflies, a journey ribbon progress t
 
 ## v17
 Adds cinematic hero styling, shooting stars, Magic & Themes controls, and fixes the gallery password message rotation.
+
+
+## v19
+Fixes the three-message gallery lock rotation, applies themes directly to the page background, lowers animation load to reduce phone heat, and adds the toggleable Memory Sky ending effect.

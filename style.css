@@ -1118,3 +1118,38 @@ body.theme-cherry .star, body.theme-rose .star, body.theme-blush .star, body.the
 @keyframes heroFadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .hero-romantic-note{margin:10px auto 0;max-width:680px;color:#f4d8e9;font:22px "Cormorant Garamond",serif;letter-spacing:.02em;opacity:.96;text-shadow:0 0 18px rgba(255,255,255,.08)}
 @media (max-width:620px){.hero-romantic-note{font-size:19px;max-width:92vw}}
+
+#memorySky{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .4s ease;
+}
+#memorySky.visible{opacity:1}
+.memory-sky-star{
+  position:absolute;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 0 10px rgba(255,255,255,.85), 0 0 24px rgba(248,166,193,.25);
+  animation:memoryTwinkle 4.5s ease-in-out infinite;
+}
+.memory-sky-lines{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+.memory-sky-lines line{
+  stroke:rgba(255,255,255,.18);
+  stroke-width:.5;
+  vector-effect:non-scaling-stroke;
+}
+@keyframes memoryTwinkle{
+  0%,100%{transform:scale(.75); opacity:.25}
+  50%{transform:scale(1.2); opacity:1}
+}

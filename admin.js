@@ -132,6 +132,7 @@ function fillAdminFields(){
   safeSetChecked("#shootingStarsEnabledInput", cache.settings.shootingStarsEnabled===undefined ? true : (cache.settings.shootingStarsEnabled===true || cache.settings.shootingStarsEnabled==="true" || cache.settings.shootingStarsEnabled===1 || cache.settings.shootingStarsEnabled==="1"));
   safeSetChecked("#tapEffectsEnabledInput", cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1"));
   safeSetChecked("#journeyRibbonEnabledInput", cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1"));
+  safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
 
   $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
   $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
@@ -227,11 +228,14 @@ $("#saveSecretBtn").addEventListener("click",()=>saveSettingsGroup({
 $("#saveMagicBtn").addEventListener("click",()=>saveSettingsGroup({
   siteThemeEnabled:$("#siteThemeEnabledInput").checked,
   siteThemePreset:$("#siteThemePresetInput").value,
+  heroCinematicEnabled:$("#heroCinematicEnabledInput").checked,
   starsEnabled:$("#starsEnabledInput").checked,
   petalsEnabled:$("#petalsEnabledInput").checked,
   firefliesEnabled:$("#firefliesEnabledInput").checked,
+  shootingStarsEnabled:$("#shootingStarsEnabledInput").checked,
   tapEffectsEnabled:$("#tapEffectsEnabledInput").checked,
-  journeyRibbonEnabled:$("#journeyRibbonEnabledInput").checked
+  journeyRibbonEnabled:$("#journeyRibbonEnabledInput").checked,
+  memorySkyEnabled:$("#memorySkyEnabledInput").checked
 },"saveMagicBtn","magicSaved","Magic settings saved."));
 $("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
   galleryLockEnabled:$("#galleryLockEnabledInput").checked,
