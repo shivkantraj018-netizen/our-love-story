@@ -131,3 +131,7 @@ Added heart-shower tap animations across the public site, disabled text copying 
 
 ## v16
 Added a theme engine with preset toggles, fireflies, a journey ribbon progress tracker, and fixed the gallery wrong-password messages so the first, second, and third attempts can each show a different customizable message.
+
+
+## v17
+Adds cinematic hero styling, shooting stars, Magic & Themes controls, and fixes the gallery password message rotation.

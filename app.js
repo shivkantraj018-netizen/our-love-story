@@ -4,6 +4,9 @@ let galleryPrivacyTimer=null;
 let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Oops, cutie",wrongMessage1:"Oops, you missed 💗",wrongMessage2:"Keep going, if you know us you can open it ✨",wrongMessage3:"Try one more time, cutie — last chance 🌷",wrongMessage:"Only someone else can access this.",maxAttempts:3,cooldownMinutes:15};
 let galleryPrivacyState={unlocked:false,attemptsLeft:3,cooldownUntil:0};
 let paperAudioCtx=null;
+let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true,starsEnabled:true,petalsEnabled:true,firefliesEnabled:true,shootingStarsEnabled:true,tapEffectsEnabled:true,journeyRibbonEnabled:true};
+let journeyRaf=0;
+let magicTimers={shootingStar:null,heroFloat:null};
 
 function initSectionDock(){
   const dock=$("#sectionDock");
@@ -21,35 +24,82 @@ function initSectionDock(){
   buttons.map(b=>document.getElementById(b.dataset.section)).filter(Boolean).forEach(el=>observer.observe(el));
 }
 
+
+const THEME_CLASSES=["theme-cherry","theme-rose","theme-blush","theme-snow"];
+function getMagicStateFromSettings(m){return {
+  themeEnabled: m.siteThemeEnabled===undefined ? true : parseBool(m.siteThemeEnabled),
+  themePreset: String(m.siteThemePreset||"cherry").toLowerCase(),
+  heroCinematicEnabled: m.heroCinematicEnabled===undefined ? true : parseBool(m.heroCinematicEnabled),
+  starsEnabled: m.starsEnabled===undefined ? true : parseBool(m.starsEnabled),
+  petalsEnabled: m.petalsEnabled===undefined ? true : parseBool(m.petalsEnabled),
+  firefliesEnabled: m.firefliesEnabled===undefined ? true : parseBool(m.firefliesEnabled),
+  shootingStarsEnabled: m.shootingStarsEnabled===undefined ? true : parseBool(m.shootingStarsEnabled),
+  tapEffectsEnabled: m.tapEffectsEnabled===undefined ? true : parseBool(m.tapEffectsEnabled),
+  journeyRibbonEnabled: m.journeyRibbonEnabled===undefined ? true : parseBool(m.journeyRibbonEnabled)
+};}
+function ensureFireflies(){
+  const wrap=$("#fireflies"); if(!wrap||wrap.dataset.ready) return;
+  wrap.dataset.ready="1"; wrap.innerHTML="";
+  for(let i=0;i<18;i++){const f=document.createElement("span");f.className="firefly";const size=2+Math.random()*2.5;f.style.width=`${size}px`;f.style.height=`${size}px`;f.style.left=`${Math.random()*100}%`;f.style.top=`${Math.random()*100}%`;f.style.animationDuration=`${8+Math.random()*10}s`;f.style.animationDelay=`-${Math.random()*10}s`;wrap.appendChild(f);}
+}
+function applyMagicState(){
+  const body=document.body; THEME_CLASSES.forEach(c=>body.classList.remove(c)); body.classList.toggle("hero-cinematic",!!magicState.heroCinematicEnabled);
+  if(magicState.themeEnabled) body.classList.add(`theme-${magicState.themePreset}`);
+  const stars=$("#stars"), petals=$("#petals"), fireflies=$("#fireflies"), ribbon=$("#journeyRibbon"), shooting=$("#shootingStars");
+  if(stars) stars.style.display=magicState.starsEnabled?"":"none";
+  if(petals) petals.style.display=magicState.petalsEnabled?"":"none";
+  if(fireflies) fireflies.style.display=magicState.firefliesEnabled?"":"none";
+  if(ribbon) ribbon.hidden=!magicState.journeyRibbonEnabled;
+  if(shooting) shooting.style.display=magicState.shootingStarsEnabled?"":"none";
+  if(magicState.firefliesEnabled) ensureFireflies();
+  manageMagicTimers();
+}
+function updateJourneyRibbon(){
+  const ribbon=$("#journeyRibbon"), fill=$("#journeyFill"), text=$("#journeyRibbonText");
+  if(!ribbon||ribbon.hidden) return;
+  if(journeyRaf) return;
+  journeyRaf=requestAnimationFrame(()=>{
+    journeyRaf=0;
+    const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    const p=Math.min(1,Math.max(0,window.scrollY/max));
+    if(fill) fill.style.width=`${Math.max(8,Math.round(p*100))}%`;
+    if(text) text.textContent=p<.16?"Our story begins…":p<.34?"Little memories bloom…":p<.58?"Beautiful moments unfold…":p<.83?"Almost there, my love…":"Forever and always ❤️";
+  });
+}
+function spawnShootingStar(){
+  if(!magicState.shootingStarsEnabled) return;
+  const wrap=$("#shootingStars"); if(!wrap) return;
+  const star=document.createElement("span"); star.className="shooting-star"; star.style.top=`${10+Math.random()*60}%`; star.style.left=`${-10+Math.random()*30}%`; star.style.animationDuration=`${1.8+Math.random()*1.3}s`;
+  wrap.appendChild(star); setTimeout(()=>star.remove(),3500);
+}
+function manageMagicTimers(){
+  clearInterval(magicTimers.shootingStar); clearInterval(magicTimers.heroFloat);
+  magicTimers.shootingStar=null; magicTimers.heroFloat=null;
+  if(magicState.shootingStarsEnabled){magicTimers.shootingStar=setInterval(()=>spawnShootingStar(),18000); setTimeout(()=>spawnShootingStar(),2400);}
+  if(magicState.heroCinematicEnabled){magicTimers.heroFloat=setInterval(()=>heartBurst(3),14000);}
+}
+
 function seedStars(){const wrap=$("#stars");if(!wrap||wrap.dataset.ready)return;wrap.dataset.ready="1";for(let i=0;i<100;i++){const e=document.createElement("span");e.className="star";const z=Math.random()*2.8+1;e.style.width=`${z}px`;e.style.height=`${z}px`;e.style.left=`${Math.random()*100}%`;e.style.top=`${Math.random()*100}%`;e.style.animationDelay=`${Math.random()*4}s`;wrap.appendChild(e)}const petals=$("#petals");for(let i=0;i<18;i++){const p=document.createElement("span");p.className="petal";p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${12+Math.random()*12}s`;p.style.animationDelay=`-${Math.random()*18}s`;petals.appendChild(p)}}seedStars();
 initSectionDock();
 
 function tapHeartsAt(x,y,count=7){
-  const wrap=$("#heartBurst");
-  if(!wrap) return;
+  if(!magicState.tapEffectsEnabled) return;
+  const wrap=$("#heartBurst"); if(!wrap) return;
+  const kinds=["♥","♥","♥","✦","✿","✧"];
   for(let i=0;i<count;i++){
     const h=document.createElement("span");
     h.className="burst-heart tap-heart";
-    h.textContent=i%4===0?"✦":"♥";
-    h.style.left=`${x}px`;
-    h.style.top=`${y}px`;
+    h.textContent=kinds[Math.floor(Math.random()*kinds.length)];
+    h.style.left=`${x}px`; h.style.top=`${y}px`;
     h.style.setProperty("--dx",`${(Math.random()-.5)*140}px`);
     h.style.setProperty("--dy",`${-20-Math.random()*140}px`);
     h.style.animationDelay=`${Math.random()*.05}s`;
-    wrap.appendChild(h);
-    setTimeout(()=>h.remove(),1400);
+    wrap.appendChild(h); setTimeout(()=>h.remove(),1400);
   }
 }
 if(document.body.classList.contains("public-page")){
-  document.addEventListener("pointerdown",(e)=>{
-    if(e.button!==undefined && e.button!==0) return;
-    const x=e.clientX||window.innerWidth/2;
-    const y=e.clientY||window.innerHeight/2;
-    tapHeartsAt(x,y,e.target?.closest("button")?4:7);
-  },{passive:true});
-  ["copy","cut","contextmenu","dragstart"].forEach(evt=>{
-    document.addEventListener(evt,e=>e.preventDefault());
-  });
+  document.addEventListener("pointerdown",(e)=>{ if(e.button!==undefined&&e.button!==0) return; tapHeartsAt(e.clientX||window.innerWidth/2,e.clientY||window.innerHeight/2,e.target?.closest("button")?4:7); },{passive:true});
+  ["copy","cut","contextmenu","dragstart"].forEach(evt=>document.addEventListener(evt,e=>e.preventDefault()));
 }
 
 function parseBool(v){return v===true||v==="true"||v===1||v==="1";}
@@ -61,8 +111,11 @@ function getGalleryPrivacyFromSettings(m){return {
   question:m.galleryLockQuestion||"What is our special password?",
   hint:m.galleryLockHint||"",
   answer:String(m.galleryLockAnswer??""),
-  wrongTitle:m.galleryLockWrongTitle||"Wrong answer",
-  wrongMessage:m.galleryLockWrongMessage||"That is not the correct answer. Try again.",
+  wrongTitle:m.galleryLockWrongTitle||"Oops, cutie",
+  wrongMessage1:m.galleryLockWrongMessage1||m.galleryLockWrongMessage||"Oops, you missed 💗",
+  wrongMessage2:m.galleryLockWrongMessage2||m.galleryLockWrongMessage||"Keep going, if you know us you can open it ✨",
+  wrongMessage3:m.galleryLockWrongMessage3||m.galleryLockWrongMessage||"Try one more time, cutie — last chance 🌷",
+  wrongMessage:m.galleryLockWrongMessage||m.galleryLockWrongMessage1||"Oops, you missed 💗",
   maxAttempts:Math.max(1,parseNum(m.galleryLockMaxAttempts,3)),
   cooldownMinutes:Math.max(0,parseNum(m.galleryLockCooldownMinutes,15))
 };}
@@ -242,8 +295,16 @@ function submitGalleryUnlock(){
 async function loadAll(){const [{data:settings},{data:chapters},{data:gallery},{data:reasons}]=await Promise.all([db.from("site_settings").select("*"),db.from("chapters").select("*").eq("visible",true).order("sort_order"),db.from("gallery_items").select("*").eq("visible",true).order("sort_order"),db.from("love_reasons").select("*").eq("visible",true).order("sort_order")]);const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
 const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow"];
 TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
-
-["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";renderGift(m.giftImageUrl,m.giftPoem);const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}startCountdown(m.countdownAt);galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();}
+["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
+const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
+$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
+$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
+renderGift(m.giftImageUrl,m.giftPoem);
+const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}
+startCountdown(m.countdownAt);
+galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
+magicState=getMagicStateFromSettings(m);applyMagicState();
+renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();updateJourneyRibbon();}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
 function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.draggable=false;img.src=x.public_url;img.alt=x.caption||"A memory";img.addEventListener("contextmenu",e=>e.preventDefault());const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("contextmenu",e=>e.preventDefault());d.addEventListener("click",()=>{if(locked)openGalleryUnlockModal();});w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
@@ -375,3 +436,6 @@ $("#loveLetterCard")?.addEventListener("click",()=>openLoveLetter());
 $("#loveLetterCard")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openLoveLetter();}});
 $("#letterSeal")?.addEventListener("click",e=>{e.stopPropagation();openLoveLetter();});
 
+
+window.addEventListener("scroll",updateJourneyRibbon,{passive:true});
+window.addEventListener("resize",updateJourneyRibbon,{passive:true});

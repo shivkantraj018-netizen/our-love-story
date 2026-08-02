@@ -123,9 +123,11 @@ function fillAdminFields(){
 
   $("#siteThemeEnabledInput").checked=cache.settings.siteThemeEnabled===undefined ? true : (cache.settings.siteThemeEnabled===true || cache.settings.siteThemeEnabled==="true" || cache.settings.siteThemeEnabled===1 || cache.settings.siteThemeEnabled==="1");
   $("#siteThemePresetInput").value=cache.settings.siteThemePreset||"cherry";
+  $("#heroCinematicEnabledInput").checked=cache.settings.heroCinematicEnabled===undefined ? true : (cache.settings.heroCinematicEnabled===true || cache.settings.heroCinematicEnabled==="true" || cache.settings.heroCinematicEnabled===1 || cache.settings.heroCinematicEnabled==="1");
   $("#starsEnabledInput").checked=cache.settings.starsEnabled===undefined ? true : (cache.settings.starsEnabled===true || cache.settings.starsEnabled==="true" || cache.settings.starsEnabled===1 || cache.settings.starsEnabled==="1");
   $("#petalsEnabledInput").checked=cache.settings.petalsEnabled===undefined ? true : (cache.settings.petalsEnabled===true || cache.settings.petalsEnabled==="true" || cache.settings.petalsEnabled===1 || cache.settings.petalsEnabled==="1");
   $("#firefliesEnabledInput").checked=cache.settings.firefliesEnabled===undefined ? true : (cache.settings.firefliesEnabled===true || cache.settings.firefliesEnabled==="true" || cache.settings.firefliesEnabled===1 || cache.settings.firefliesEnabled==="1");
+  $("#shootingStarsEnabledInput").checked=cache.settings.shootingStarsEnabled===undefined ? true : (cache.settings.shootingStarsEnabled===true || cache.settings.shootingStarsEnabled==="true" || cache.settings.shootingStarsEnabled===1 || cache.settings.shootingStarsEnabled==="1");
   $("#tapEffectsEnabledInput").checked=cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1");
   $("#journeyRibbonEnabledInput").checked=cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1");
 
