@@ -170,6 +170,11 @@
           <label>Song title<input id="musicTitleInput"></label>
           <label>Song note<input id="musicNoteInput"></label>
         </div>
+        <div class="form-grid">
+          <label style="grid-column:1/-1">Playlist (one URL per line)<textarea id="musicPlaylistInput" rows="5" placeholder="Paste one song URL per line"></textarea></label>
+        </div>
+        <button class="save-btn" id="savePlaylistBtn" type="button">Save playlist</button>
+        <div class="saved-state" id="playlistSaved">No unsaved changes</div>
         <div class="music-manager">
           <div class="music-current">
             <div class="eyebrow">CURRENT SONG</div>

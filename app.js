@@ -7,6 +7,8 @@ let paperAudioCtx=null;
 let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true,starsEnabled:true,petalsEnabled:true,firefliesEnabled:true,shootingStarsEnabled:true,tapEffectsEnabled:true,journeyRibbonEnabled:true,memorySkyEnabled:true};
 let journeyRaf=0;
 let magicTimers={shootingStar:null,heroFloat:null};
+let musicPlaylist=[];
+let musicPlaylistIndex=0;
 
 
 function syncMemorySky(){
@@ -57,16 +59,25 @@ function getMagicStateFromSettings(m){return {
 function ensureFireflies(){
   const wrap=$("#fireflies"); if(!wrap||wrap.dataset.ready) return;
   wrap.dataset.ready="1"; wrap.innerHTML="";
-  for(let i=0;i<10;i++){const f=document.createElement("span");f.className="firefly";const size=2+Math.random()*2.5;f.style.width=`${size}px`;f.style.height=`${size}px`;f.style.left=`${Math.random()*100}%`;f.style.top=`${Math.random()*100}%`;f.style.animationDuration=`${8+Math.random()*10}s`;f.style.animationDelay=`-${Math.random()*10}s`;wrap.appendChild(f);}
+  for(let i=0;i<8;i++){const f=document.createElement("span");f.className="firefly";const size=2+Math.random()*2.5;f.style.width=`${size}px`;f.style.height=`${size}px`;f.style.left=`${Math.random()*100}%`;f.style.top=`${Math.random()*100}%`;f.style.animationDuration=`${8+Math.random()*10}s`;f.style.animationDelay=`-${Math.random()*10}s`;wrap.appendChild(f);}
 }
 function applyMagicState(){
   const body=document.body;
   THEME_CLASSES.forEach(c=>body.classList.remove(c));
   body.classList.toggle("hero-cinematic", !!magicState.heroCinematicEnabled);
+  const bg = THEME_BG[magicState.themePreset] || THEME_BG.cherry;
   if(magicState.themeEnabled){
     body.classList.add(`theme-${magicState.themePreset}`);
-    body.style.background = THEME_BG[magicState.themePreset] || THEME_BG.cherry;
+    document.documentElement.style.background = bg;
+    document.documentElement.style.backgroundAttachment = "fixed";
+    document.documentElement.style.backgroundRepeat = "no-repeat";
+    document.documentElement.style.backgroundSize = "cover";
+    body.style.background = bg;
+    body.style.backgroundAttachment = "fixed";
+    body.style.backgroundRepeat = "no-repeat";
+    body.style.backgroundSize = "cover";
   } else {
+    document.documentElement.style.background = "";
     body.style.background = "";
   }
   const stars=$("#stars"), petals=$("#petals"), fireflies=$("#fireflies"), ribbon=$("#journeyRibbon"), shooting=$("#shootingStars"), mem=$("#memorySky");
@@ -101,10 +112,35 @@ function spawnShootingStar(){
 function manageMagicTimers(){
   clearInterval(magicTimers.shootingStar); clearInterval(magicTimers.heroFloat);
   magicTimers.shootingStar=null; magicTimers.heroFloat=null;
-  if(magicState.shootingStarsEnabled){magicTimers.shootingStar=setInterval(()=>spawnShootingStar(),30000); setTimeout(()=>spawnShootingStar(),2400);}
+  if(magicState.shootingStarsEnabled){magicTimers.shootingStar=setInterval(()=>spawnShootingStar(),45000); setTimeout(()=>spawnShootingStar(),2400);}
   
 }
 
+
+function parsePlaylistText(text){
+  return String(text||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+}
+function applyMusicSource(audio, src){
+  if(!audio) return;
+  if(src){
+    audio.src = src;
+    audio.style.display = "block";
+    audio.load();
+  }else{
+    audio.removeAttribute("src");
+    audio.style.display = "none";
+  }
+}
+function applyPlaylistFromSettings(settings){
+  musicPlaylist = parsePlaylistText(settings.musicPlaylist || "");
+  musicPlaylistIndex = 0;
+}
+function playPlaylistIndex(index){
+  const audio = $("#music");
+  if(!audio || !musicPlaylist.length) return;
+  musicPlaylistIndex = ((index % musicPlaylist.length) + musicPlaylist.length) % musicPlaylist.length;
+  applyMusicSource(audio, musicPlaylist[musicPlaylistIndex]);
+}
 
 function renderMemorySky(){
   const wrap=$("#memorySky");
@@ -320,7 +356,7 @@ function submitGalleryUnlock(){
   }
   if(val && val===correct){
     unlockGallery();
-    heartBurst(8);
+    heartBurst(6);
     playPaperSound();
     showCuteGalleryPopup("Unlocked ❤️","Your memory gate opened successfully.","Enjoy the photos.");
     return;
@@ -357,7 +393,24 @@ const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.roman
 $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
 $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
 renderGift(m.giftImageUrl,m.giftPoem);
-const audio=$("#music");if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{audio.removeAttribute("src");audio.style.display="none"}
+const audio=$("#music");
+applyPlaylistFromSettings(m);
+if(musicPlaylist.length){
+  playPlaylistIndex(0);
+}else if(m.musicUrl){
+  applyMusicSource(audio, m.musicUrl);
+}else{
+  applyMusicSource(audio, "");
+}
+if(audio && !audio.dataset.playlistBound){
+  audio.dataset.playlistBound="1";
+  audio.addEventListener("ended",()=>{
+    if(musicPlaylist.length>1){
+      playPlaylistIndex(musicPlaylistIndex+1);
+      audio.play().catch(()=>{});
+    }
+  });
+}
 startCountdown(m.countdownAt);
 galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
 magicState=getMagicStateFromSettings(m);applyMagicState();

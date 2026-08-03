@@ -149,6 +149,7 @@ function fillAdminFields(){
 
   $("#musicTitleInput").value=cache.settings.musicTitle||"A song for us";
   $("#musicNoteInput").value=cache.settings.musicNote||"";
+  $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"";
 
   ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved"].forEach(id=>{
     const el=$("#"+id);
@@ -257,6 +258,10 @@ $("#saveMusicBtn").addEventListener("click",()=>saveSettingsGroup({
   musicTitle:$("#musicTitleInput").value.trim(),
   musicNote:$("#musicNoteInput").value.trim()
 },"saveMusicBtn","musicSaved","Song text saved."));
+
+$("#savePlaylistBtn").addEventListener("click",()=>saveSettingsGroup({
+  musicPlaylist:$("#musicPlaylistInput").value.trim()
+},"savePlaylistBtn","playlistSaved","Playlist saved."));
 
 function renderMusicState(){
   const url=cache.settings.musicUrl||"";
