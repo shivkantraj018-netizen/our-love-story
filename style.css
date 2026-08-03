@@ -1212,3 +1212,36 @@ body.theme-snow::before{
 .empty-state{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);color:#fff;opacity:.8}
 .upload-song-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .current-song-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+
+/* Performance / flicker protection */
+@media (prefers-reduced-motion: reduce), (pointer: coarse) and (max-width: 768px) {
+  html, body, body.theme-cherry, body.theme-rose, body.theme-blush, body.theme-snow {
+    background-attachment: scroll !important;
+  }
+  .glass,
+  .section-dock,
+  .music-fab,
+  .gallery-unlock-modal {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  #stars, #petals, #fireflies, #shootingStars, #memorySky {
+    contain: layout paint;
+  }
+  .star,
+  .petal,
+  .firefly,
+  .memory-sky-star,
+  .hero-heart,
+  .hero-sparkles span,
+  .shooting-star,
+  .heart-pulse {
+    animation: none !important;
+  }
+  body.theme-cherry::before,
+  body.theme-rose::before,
+  body.theme-blush::before,
+  body.theme-snow::before {
+    opacity: .28 !important;
+  }
+}

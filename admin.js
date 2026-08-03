@@ -247,6 +247,7 @@ async function saveSettingsGroup(values,buttonId,statusId,successMessage){
       :buttonId==="saveGiftBtn"?"Save gift"
       :buttonId==="saveSecretBtn"?"Save secret"
       :buttonId==="saveGalleryPrivacyBtn"?"Save gallery privacy"
+      :buttonId==="savePlaylistBtn"?"Save playlist"
       :"Save song text";
   }
 }
@@ -736,6 +737,14 @@ function parsePlaylistJson(text){
   }
 }
 
+function stringifyPlaylistJson(value){
+  try{
+    return JSON.stringify(Array.isArray(value) ? value : [], null, 2);
+  }catch{
+    return "[]";
+  }
+}
+
 function renderPlaylistPreview(){
   const preview=$("#playlistSaved");
   const list=parsePlaylistJson($("#musicPlaylistInput")?.value||"[]");
@@ -777,6 +786,7 @@ $("#playlistUpload").addEventListener("change",async e=>{
 $("#clearPlaylistBtn").addEventListener("click",()=>{
   $("#musicPlaylistInput").value="[]";
   renderPlaylistPreview();
+  if(typeof renderPlaylistNav==="function") renderPlaylistNav();
 });
 
 $("#savePlaylistBtn").addEventListener("click",()=>saveSettingsGroup({

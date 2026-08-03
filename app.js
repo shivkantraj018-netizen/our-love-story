@@ -70,12 +70,13 @@ function applyMagicState(){
   const themeColor = magicState.themePreset==="snow" ? "#7ea7d8" : magicState.themePreset==="rose" ? "#f08ba7" : magicState.themePreset==="blush" ? "#d48ab7" : "#e28cc2";
   if(magicState.themeEnabled){
     body.classList.add(`theme-${magicState.themePreset}`);
+    const attachment = isPerformanceLite() ? "scroll" : "fixed";
     document.documentElement.style.background = bg;
-    document.documentElement.style.backgroundAttachment = "fixed";
+    document.documentElement.style.backgroundAttachment = attachment;
     document.documentElement.style.backgroundRepeat = "no-repeat";
     document.documentElement.style.backgroundSize = "cover";
     body.style.background = bg;
-    body.style.backgroundAttachment = "fixed";
+    body.style.backgroundAttachment = attachment;
     body.style.backgroundRepeat = "no-repeat";
     body.style.backgroundSize = "cover";
     const meta=document.querySelector('meta[name="theme-color"]');
@@ -182,6 +183,14 @@ function parsePlaylistJson(text){
     return Array.isArray(arr) ? arr : [];
   }catch{
     return [];
+  }
+}
+
+function isPerformanceLite(){
+  try{
+    return window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 768px)").matches;
+  }catch{
+    return false;
   }
 }
 
