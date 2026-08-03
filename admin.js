@@ -77,7 +77,7 @@ async function loadAll(){
   renderReasonEditors();
   renderGalleryEditors();
   renderTextSettings();
-  renderPlaylistNav();
+  if(typeof renderPlaylistNav==="function") renderPlaylistNav();
   await loadComments();
 }
 
@@ -108,7 +108,7 @@ function renderPlaylistNav(){
 
   const refresh = (next)=>{
     $("#musicPlaylistInput").value = JSON.stringify(next, null, 2);
-    renderPlaylistNav();
+    if(typeof renderPlaylistNav==="function") renderPlaylistNav();
     renderPlaylistPreview();
   };
 
@@ -210,7 +210,7 @@ function fillAdminFields(){
   $("#playlistNoteInput").value=cache.settings.playlistNote||"A small note for the playlist";
   $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";
   renderPlaylistPreview();
-  renderPlaylistNav();
+  if(typeof renderPlaylistNav==="function") renderPlaylistNav();
 
   ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved"].forEach(id=>{
     const el=$("#"+id);
@@ -763,8 +763,9 @@ $("#playlistUpload").addEventListener("change",async e=>{
         public_url:pub.publicUrl
       });
     }
-    $("#musicPlaylistInput").value=JSON.stringify(current,null,2);
+    $("#musicPlaylistInput").value=stringifyPlaylistJson(current);
     renderPlaylistPreview();
+    if(typeof renderPlaylistNav==="function") renderPlaylistNav();
     showBanner("Songs uploaded. Save playlist now.");
   }catch(err){
     showBanner(err.message||String(err),false);

@@ -147,3 +147,7 @@ Adds a separate playlist section, visible theme overlays, a real memory sky laye
 
 ## v22
 Adds a public playlist section with next/prev controls, a visible memory sky layer, stronger theme overlays, and a full playlist editor/nav in Admin.
+
+
+## v24
+Makes app/admin resilient if playlist JSON parsing fails, adds missing parsePlaylistJson helpers, and keeps loading from crashing so chapters/reasons/gallery can render on the website.

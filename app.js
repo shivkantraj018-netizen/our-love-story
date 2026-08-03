@@ -176,6 +176,25 @@ if(document.body.classList.contains("public-page")){
 
 function parseBool(v){return v===true||v==="true"||v===1||v==="1";}
 function parseNum(v,def=0){const n=Number.parseInt(v,10);return Number.isFinite(n)?n:def;}
+function parsePlaylistJson(text){
+  try{
+    const arr = JSON.parse(text || "[]");
+    return Array.isArray(arr) ? arr : [];
+  }catch{
+    return [];
+  }
+}
+function applyMusicSource(audio, src){
+  if(!audio) return;
+  if(src){
+    audio.src = src;
+    audio.style.display = "block";
+    audio.load();
+  }else{
+    audio.removeAttribute("src");
+    audio.style.display = "none";
+  }
+}
 function getGalleryPrivacyFromSettings(m){return {
   enabled:parseBool(m.galleryLockEnabled),
   title:m.galleryLockTitle||"Our Precious Memories ❤️",
@@ -366,31 +385,44 @@ function submitGalleryUnlock(){
   updateGalleryUnlockModal();
 }
 
-async function loadAll(){const [{data:settings},{data:chapters},{data:gallery},{data:reasons}]=await Promise.all([db.from("site_settings").select("*"),db.from("chapters").select("*").eq("visible",true).order("sort_order"),db.from("gallery_items").select("*").eq("visible",true).order("sort_order"),db.from("love_reasons").select("*").eq("visible",true).order("sort_order")]);const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
-const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow","playlistEyebrow","playlistTitle","playlistIntro"];
-TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
-["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
-const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
-$("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
-$("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
-renderGift(m.giftImageUrl,m.giftPoem);
-const audio=$("#music");
-if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
-currentSettings.playlistTitle=m.playlistTitle||"My playlist";
-currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
-playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
-  id:t.id||`track-${i}`,
-  title:t.title||`Song ${i+1}`,
-  note:t.note||"",
-  public_url:t.public_url||t.url||"",
-  storage_path:t.storage_path||"",
-  is_active:t.is_active!==false
-}));
-renderPlaylistSection();
-startCountdown(m.countdownAt);
-galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
-magicState=getMagicStateFromSettings(m);applyMagicState();
-renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();updateJourneyRibbon();syncMemorySky();}
+async function loadAll(){
+  try{
+    const [{data:settings},{data:chapters},{data:gallery},{data:reasons}]=await Promise.all([
+      db.from("site_settings").select("*"),
+      db.from("chapters").select("*").order("sort_order"),
+      db.from("gallery_items").select("*").order("sort_order"),
+      db.from("love_reasons").select("*").order("sort_order")
+    ]);
+    const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
+    const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow","playlistEyebrow","playlistTitle","playlistIntro"];
+    TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
+    ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
+    const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
+    $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
+    $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
+    renderGift(m.giftImageUrl,m.giftPoem);
+    const audio=$("#music");
+    if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
+    currentSettings.playlistTitle=m.playlistTitle||"My playlist";
+    currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
+    playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
+      id:t.id||`track-${i}`,
+      title:t.title||`Song ${i+1}`,
+      note:t.note||"",
+      public_url:t.public_url||t.url||"",
+      storage_path:t.storage_path||"",
+      is_active:t.is_active!==false
+    }));
+    renderPlaylistSection();
+    startCountdown(m.countdownAt);
+    galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
+    magicState=getMagicStateFromSettings(m);applyMagicState();
+    renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();updateJourneyRibbon();syncMemorySky();
+  }catch(err){
+    console.error("loadAll failed", err);
+    showBanner(err.message || String(err), false);
+  }
+}
 function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
 function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
 function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.draggable=false;img.src=x.public_url;img.alt=x.caption||"A memory";img.addEventListener("contextmenu",e=>e.preventDefault());const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("contextmenu",e=>e.preventDefault());d.addEventListener("click",()=>{if(locked)openGalleryUnlockModal();});w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
@@ -437,8 +469,8 @@ function renderPlaylistSection(){
   const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
   const active=playlistTracks.filter(t=>t && t.is_active!==false && t.public_url);
-  if(title) title.textContent=currentSettings.playlistTitle||"Songs I want to keep forever";
-  if(intro) intro.textContent=currentSettings.playlistNote||"A small collection of songs with memories attached.";
+  if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
+  if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
   if(!list) return;
   list.innerHTML="";
   if(!active.length){
