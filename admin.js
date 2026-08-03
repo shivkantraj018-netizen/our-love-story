@@ -96,6 +96,61 @@ function renderTextSettings(){
     row.querySelector("input").value=cache.settings[key]??def;wrap.appendChild(row);
   });
 }
+function renderPlaylistNav(){
+  const wrap=$("#playlistNavList");
+  if(!wrap) return;
+  wrap.innerHTML="";
+  const tracks = parsePlaylistJson($("#musicPlaylistInput")?.value || "[]");
+  if(!tracks.length){
+    wrap.innerHTML='<div class="muted">No songs yet. Upload a song to see it here.</div>';
+    return;
+  }
+
+  const refresh = (next)=>{
+    $("#musicPlaylistInput").value = JSON.stringify(next, null, 2);
+    renderPlaylistNav();
+    renderPlaylistPreview();
+  };
+
+  tracks.forEach((track, idx)=>{
+    const row=document.createElement("div");
+    row.className="playlist-nav-row";
+    row.innerHTML = `
+      <div class="playlist-nav-meta">
+        <strong>${escapeHtml(track.title||`Song ${idx+1}`)}</strong>
+        <div class="muted">${escapeHtml(track.note||"")}</div>
+      </div>
+      <div class="playlist-nav-actions">
+        <button class="mini-btn" type="button" data-act="up">↑</button>
+        <button class="mini-btn" type="button" data-act="down">↓</button>
+        <button class="mini-btn danger" type="button" data-act="del">Delete</button>
+      </div>
+    `;
+    const up=row.querySelector('[data-act="up"]');
+    const down=row.querySelector('[data-act="down"]');
+    const del=row.querySelector('[data-act="del"]');
+    if(up) up.disabled = idx===0;
+    if(down) down.disabled = idx===tracks.length-1;
+    up?.addEventListener("click",()=>{
+      if(idx===0) return;
+      const next=[...tracks];
+      [next[idx-1],next[idx]]=[next[idx],next[idx-1]];
+      refresh(next);
+    });
+    down?.addEventListener("click",()=>{
+      if(idx===tracks.length-1) return;
+      const next=[...tracks];
+      [next[idx+1],next[idx]]=[next[idx],next[idx+1]];
+      refresh(next);
+    });
+    del?.addEventListener("click",()=>{
+      const next=tracks.filter((_,i)=>i!==idx);
+      refresh(next);
+    });
+    wrap.appendChild(row);
+  });
+}
+
 
 function fillAdminFields(){
   $("#heroTitleInput").value=cache.settings.heroTitle||"";
@@ -154,9 +209,8 @@ function fillAdminFields(){
   $("#playlistTitleInput").value=cache.settings.playlistTitle||"My playlist";
   $("#playlistNoteInput").value=cache.settings.playlistNote||"A small note for the playlist";
   $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";
-  $("#playlistTitleInput").value=cache.settings.playlistTitle||"My playlist";
-  $("#playlistNoteInput").value=cache.settings.playlistNote||"";
-  $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";
+  renderPlaylistPreview();
+  renderPlaylistNav();
 
   ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved"].forEach(id=>{
     const el=$("#"+id);
