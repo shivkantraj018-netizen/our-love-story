@@ -735,6 +735,14 @@ function parsePlaylistJson(text){
     return [];
   }
 }
+function stringifyPlaylistJson(value){
+  try{
+    const arr = Array.isArray(value) ? value : parsePlaylistJson(value);
+    return JSON.stringify(arr, null, 2);
+  }catch{
+    return "[]";
+  }
+}
 
 function renderPlaylistPreview(){
   const preview=$("#playlistSaved");

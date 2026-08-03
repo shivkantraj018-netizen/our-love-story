@@ -1264,3 +1264,33 @@ body.theme-snow::before{
   }
 }
 
+
+
+/* v17 gallery lock tuning: stronger blur, no shimmer/flicker */
+.gallery-privacy-locked #gallery .gallery-item img,
+.gallery-item.locked img{
+  opacity:.16 !important;
+  filter:blur(24px) saturate(.62) brightness(.66) contrast(.88) !important;
+  transform:translateZ(0) scale(1.07) !important;
+  transition:none !important;
+  will-change:auto !important;
+  backface-visibility:hidden !important;
+  -webkit-backface-visibility:hidden !important;
+}
+.gallery-privacy-locked #gallery .gallery-item,
+.gallery-item.locked{
+  transition:none !important;
+}
+.gallery-privacy-locked #gallery .gallery-item::before,
+.gallery-item.locked::before{
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(4,2,7,.28)) !important;
+}
+.gallery-privacy-locked #gallery .gallery-item::after,
+.gallery-item.locked::after{
+  text-shadow:0 6px 18px rgba(0,0,0,.28) !important;
+}
+.gallery-privacy-locked #gallery .gallery-item figcaption,
+.gallery-item.locked figcaption{
+  opacity:.55 !important;
+}
+
