@@ -184,6 +184,27 @@ function parsePlaylistJson(text){
     return [];
   }
 }
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+function escapeAttr(value){ return escapeHtml(value); }
+function showBanner(message, ok=true){
+  const el=$("#saveBanner") || document.querySelector("[data-banner]");
+  if(!el){
+    console[ok ? "log" : "warn"](message);
+    return;
+  }
+  el.textContent = (ok ? "✓ " : "⚠ ") + message;
+  el.classList.remove("hidden");
+  clearTimeout(window.__bannerTimer);
+  window.__bannerTimer = setTimeout(()=>el.classList.add("hidden"), 2600);
+}
 function applyMusicSource(audio, src){
   if(!audio) return;
   if(src){
@@ -413,19 +434,92 @@ async function loadAll(){
       storage_path:t.storage_path||"",
       is_active:t.is_active!==false
     }));
-    renderPlaylistSection();
+    try{ renderPlaylistSection(); }catch(err){ console.error("renderPlaylistSection", err); }
     startCountdown(m.countdownAt);
     galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
     magicState=getMagicStateFromSettings(m);applyMagicState();
-    renderNav(chapters||[]);renderChapters(chapters||[]);galleryItems=gallery||[];renderGallery(galleryItems);renderReasons(reasons||[]);syncGalleryPrivacyUI();updateJourneyRibbon();syncMemorySky();
+    try{ renderNav(chapters||[]); }catch(err){ console.error("renderNav", err); }
+    try{ renderChapters(chapters||[]); }catch(err){ console.error("renderChapters", err); }
+    try{ galleryItems=gallery||[]; renderGallery(galleryItems); }catch(err){ console.error("renderGallery", err); }
+    try{ renderReasons(reasons||[]); }catch(err){ console.error("renderReasons", err); }
+    try{ syncGalleryPrivacyUI(); }catch(err){ console.error("syncGalleryPrivacyUI", err); }
+    try{ updateJourneyRibbon(); }catch(err){ console.error("updateJourneyRibbon", err); }
+    try{ syncMemorySky(); }catch(err){ console.error("syncMemorySky", err); }
   }catch(err){
     console.error("loadAll failed", err);
     showBanner(err.message || String(err), false);
   }
 }
-function renderNav(cs){const n=$("#chapterNav");n.innerHTML="";cs.forEach(c=>{const b=document.createElement("button");b.className="nav-btn";b.textContent=c.eyebrow||c.title;b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});n.appendChild(b)})}
-function renderChapters(cs){const w=$("#chapters");w.innerHTML="";cs.forEach(c=>{const s=document.createElement("section");s.className="special-section";s.id=`chapter-${c.id}`;const card=document.createElement("article");card.className="chapter-card glass";const e=document.createElement("div");e.className="eyebrow";e.textContent=c.eyebrow||"CHAPTER";const h=document.createElement("h3");h.textContent=c.title||"";const p=document.createElement("p");p.textContent=c.content||"";card.append(e,h,p);s.appendChild(card);w.appendChild(s)})}
-function renderGallery(items){const w=$("#gallery");w.innerHTML="";const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;if(!items.length){w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';$("#spotlightWrap").hidden=true;return}items.forEach((x)=>{const d=document.createElement("figure");d.className="gallery-item"+(locked?" locked":"");const img=document.createElement("img");img.loading="lazy";img.draggable=false;img.src=x.public_url;img.alt=x.caption||"A memory";img.addEventListener("contextmenu",e=>e.preventDefault());const cap=document.createElement("figcaption");cap.textContent=x.caption||"";d.append(img,cap);d.addEventListener("contextmenu",e=>e.preventDefault());d.addEventListener("click",()=>{if(locked)openGalleryUnlockModal();});w.appendChild(d)});if(locked){const note=document.createElement("div");note.className="gallery-privacy-empty reason";note.style.gridColumn="1/-1";note.textContent="Locked memories — unlock to view the photos.";w.appendChild(note)}$("#spotlightWrap").hidden=true}
+function renderNav(cs){
+  const n=$("#chapterNav");
+  if(!n) return;
+  n.innerHTML="";
+  (cs||[]).forEach(c=>{
+    const b=document.createElement("button");
+    b.className="nav-btn";
+    b.textContent=c.eyebrow||c.title||"Chapter";
+    b.onclick=()=>document.getElementById(`chapter-${c.id}`)?.scrollIntoView({behavior:"smooth",block:"center"});
+    n.appendChild(b);
+  });
+}
+function renderChapters(cs){
+  const w=$("#chapters");
+  if(!w) return;
+  w.innerHTML="";
+  (cs||[]).forEach(c=>{
+    const s=document.createElement("section");
+    s.className="special-section";
+    s.id=`chapter-${c.id}`;
+    const card=document.createElement("article");
+    card.className="chapter-card glass";
+    const e=document.createElement("div");
+    e.className="eyebrow";
+    e.textContent=c.eyebrow||"CHAPTER";
+    const h=document.createElement("h3");
+    h.textContent=c.title||"";
+    const p=document.createElement("p");
+    p.textContent=c.content||"";
+    card.append(e,h,p);
+    s.appendChild(card);
+    w.appendChild(s);
+  });
+}
+function renderGallery(items){
+  const w=$("#gallery");
+  if(!w) return;
+  w.innerHTML="";
+  const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;
+  const list=items||[];
+  if(!list.length){
+    w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';
+    const sw=$("#spotlightWrap"); if(sw) sw.hidden=true;
+    return;
+  }
+  list.forEach((x)=>{
+    const d=document.createElement("figure");
+    d.className="gallery-item"+(locked?" locked":"");
+    const img=document.createElement("img");
+    img.loading="lazy";
+    img.draggable=false;
+    img.src=x.public_url||"";
+    img.alt=x.caption||"A memory";
+    img.addEventListener("contextmenu",e=>e.preventDefault());
+    const cap=document.createElement("figcaption");
+    cap.textContent=x.caption||"";
+    d.append(img,cap);
+    d.addEventListener("contextmenu",e=>e.preventDefault());
+    d.addEventListener("click",()=>{ if(locked) openGalleryUnlockModal(); });
+    w.appendChild(d);
+  });
+  if(locked){
+    const note=document.createElement("div");
+    note.className="gallery-privacy-empty reason";
+    note.style.gridColumn="1/-1";
+    note.textContent="Locked memories — unlock to view the photos.";
+    w.appendChild(note);
+  }
+  const sw=$("#spotlightWrap"); if(sw) sw.hidden=true;
+}
 function showSpotlight(i){if(galleryPrivacy.enabled&&!galleryPrivacyState.unlocked){openGalleryUnlockModal();return;}return;}
 $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=true;clearInterval(spotlightTimer)});
 function renderReasons(items){
@@ -468,7 +562,7 @@ function renderPlaylistSection(){
   const title=$("#playlistTitle");
   const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
-  const active=playlistTracks.filter(t=>t && t.is_active!==false && t.public_url);
+  const active=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
   if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
   if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
   if(!list) return;
@@ -487,7 +581,7 @@ function renderPlaylistSection(){
     item.addEventListener("click",()=>{
       playlistIndex=idx;
       applyMusicSource(audio, track.public_url);
-      audio.play().catch(()=>{});
+      if(audio) audio.play().catch(()=>{});
       renderPlaylistControls();
     });
     list.appendChild(item);
@@ -495,7 +589,7 @@ function renderPlaylistSection(){
   if(audio && !audio.dataset.playlistBound){
     audio.dataset.playlistBound="1";
     audio.addEventListener("ended",()=>{
-      const items=playlistTracks.filter(t=>t && t.is_active!==false && t.public_url);
+      const items=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
       if(items.length>1){
         playlistIndex=(playlistIndex+1)%items.length;
         applyMusicSource(audio, items[playlistIndex].public_url);
@@ -504,11 +598,11 @@ function renderPlaylistSection(){
       }
     });
   }
-  if(!audio.src && active[0]) applyMusicSource(audio, active[0].public_url);
+  if(audio && !audio.src && active[0]) applyMusicSource(audio, active[0].public_url);
   renderPlaylistControls();
 }
 function renderPlaylistControls(){
-  const tracks=playlistTracks.filter(t=>t && t.is_active!==false && t.public_url);
+  const tracks=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
   const audio=$("#playlistAudio");
   const prev=$("#playlistPrevBtn"), next=$("#playlistNextBtn"), play=$("#playlistPlayBtn");
   if(prev) prev.disabled = tracks.length<2;
@@ -622,3 +716,5 @@ window.addEventListener("resize",updateJourneyRibbon,{passive:true});
 
 window.addEventListener("scroll",syncMemorySky,{passive:true});
 window.addEventListener("resize",syncMemorySky,{passive:true});
+
+window.addEventListener("load",loadAll);

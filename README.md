@@ -151,3 +151,7 @@ Adds a public playlist section with next/prev controls, a visible memory sky lay
 
 ## v24
 Makes app/admin resilient if playlist JSON parsing fails, adds missing parsePlaylistJson helpers, and keeps loading from crashing so chapters/reasons/gallery can render on the website.
+
+
+## v25
+Adds missing public-page helpers (escapeHtml, showBanner), makes the core render functions null-safe, and wraps public rendering steps so one failure won't hide chapters, reasons, photos, or the playlist.
