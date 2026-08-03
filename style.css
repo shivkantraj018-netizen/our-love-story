@@ -1213,35 +1213,54 @@ body.theme-snow::before{
 .upload-song-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .current-song-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
 
-/* Performance / flicker protection */
-@media (prefers-reduced-motion: reduce), (pointer: coarse) and (max-width: 768px) {
-  html, body, body.theme-cherry, body.theme-rose, body.theme-blush, body.theme-snow {
-    background-attachment: scroll !important;
+/* Gallery stability fix */
+#photosSection,
+#gallery,
+.gallery-grid{
+  contain: layout paint;
+}
+
+.gallery-item,
+.gallery-item img,
+.gallery-item figcaption{
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.gallery-item img,
+.gallery-item figcaption{
+  transition: none !important;
+}
+
+.gallery-privacy-banner,
+.gallery-unlock-modal,
+.gallery-unlock-card{
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.gallery-item.locked img,
+.gallery-privacy-locked #gallery .gallery-item img{
+  opacity: .26 !important;
+  filter: blur(9px) saturate(.82) brightness(.78) contrast(.94) !important;
+  transform: none !important;
+}
+
+.gallery-item.locked::after,
+.gallery-privacy-locked #gallery .gallery-item::after{
+  background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(10,5,16,.16)) !important;
+}
+
+@media (max-width: 620px){
+  .gallery-privacy-banner,
+  .gallery-unlock-modal,
+  .gallery-unlock-card{
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
-  .glass,
-  .section-dock,
-  .music-fab,
-  .gallery-unlock-modal {
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-  }
-  #stars, #petals, #fireflies, #shootingStars, #memorySky {
-    contain: layout paint;
-  }
-  .star,
-  .petal,
-  .firefly,
-  .memory-sky-star,
-  .hero-heart,
-  .hero-sparkles span,
-  .shooting-star,
-  .heart-pulse {
-    animation: none !important;
-  }
-  body.theme-cherry::before,
-  body.theme-rose::before,
-  body.theme-blush::before,
-  body.theme-snow::before {
-    opacity: .28 !important;
+  .gallery-item.locked img,
+  .gallery-privacy-locked #gallery .gallery-item img{
+    filter: blur(7px) saturate(.85) brightness(.8) contrast(.95) !important;
   }
 }
+

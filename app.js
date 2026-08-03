@@ -3,6 +3,7 @@ let galleryItems=[],spotlightTimer=null,countdownTimer=null,gameTimer=null,gameP
 let galleryPrivacyTimer=null;
 let galleryPrivacy={enabled:false,title:"Our Precious Memories ❤️",description:"Only someone who truly knows our journey can unlock these memories.",question:"What is our special password?",hint:"",answer:"",wrongTitle:"Oops, cutie",wrongMessage1:"Oops, you missed 💗",wrongMessage2:"Keep going, if you know us you can open it ✨",wrongMessage3:"Try one more time, cutie — last chance 🌷",wrongMessage:"Only someone else can access this.",maxAttempts:3,cooldownMinutes:15};
 let galleryPrivacyState={unlocked:false,attemptsLeft:3,cooldownUntil:0};
+let galleryRenderKey="";
 let paperAudioCtx=null;
 let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true,starsEnabled:true,petalsEnabled:true,firefliesEnabled:true,shootingStarsEnabled:true,tapEffectsEnabled:true,journeyRibbonEnabled:true,memorySkyEnabled:true};
 let journeyRaf=0;
@@ -70,13 +71,12 @@ function applyMagicState(){
   const themeColor = magicState.themePreset==="snow" ? "#7ea7d8" : magicState.themePreset==="rose" ? "#f08ba7" : magicState.themePreset==="blush" ? "#d48ab7" : "#e28cc2";
   if(magicState.themeEnabled){
     body.classList.add(`theme-${magicState.themePreset}`);
-    const attachment = isPerformanceLite() ? "scroll" : "fixed";
     document.documentElement.style.background = bg;
-    document.documentElement.style.backgroundAttachment = attachment;
+    document.documentElement.style.backgroundAttachment = "fixed";
     document.documentElement.style.backgroundRepeat = "no-repeat";
     document.documentElement.style.backgroundSize = "cover";
     body.style.background = bg;
-    body.style.backgroundAttachment = attachment;
+    body.style.backgroundAttachment = "fixed";
     body.style.backgroundRepeat = "no-repeat";
     body.style.backgroundSize = "cover";
     const meta=document.querySelector('meta[name="theme-color"]');
@@ -186,12 +186,14 @@ function parsePlaylistJson(text){
   }
 }
 
-function isPerformanceLite(){
-  try{
-    return window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 768px)").matches;
-  }catch{
-    return false;
-  }
+function getGallerySignature(items){
+  return (items || []).map((x, i) => [
+    x?.id ?? i,
+    x?.public_url ?? "",
+    x?.caption ?? "",
+    x?.sort_order ?? "",
+    x?.is_active === false ? 0 : 1
+  ].join("|")).join("::");
 }
 
 function escapeHtml(value){
@@ -493,25 +495,49 @@ function renderChapters(cs){
     w.appendChild(s);
   });
 }
+function syncGalleryRenderedState(){
+  const locked=galleryPrivacy.enabled && !galleryPrivacyState.unlocked;
+  document.body.classList.toggle("gallery-privacy-locked", locked);
+  const gallery=$("#gallery");
+  if(gallery){
+    gallery.querySelectorAll(".gallery-item").forEach(item=>item.classList.toggle("locked", locked));
+    const note=gallery.querySelector(".gallery-privacy-empty");
+    if(note) note.hidden=!locked;
+  }
+  const sw=$("#spotlightWrap");
+  if(sw && locked) sw.hidden=true;
+}
+
 function renderGallery(items){
   const w=$("#gallery");
   if(!w) return;
-  w.innerHTML="";
-  const locked=galleryPrivacy.enabled&&!galleryPrivacyState.unlocked;
-  const list=items||[];
-  if(!list.length){
-    w.innerHTML='<div class="reason" style="grid-column:1/-1">Your photos will appear here after you upload them.</div>';
-    const sw=$("#spotlightWrap"); if(sw) sw.hidden=true;
+  const list=items || [];
+  const locked=galleryPrivacy.enabled && !galleryPrivacyState.unlocked;
+  const signature=getGallerySignature(list);
+  if(signature===galleryRenderKey && w.children.length){
+    syncGalleryRenderedState();
     return;
   }
-  list.forEach((x)=>{
+  galleryRenderKey=signature;
+  w.replaceChildren();
+  if(!list.length){
+    const empty=document.createElement("div");
+    empty.className="reason gallery-privacy-empty";
+    empty.style.gridColumn="1/-1";
+    empty.textContent="Your photos will appear here after you upload them.";
+    w.appendChild(empty);
+    syncGalleryRenderedState();
+    return;
+  }
+  list.forEach((x, idx)=>{
     const d=document.createElement("figure");
     d.className="gallery-item"+(locked?" locked":"");
     const img=document.createElement("img");
     img.loading="lazy";
+    img.decoding="async";
     img.draggable=false;
     img.src=x.public_url||"";
-    img.alt=x.caption||"A memory";
+    img.alt=x.caption||`A memory ${idx+1}`;
     img.addEventListener("contextmenu",e=>e.preventDefault());
     const cap=document.createElement("figcaption");
     cap.textContent=x.caption||"";
@@ -527,7 +553,7 @@ function renderGallery(items){
     note.textContent="Locked memories — unlock to view the photos.";
     w.appendChild(note);
   }
-  const sw=$("#spotlightWrap"); if(sw) sw.hidden=true;
+  syncGalleryRenderedState();
 }
 function showSpotlight(i){if(galleryPrivacy.enabled&&!galleryPrivacyState.unlocked){openGalleryUnlockModal();return;}return;}
 $("#spotlightClose").addEventListener("click",()=>{$("#spotlightWrap").hidden=true;clearInterval(spotlightTimer)});
