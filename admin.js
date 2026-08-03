@@ -77,6 +77,7 @@ async function loadAll(){
   renderReasonEditors();
   renderGalleryEditors();
   renderTextSettings();
+  renderPlaylistNav();
   await loadComments();
 }
 
@@ -150,6 +151,9 @@ function fillAdminFields(){
 
   $("#musicTitleInput").value=cache.settings.musicTitle||"A song for us";
   $("#musicNoteInput").value=cache.settings.musicNote||"";
+  $("#playlistTitleInput").value=cache.settings.playlistTitle||"My playlist";
+  $("#playlistNoteInput").value=cache.settings.playlistNote||"A small note for the playlist";
+  $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";
   $("#playlistTitleInput").value=cache.settings.playlistTitle||"My playlist";
   $("#playlistNoteInput").value=cache.settings.playlistNote||"";
   $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";

@@ -1153,3 +1153,62 @@ body.theme-cherry .star, body.theme-rose .star, body.theme-blush .star, body.the
   0%,100%{transform:scale(.75); opacity:.25}
   50%{transform:scale(1.2); opacity:1}
 }
+
+body.theme-cherry::before,
+body.theme-rose::before,
+body.theme-blush::before,
+body.theme-snow::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.55;
+}
+body.theme-cherry::before{
+  background:radial-gradient(circle at top, rgba(255,130,180,.42), transparent 46%);
+}
+body.theme-rose::before{
+  background:radial-gradient(circle at top, rgba(255,90,130,.42), transparent 46%);
+}
+body.theme-blush::before{
+  background:radial-gradient(circle at top, rgba(255,170,210,.34), transparent 46%);
+}
+body.theme-snow::before{
+  background:radial-gradient(circle at top, rgba(180,220,255,.34), transparent 46%);
+}
+
+.playlist-list{display:grid;gap:10px;margin-top:16px}
+.playlist-item{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding:14px 16px;
+  border:0;
+  border-radius:18px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  cursor:pointer;
+  text-align:left;
+}
+.playlist-item strong{display:block;font-size:1rem}
+.playlist-item .muted{font-size:.9rem;opacity:.82}
+.playlist-player{margin-top:16px;display:grid;gap:10px}
+.playlist-controls{display:flex;gap:10px;flex-wrap:wrap}
+.playlist-nav-admin{margin-top:10px;display:grid;gap:10px}
+.playlist-nav-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.06);
+}
+.playlist-nav-meta strong{display:block}
+.playlist-nav-actions{display:flex;gap:8px;flex-wrap:wrap}
+.empty-state{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);color:#fff;opacity:.8}
+.upload-song-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.current-song-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}

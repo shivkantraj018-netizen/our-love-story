@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="public-page">
-<div id="stars"></div><div id="petals"></div><div id="fireflies"></div><div id="heartBurst"></div>
+<div id="stars"></div><div id="petals"></div><div id="fireflies"></div><div id="memorySky"></div><div id="heartBurst"></div>
 <header class="topbar glass"><button class="brand" id="brandButton">Our Love Story <span>♥</span></button><nav id="chapterNav" aria-label="Chapters"></nav></header>
 <div class="journey-ribbon glass" id="journeyRibbon"><div class="journey-top"><span id="journeyRibbonText">Our story begins…</span></div><div class="journey-track"><div class="journey-fill" id="journeyFill"></div></div></div>
 <button class="music-fab glass" id="musicFab" type="button" aria-label="Mute or unmute background music">
@@ -24,6 +24,7 @@
   <button type="button" data-section="gameSection">🎮 Game</button>
   <button type="button" data-section="commentSection">💭 Notes</button>
   <button type="button" data-section="musicSection">🎵 Song</button>
+  <button type="button" data-section="playlistSection">🎶 Playlist</button>
   <button type="button" data-section="ending">🌙 Ending</button>
 </div>
 <main>
@@ -42,6 +43,22 @@
 <section class="special-section" id="commentSection"><div class="comments-card glass"><div class="eyebrow" id="commentEyebrow">A LITTLE NOTE FROM YOU</div><h3 id="commentTitle">Your thoughts</h3><p class="section-note" id="commentIntro">Leave me a message. Only I can read what you write. ❤️</p><form id="commentForm"><label class="public-label">Your name (optional)<input id="commentName" maxlength="60" autocomplete="name" placeholder="Anonymous is okay too"></label><label class="public-label">Your message<textarea id="commentText" maxlength="1000" rows="5" required placeholder="Write anything you want me to know..."></textarea></label><button class="save-btn" id="commentSubmit" type="submit">Send your thoughts ❤️</button></form><div class="comment-status" id="commentStatus"></div></div></section>
 <section class="special-section" id="countdownSection"><div class="chapter-card glass"><div class="eyebrow" id="countdownEyebrow">UNTIL NEXT TIME</div><h3 id="countdownTitle">Our next little forever</h3><div class="countdown" id="countdown"><div><strong id="d">0</strong><span>days</span></div><div><strong id="h">0</strong><span>hours</span></div><div><strong id="m">0</strong><span>minutes</span></div><div><strong id="s">0</strong><span>seconds</span></div></div></div></section>
 <section class="special-section" id="musicSection"><div class="chapter-card glass"><div class="eyebrow" id="musicEyebrow">OUR SONG</div><h3 id="musicTitle">A song for us</h3><p id="musicNote"></p><audio id="music" controls preload="metadata"></audio></div></section>
+<section class="special-section" id="playlistSection">
+  <div class="chapter-card glass">
+    <div class="eyebrow" id="playlistEyebrow">PLAYLIST</div>
+    <h3 id="playlistTitle">Songs I want to keep forever</h3>
+    <p id="playlistIntro" class="muted">A small collection of songs with memories attached.</p>
+    <div class="playlist-list" id="playlistList"></div>
+    <div class="playlist-player">
+      <audio id="playlistAudio" controls preload="metadata"></audio>
+      <div class="playlist-controls">
+        <button class="mini-btn" id="playlistPrevBtn" type="button">◀ Prev</button>
+        <button class="mini-btn" id="playlistPlayBtn" type="button">Play</button>
+        <button class="mini-btn" id="playlistNextBtn" type="button">Next ▶</button>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="final-section" id="ending"><div class="final-card"><div class="final-stars"></div><div class="moon small"></div><div class="script-title" id="endingEyebrow">Forever, my love</div><h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2><p id="finalText">Thank you for being my favorite chapter of life.</p><button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button></div></section>
 </section></main>
 <div id="galleryUnlockModal" class="gallery-unlock-modal" hidden>

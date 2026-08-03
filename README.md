@@ -143,3 +143,7 @@ Fixes the three-message gallery lock rotation, applies themes directly to the pa
 
 ## v21
 Adds a separate playlist section, visible theme overlays, a real memory sky layer, and fixes the password message rotation with an explicit fail counter.
+
+
+## v22
+Adds a public playlist section with next/prev controls, a visible memory sky layer, stronger theme overlays, and a full playlist editor/nav in Admin.
