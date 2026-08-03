@@ -13,6 +13,9 @@ let playlistTracks=[];
 let playlistIndex=0;
 let playlistShuffle=false;
 let playlistLoop=true;
+let endingScene={enabled:true,rewardTitle:"You made it to the end ✨",rewardText:"The page is over, but our love story keeps glowing.",secretTitle:"A hidden message waits here",secretPassword:"",secretMessage:"Write something only the two of you would understand."};
+let endingSceneUnlocked=false;
+let endingSceneActivated=false;
 
 
 function syncMemorySky(){
@@ -22,6 +25,66 @@ function syncMemorySky(){
   const rect=ending.getBoundingClientRect();
   const visible=rect.top < window.innerHeight*0.72 && rect.bottom > window.innerHeight*0.28;
   mem.classList.toggle("visible", visible && magicState.memorySkyEnabled);
+}
+
+function getEndingSceneFromSettings(m){return {
+  enabled: m.endingSceneEnabled===undefined ? true : parseBool(m.endingSceneEnabled),
+  rewardTitle: m.endingRewardTitle||"You made it to the end ✨",
+  rewardText: m.endingRewardText||"The page is over, but our love story keeps glowing.",
+  secretTitle: m.endingSecretTitle||"A hidden message waits here",
+  secretPassword: String(m.endingSecretPassword??""),
+  secretMessage: m.endingSecretMessage||"Write something only the two of you would understand."
+};}
+function syncEndingScene(){
+  const ending=$("#ending");
+  const reward=$("#endingReward");
+  const wrap=$("#endingSecretWrap");
+  const msg=$("#endingSecretMessage");
+  const status=$("#endingSecretStatus");
+  if(!ending || !reward || !wrap) return;
+  const rect=ending.getBoundingClientRect();
+  const nearEnd = rect.top < window.innerHeight*0.78;
+  const visible = nearEnd && rect.bottom > window.innerHeight*0.18;
+  if(endingScene.enabled && visible){
+    reward.hidden = false;
+    reward.classList.toggle("show", true);
+    wrap.hidden = false;
+    wrap.classList.toggle("show", true);
+    if(!endingSceneActivated){
+      endingSceneActivated = true;
+      heartBurst(10);
+      confetti(10);
+    }
+  } else if(!endingScene.enabled){
+    reward.hidden = true;
+    wrap.hidden = true;
+  }
+  if(msg){
+    msg.hidden = !endingSceneUnlocked;
+    if(endingSceneUnlocked) msg.textContent = endingScene.secretMessage;
+  }
+  if(status && endingScene.enabled && !endingSceneUnlocked){
+    status.textContent = nearEnd ? "Enter the password to open the hidden letter." : "Keep scrolling to reach the hidden letter.";
+  }
+}
+function unlockEndingScene(){
+  if(!endingScene.enabled) return;
+  const input = $("#endingSecretPassword");
+  const status = $("#endingSecretStatus");
+  const expected = String(endingScene.secretPassword||"").trim().toLowerCase();
+  const entered = String(input?.value||"").trim().toLowerCase();
+  if(!expected || entered === expected){
+    endingSceneUnlocked = true;
+    if(status) status.textContent = "Unlocked ❤️";
+    const msg = $("#endingSecretMessage");
+    if(msg){ msg.hidden = false; msg.textContent = endingScene.secretMessage; msg.classList.add("reveal"); }
+    heartBurst(16);
+    confetti(12);
+    return;
+  }
+  if(status) status.textContent = "Wrong password. Try again.";
+  input?.focus();
+  heartBurst(4);
 }
 
 function initSectionDock(){
@@ -103,6 +166,7 @@ function applyMagicState(){
   if(magicState.firefliesEnabled) ensureFireflies();
   renderMemorySky();
   syncMemorySky();
+  syncEndingScene();
   manageMagicTimers();
 }
 function updateJourneyRibbon(){
@@ -453,10 +517,20 @@ async function loadAll(){
     const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
     const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow","playlistEyebrow","playlistTitle","playlistIntro"];
     TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
-    ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
+    ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle","endingRewardTitle","endingRewardText","endingSecretTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
     const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
     $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
     $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
+    endingScene = getEndingSceneFromSettings(m);
+    endingSceneUnlocked = false;
+    endingSceneActivated = false;
+    if($("#endingRewardTitle")) $("#endingRewardTitle").textContent=endingScene.rewardTitle;
+    if($("#endingRewardText")) $("#endingRewardText").textContent=endingScene.rewardText;
+    if($("#endingSecretTitle")) $("#endingSecretTitle").textContent=endingScene.secretTitle;
+    if($("#endingSecretPrompt")) $("#endingSecretPrompt").textContent=endingScene.enabled ? "Scroll to the end, then unlock it with the password." : "";
+    if($("#endingSecretPassword")) $("#endingSecretPassword").value = "";
+    const endingMsg = $("#endingSecretMessage"); if(endingMsg) endingMsg.hidden = true;
+    const endingStatus = $("#endingSecretStatus"); if(endingStatus) endingStatus.textContent = endingScene.enabled ? "Keep scrolling to reach the hidden letter." : "Ending scene is off.";
     renderGift(m.giftImageUrl,m.giftPoem);
     const audio=$("#music");
     if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
@@ -782,6 +856,8 @@ $("#galleryUnlockOpenBtn")?.addEventListener("click",openGalleryUnlockModal);
 $("#galleryUnlockClose")?.addEventListener("click",closeGalleryUnlockModal);
 $("#galleryUnlockSubmit")?.addEventListener("click",submitGalleryUnlock);
 $("#galleryUnlockAnswer")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();submitGalleryUnlock();}});
+$("#endingSecretUnlockBtn")?.addEventListener("click",unlockEndingScene);
+$("#endingSecretPassword")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();unlockEndingScene();}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#galleryUnlockModal")?.hidden) closeGalleryUnlockModal();});
 $("#beginBtn").onclick=()=>document.querySelector(".section-intro")?.scrollIntoView({behavior:"smooth"});$("#brandButton").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});$("#giftBox").onclick=openGift;$("#secretHeart").onclick=()=>{const m=$("#secretMessage");m.hidden=false;m.classList.add("secret-reveal");heartBurst(16)};$("#finalHeart").onclick=()=>{heartBurst(30);confetti(18)};
 $("#commentForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("#commentSubmit"),st=$("#commentStatus");btn.disabled=true;btn.textContent="Sending…";const name=$("#commentName").value.trim()||"Anonymous",message=$("#commentText").value.trim();if(!message){st.textContent="Please write a little message.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}const {error}=await db.from("comments").insert({name,message});if(error){st.textContent="Something went wrong. Please try again.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}e.target.reset();st.textContent="❤️ Your message was sent.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";setTimeout(()=>st.textContent="",3500)});
@@ -832,5 +908,7 @@ window.addEventListener("resize",updateJourneyRibbon,{passive:true});
 
 window.addEventListener("scroll",syncMemorySky,{passive:true});
 window.addEventListener("resize",syncMemorySky,{passive:true});
+window.addEventListener("scroll",syncEndingScene,{passive:true});
+window.addEventListener("resize",syncEndingScene,{passive:true});
 
-window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlaylistControls(); });
+window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlaylistControls(); setTimeout(()=>{ syncEndingScene(); syncMemorySky(); }, 200); });

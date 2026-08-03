@@ -191,6 +191,22 @@
         <div class="saved-state" id="musicSaved">No unsaved changes</div>
       </section>
 
+      <section class="admin-card glass" id="adminEndingScene">
+        <div class="card-head">
+          <div><div class="eyebrow">ENDING SCENE</div><h2>Reward the scroll-to-end moment</h2></div>
+        </div>
+        <div class="form-grid">
+          <label class="toggle-field"><span>Enable ending scene</span><input type="checkbox" id="endingSceneEnabledInput"></label>
+          <label>Reward title<input id="endingRewardTitleInput" placeholder="You made it to the end"></label>
+          <label style="grid-column:1/-1">Reward message<textarea id="endingRewardTextInput" rows="3" placeholder="A warm reward message for the person who reaches the end."></textarea></label>
+          <label>Hidden letter title<input id="endingSecretTitleInput" placeholder="A hidden message waits here"></label>
+          <label>Hidden letter password<input id="endingSecretPasswordInput" placeholder="Password"></label>
+          <label style="grid-column:1/-1">Hidden letter text<textarea id="endingSecretMessageInput" rows="5" placeholder="Write the hidden note here..."></textarea></label>
+        </div>
+        <button class="save-btn" id="saveEndingSceneBtn" type="button">Save ending scene</button>
+        <div class="saved-state" id="endingSceneSaved">No unsaved changes</div>
+      </section>
+
       <section class="admin-card glass" id="adminPlaylist">
         <div class="card-head">
           <div>
