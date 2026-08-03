@@ -141,5 +141,5 @@ Adds cinematic hero styling, shooting stars, Magic & Themes controls, and fixes 
 Fixes the three-message gallery lock rotation, applies themes directly to the page background, lowers animation load to reduce phone heat, and adds the toggleable Memory Sky ending effect.
 
 
-## v20
-Fixes theme application by writing the selected background directly to the page, rotates the three wrong-password messages correctly, adds a playlist section in Admin, and keeps Memory Sky toggleable while reducing animation load.
+## v21
+Adds a separate playlist section, visible theme overlays, a real memory sky layer, and fixes the password message rotation with an explicit fail counter.

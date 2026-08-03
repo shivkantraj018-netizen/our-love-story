@@ -133,6 +133,7 @@ function fillAdminFields(){
   safeSetChecked("#tapEffectsEnabledInput", cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1"));
   safeSetChecked("#journeyRibbonEnabledInput", cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1"));
   safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
+  safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
 
   $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
   $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
@@ -149,7 +150,9 @@ function fillAdminFields(){
 
   $("#musicTitleInput").value=cache.settings.musicTitle||"A song for us";
   $("#musicNoteInput").value=cache.settings.musicNote||"";
-  $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"";
+  $("#playlistTitleInput").value=cache.settings.playlistTitle||"My playlist";
+  $("#playlistNoteInput").value=cache.settings.playlistNote||"";
+  $("#musicPlaylistInput").value=cache.settings.musicPlaylist||"[]";
 
   ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved"].forEach(id=>{
     const el=$("#"+id);
@@ -258,10 +261,6 @@ $("#saveMusicBtn").addEventListener("click",()=>saveSettingsGroup({
   musicTitle:$("#musicTitleInput").value.trim(),
   musicNote:$("#musicNoteInput").value.trim()
 },"saveMusicBtn","musicSaved","Song text saved."));
-
-$("#savePlaylistBtn").addEventListener("click",()=>saveSettingsGroup({
-  musicPlaylist:$("#musicPlaylistInput").value.trim()
-},"savePlaylistBtn","playlistSaved","Playlist saved."));
 
 function renderMusicState(){
   const url=cache.settings.musicUrl||"";
@@ -668,3 +667,62 @@ function initAdminDock(){
 }
 initAdminDock();
 checkSession();
+
+
+function parsePlaylistJson(text){
+  try{
+    const arr = JSON.parse(text || "[]");
+    return Array.isArray(arr) ? arr : [];
+  }catch{
+    return [];
+  }
+}
+
+function renderPlaylistPreview(){
+  const preview=$("#playlistSaved");
+  const list=parsePlaylistJson($("#musicPlaylistInput")?.value||"[]");
+  if(preview) preview.textContent = `${list.length} song${list.length===1?"":"s"} in playlist.`;
+}
+
+$("#playlistUpload").addEventListener("change",async e=>{
+  const files=[...e.target.files||[]];
+  if(!files.length) return;
+  try{
+    const current=parsePlaylistJson($("#musicPlaylistInput").value||"[]");
+    for(const file of files){
+      const ext=(file.name.split(".").pop()||"bin").toLowerCase();
+      const path=`playlist/${crypto.randomUUID()}.${ext}`;
+      const up=await db.storage.from("site-music").upload(path,file,{
+        upsert:false,
+        contentType:file.type||"application/octet-stream"
+      });
+      if(up.error) throw up.error;
+      const {data:pub}=db.storage.from("site-music").getPublicUrl(path);
+      current.push({
+        title:file.name.replace(/\.[^.]+$/,""),
+        note:"",
+        storage_path:path,
+        public_url:pub.publicUrl
+      });
+    }
+    $("#musicPlaylistInput").value=JSON.stringify(current,null,2);
+    renderPlaylistPreview();
+    showBanner("Songs uploaded. Save playlist now.");
+  }catch(err){
+    showBanner(err.message||String(err),false);
+  }finally{
+    e.target.value="";
+  }
+});
+
+$("#clearPlaylistBtn").addEventListener("click",()=>{
+  $("#musicPlaylistInput").value="[]";
+  renderPlaylistPreview();
+});
+
+$("#savePlaylistBtn").addEventListener("click",()=>saveSettingsGroup({
+  playlistTitle:$("#playlistTitleInput").value.trim(),
+  playlistNote:$("#playlistNoteInput").value.trim(),
+  musicPlaylist:$("#musicPlaylistInput").value.trim()
+},"savePlaylistBtn","playlistSaved","Playlist saved."));
+

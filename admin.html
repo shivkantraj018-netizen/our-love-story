@@ -170,11 +170,6 @@
           <label>Song title<input id="musicTitleInput"></label>
           <label>Song note<input id="musicNoteInput"></label>
         </div>
-        <div class="form-grid">
-          <label style="grid-column:1/-1">Playlist (one URL per line)<textarea id="musicPlaylistInput" rows="5" placeholder="Paste one song URL per line"></textarea></label>
-        </div>
-        <button class="save-btn" id="savePlaylistBtn" type="button">Save playlist</button>
-        <div class="saved-state" id="playlistSaved">No unsaved changes</div>
         <div class="music-manager">
           <div class="music-current">
             <div class="eyebrow">CURRENT SONG</div>
@@ -194,6 +189,26 @@
         </div>
         <button class="save-btn" id="saveMusicBtn">Save song text</button>
         <div class="saved-state" id="musicSaved">No unsaved changes</div>
+      </section>
+
+      <section class="admin-card glass" id="adminPlaylist">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">PLAYLIST</div>
+            <h2>Upload multiple songs</h2>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label style="grid-column:1/-1">Playlist title<input id="playlistTitleInput" placeholder="My playlist"></label>
+          <label style="grid-column:1/-1">Playlist note<input id="playlistNoteInput" placeholder="A small note for the playlist"></label>
+        </div>
+        <div class="playlist-admin-tools">
+          <label class="upload-btn">🎶 Upload Songs<input type="file" id="playlistUpload" accept="audio/*" multiple hidden></label>
+          <button class="mini-btn danger" id="clearPlaylistBtn" type="button">Clear playlist</button>
+        </div>
+        <textarea id="musicPlaylistInput" rows="8" placeholder="Auto-filled when you upload songs. Each song is stored here as JSON."></textarea>
+        <button class="save-btn" id="savePlaylistBtn">Save playlist</button>
+        <div class="saved-state" id="playlistSaved">No unsaved changes</div>
       </section>
 
       <section class="admin-card glass" id="adminChapters">
