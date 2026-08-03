@@ -11,6 +11,8 @@ let magicTimers={shootingStar:null,heroFloat:null};
 let currentSettings={playlistTitle:"My playlist",playlistNote:"A small note for the playlist"};
 let playlistTracks=[];
 let playlistIndex=0;
+let playlistShuffle=false;
+let playlistLoop=true;
 
 
 function syncMemorySky(){
@@ -69,8 +71,9 @@ function applyMagicState(){
   body.classList.toggle("hero-cinematic", !!magicState.heroCinematicEnabled);
   const bg = THEME_BG[magicState.themePreset] || THEME_BG.cherry;
   const themeColor = magicState.themePreset==="snow" ? "#7ea7d8" : magicState.themePreset==="rose" ? "#f08ba7" : magicState.themePreset==="blush" ? "#d48ab7" : "#e28cc2";
+  const themeClass = `theme-${magicState.themePreset}`;
   if(magicState.themeEnabled){
-    body.classList.add(`theme-${magicState.themePreset}`);
+    body.classList.add(themeClass);
     document.documentElement.style.background = bg;
     document.documentElement.style.backgroundAttachment = "fixed";
     document.documentElement.style.backgroundRepeat = "no-repeat";
@@ -84,6 +87,8 @@ function applyMagicState(){
   } else {
     document.documentElement.style.background = "";
     body.style.background = "";
+    const meta=document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute("content", "#24103d");
   }
   const stars=$("#stars"), petals=$("#petals"), fireflies=$("#fireflies"), ribbon=$("#journeyRibbon"), shooting=$("#shootingStars"), mem=$("#memorySky");
   if(stars) stars.style.display=magicState.starsEnabled?"":"none";
@@ -91,9 +96,13 @@ function applyMagicState(){
   if(fireflies) fireflies.style.display=magicState.firefliesEnabled?"":"none";
   if(ribbon) ribbon.hidden=!magicState.journeyRibbonEnabled;
   if(shooting) shooting.style.display=magicState.shootingStarsEnabled?"":"none";
-  if(mem) mem.style.display=magicState.memorySkyEnabled?"":"none";
+  if(mem){
+    mem.style.display=magicState.memorySkyEnabled?"":"none";
+    mem.hidden = !magicState.memorySkyEnabled;
+  }
   if(magicState.firefliesEnabled) ensureFireflies();
   renderMemorySky();
+  syncMemorySky();
   manageMagicTimers();
 }
 function updateJourneyRibbon(){
@@ -124,7 +133,11 @@ function manageMagicTimers(){
 
 function renderMemorySky(){
   const wrap=$("#memorySky");
-  if(!wrap || wrap.dataset.ready) return;
+  if(!wrap) return;
+  if(wrap.dataset.ready){
+    wrap.hidden = !magicState.memorySkyEnabled;
+    return;
+  }
   wrap.dataset.ready="1";
   wrap.innerHTML="";
   const pts=[[8,18],[18,10],[28,22],[40,14],[52,26],[64,16],[76,24],[86,12],[20,42],[34,54],[48,42],[62,52],[78,44],[92,56]];
@@ -226,6 +239,18 @@ function applyMusicSource(audio, src){
     audio.removeAttribute("src");
     audio.style.display = "none";
   }
+}
+
+function getActivePlaylistTracks(){
+  return (playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
+}
+function getRandomPlaylistIndex(current, total){
+  if(total<=1) return 0;
+  let next=current;
+  for(let i=0;i<8 && next===current;i++){
+    next=Math.floor(Math.random()*total);
+  }
+  return next===current ? ((current+1)%total) : next;
 }
 function getGalleryPrivacyFromSettings(m){return {
   enabled:parseBool(m.galleryLockEnabled),
@@ -597,7 +622,7 @@ function renderPlaylistSection(){
   const title=$("#playlistTitle");
   const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
-  const active=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
+  const active=getActivePlaylistTracks();
   if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
   if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
   if(!list) return;
@@ -613,46 +638,103 @@ function renderPlaylistSection(){
     item.className="playlist-item";
     item.type="button";
     item.innerHTML=`<div><strong>${escapeHtml(track.title||`Song ${idx+1}`)}</strong><div class="muted">${escapeHtml(track.note||"")}</div></div><span>Play</span>`;
-    item.addEventListener("click",()=>{
-      playlistIndex=idx;
-      applyMusicSource(audio, track.public_url);
-      if(audio) audio.play().catch(()=>{});
-      renderPlaylistControls();
-    });
+    item.addEventListener("click",()=>playPlaylistTrack(idx, true));
     list.appendChild(item);
   });
   if(audio && !audio.dataset.playlistBound){
     audio.dataset.playlistBound="1";
     audio.addEventListener("ended",()=>{
-      const items=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
-      if(items.length>1){
-        playlistIndex=(playlistIndex+1)%items.length;
-        applyMusicSource(audio, items[playlistIndex].public_url);
-        audio.play().catch(()=>{});
+      const items=getActivePlaylistTracks();
+      if(!items.length) return;
+      if(playlistShuffle){
+        playPlaylistTrack(getRandomPlaylistIndex(playlistIndex, items.length), true);
+        return;
+      }
+      if(playlistIndex < items.length - 1){
+        playPlaylistTrack(playlistIndex + 1, true);
+        return;
+      }
+      if(playlistLoop){
+        playPlaylistTrack(0, true);
+      }else{
         renderPlaylistControls();
       }
     });
+    audio.addEventListener("play", renderPlaylistControls);
+    audio.addEventListener("pause", renderPlaylistControls);
+    audio.addEventListener("loadedmetadata", renderPlaylistControls);
   }
   if(audio && !audio.src && active[0]) applyMusicSource(audio, active[0].public_url);
   renderPlaylistControls();
 }
 function renderPlaylistControls(){
-  const tracks=(playlistTracks||[]).filter(t=>t && t.is_active!==false && t.public_url);
+  const tracks=getActivePlaylistTracks();
   const audio=$("#playlistAudio");
-  const prev=$("#playlistPrevBtn"), next=$("#playlistNextBtn"), play=$("#playlistPlayBtn");
-  if(prev) prev.disabled = tracks.length<2;
-  if(next) next.disabled = tracks.length<2;
+  const prev=$("#playlistPrevBtn"), next=$("#playlistNextBtn"), play=$("#playlistPlayBtn"), shuffle=$("#playlistShuffleBtn"), loop=$("#playlistLoopBtn");
+  const hasTracks=tracks.length>0;
+  if(prev) prev.disabled = !hasTracks || tracks.length<2;
+  if(next) next.disabled = !hasTracks || tracks.length<2;
   if(play) play.textContent = audio && !audio.paused ? "Pause" : "Play";
+  if(shuffle){
+    shuffle.classList.toggle("active", playlistShuffle);
+    shuffle.setAttribute("aria-pressed", String(playlistShuffle));
+    shuffle.textContent = playlistShuffle ? "Shuffle On" : "Shuffle";
+  }
+  if(loop){
+    loop.classList.toggle("active", playlistLoop);
+    loop.setAttribute("aria-pressed", String(playlistLoop));
+    loop.textContent = playlistLoop ? "Loop On" : "Loop Off";
+  }
 }
-function playPlaylistTrack(index){
-  const tracks=playlistTracks.filter(t=>t && t.is_active!==false && t.public_url);
+function playPlaylistTrack(index, autoPlay=false){
+  const tracks=getActivePlaylistTracks();
   const audio=$("#playlistAudio");
   if(!tracks.length || !audio) return;
   playlistIndex=((index%tracks.length)+tracks.length)%tracks.length;
   applyMusicSource(audio, tracks[playlistIndex].public_url);
-  audio.play().catch(()=>{});
+  audio.currentTime = 0;
+  if(autoPlay || true){
+    audio.play().catch(()=>{});
+  }
   renderPlaylistControls();
 }
+function stepPlaylist(delta){
+  const tracks=getActivePlaylistTracks();
+  if(!tracks.length) return;
+  if(playlistShuffle){
+    playPlaylistTrack(getRandomPlaylistIndex(playlistIndex, tracks.length), true);
+    return;
+  }
+  playPlaylistTrack(playlistIndex + delta, true);
+}
+function togglePlaylistPlayback(){
+  const audio=$("#playlistAudio");
+  const tracks=getActivePlaylistTracks();
+  if(!audio || !tracks.length) return;
+  if(audio.paused){
+    audio.play().catch(()=>{});
+  }else{
+    audio.pause();
+  }
+  renderPlaylistControls();
+}
+function togglePlaylistShuffle(){
+  playlistShuffle = !playlistShuffle;
+  if(playlistShuffle) playlistLoop = true;
+  renderPlaylistControls();
+}
+function togglePlaylistLoop(){
+  playlistLoop = !playlistLoop;
+  renderPlaylistControls();
+}
+function bindPlaylistControls(){
+  $("#playlistPrevBtn")?.addEventListener("click",()=>stepPlaylist(-1));
+  $("#playlistNextBtn")?.addEventListener("click",()=>stepPlaylist(1));
+  $("#playlistPlayBtn")?.addEventListener("click",togglePlaylistPlayback);
+  $("#playlistShuffleBtn")?.addEventListener("click",togglePlaylistShuffle);
+  $("#playlistLoopBtn")?.addEventListener("click",togglePlaylistLoop);
+}
+bindPlaylistControls();
 function openGift(){const b=$("#giftBox"),r=$("#giftReveal");if(b.classList.contains("opened"))return;b.classList.add("opened");setTimeout(()=>{r.hidden=false;heartBurst(24);confetti(28)},500)}
 function heartBurst(n=12){const w=$("#heartBurst");for(let i=0;i<n;i++){const h=document.createElement("span");h.className="burst-heart";h.textContent="♥";h.style.left=`${45+Math.random()*10}%`;h.style.top=`${48+Math.random()*8}%`;h.style.setProperty("--dx",`${(Math.random()-.5)*260}px`);h.style.setProperty("--dy",`${(Math.random()-.85)*260}px`);w.appendChild(h);setTimeout(()=>h.remove(),1800)}}
 function confetti(n=24){const w=$("#giftConfetti");for(let i=0;i<n;i++){const c=document.createElement("span");c.className="confetti";c.style.left=`${10+Math.random()*80}%`;c.style.setProperty("--dx",`${(Math.random()-.5)*240}px`);c.style.setProperty("--rot",`${Math.random()*360}deg`);w.appendChild(c);setTimeout(()=>c.remove(),1700)}}
@@ -703,7 +785,6 @@ $("#galleryUnlockAnswer")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#galleryUnlockModal")?.hidden) closeGalleryUnlockModal();});
 $("#beginBtn").onclick=()=>document.querySelector(".section-intro")?.scrollIntoView({behavior:"smooth"});$("#brandButton").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});$("#giftBox").onclick=openGift;$("#secretHeart").onclick=()=>{const m=$("#secretMessage");m.hidden=false;m.classList.add("secret-reveal");heartBurst(16)};$("#finalHeart").onclick=()=>{heartBurst(30);confetti(18)};
 $("#commentForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("#commentSubmit"),st=$("#commentStatus");btn.disabled=true;btn.textContent="Sending…";const name=$("#commentName").value.trim()||"Anonymous",message=$("#commentText").value.trim();if(!message){st.textContent="Please write a little message.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}const {error}=await db.from("comments").insert({name,message});if(error){st.textContent="Something went wrong. Please try again.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";return}e.target.reset();st.textContent="❤️ Your message was sent.";btn.disabled=false;btn.textContent="Send your thoughts ❤️";setTimeout(()=>st.textContent="",3500)});
-loadAll().catch(console.error);
 db.channel("public-live-updates").on("postgres_changes",{event:"*",schema:"public",table:"site_settings"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"chapters"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"gallery_items"},loadAll).on("postgres_changes",{event:"*",schema:"public",table:"love_reasons"},loadAll).subscribe();
 
 function tinyHeartBurstAt(x,y,count=6){
@@ -752,4 +833,4 @@ window.addEventListener("resize",updateJourneyRibbon,{passive:true});
 window.addEventListener("scroll",syncMemorySky,{passive:true});
 window.addEventListener("resize",syncMemorySky,{passive:true});
 
-window.addEventListener("load",loadAll);
+window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlaylistControls(); });

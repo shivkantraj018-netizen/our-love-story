@@ -1294,3 +1294,7 @@ body.theme-snow::before{
   opacity:.55 !important;
 }
 
+
+.playlist-controls .mini-btn.active{background:rgba(255,255,255,.16);box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
+.playlist-controls .mini-btn[aria-pressed="true"]{background:rgba(255,255,255,.16)}
+#memorySky{mix-blend-mode:screen}
