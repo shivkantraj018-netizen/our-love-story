@@ -155,12 +155,3 @@ Makes app/admin resilient if playlist JSON parsing fails, adds missing parsePlay
 
 ## v25
 Adds missing public-page helpers (escapeHtml, showBanner), makes the core render functions null-safe, and wraps public rendering steps so one failure won't hide chapters, reasons, photos, or the playlist.
-
-
-## PWA / app mode
-
-This project is now installable like an app.
-
-- Android: open the site in Chrome and tap Install App / Add to Home Screen.
-- iPhone: open the site in Safari and tap Share → Add to Home Screen.
-- The project includes a web app manifest, service worker, and install icons.
