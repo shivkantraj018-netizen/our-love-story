@@ -6,6 +6,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="application-name" content="Our Love Story">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Our Love Story">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+
 </head>
 <body class="public-page">
 <div id="stars"></div><div id="petals"></div><div id="fireflies"></div><div id="memorySky"></div><div id="heartBurst"></div>
@@ -14,6 +23,7 @@
 <button class="music-fab glass" id="musicFab" type="button" aria-label="Mute or unmute background music">
   <span id="musicFabIcon">🔇</span><span id="musicFabText">Music off</span>
 </button>
+<button class="music-fab glass" id="installFab" type="button" aria-label="Install app" style="right:14px;top:82px;">📲 Install</button>
 <div class="section-dock glass" id="sectionDock" aria-label="Website sections">  
   <button type="button" data-section="story">📖 Story</button>
   <button type="button" data-section="photosSection">📸 Photos</button>
@@ -35,7 +45,7 @@
 <div class="section-intro" id="story"><span class="eyebrow" id="storyEyebrow">OUR STORY</span><h2 id="storyTitle">Every chapter is ours.</h2><p id="storyIntro">Scroll slowly. Every memory is a little piece of home.</p></div>
 <div id="chapters"></div>
 <section class="special-section" id="photosSection"><div class="chapter-card glass"><div class="eyebrow" id="photosEyebrow">PHOTOS</div><h3 id="photosTitle">Little pieces of us</h3><div class="gallery-privacy-banner glass" id="galleryPrivacyBanner" hidden><div><div class="eyebrow" id="galleryPrivacyEyebrow">GALLERY PRIVACY</div><h4 id="galleryPrivacyTitle">Our Precious Memories ❤️</h4><p id="galleryPrivacyDescription">Only someone who truly knows our journey can unlock these memories.</p></div><button class="glow-btn small" id="galleryUnlockOpenBtn" type="button">Unlock gallery</button></div><div class="gallery-grid" id="gallery"></div><div class="spotlight-wrap" id="spotlightWrap" hidden><div class="spotlight-photo glass"><button class="spotlight-close" id="spotlightClose" type="button">×</button><img id="spotlightImage" alt=""><div class="spotlight-caption" id="spotlightCaption"></div></div></div></div></section>
-
+<section class="special-section" id="letterSection"><div class="letter-card glass" id="loveLetterCard" tabindex="0" role="button" aria-label="Open love letter"><div class="eyebrow" id="letterEyebrow">A LETTER FOR YOU</div><h3 id="loveLetterTitle">A Love Letter</h3><button class="letter-seal-button" id="letterSeal" type="button" aria-label="Open love letter">♥</button><div class="letter-paper"><div class="letter-sound-hint" id="letterSoundHint">Tap the seal to open ♥</div><div class="letter-ribbon">♥</div><p id="loveLetterBody"></p></div></div></section>
 <section class="special-section" id="reasonsSection"><div class="chapter-card glass"><div class="eyebrow" id="reasonsEyebrow">100 REASONS</div><h3 id="reasonsTitle">Open them one by one.</h3><p class="section-note" id="reasonsIntro">Every envelope has a little piece of my heart. Tap one to open it. 💌</p><div class="envelope-grid" id="reasons"></div></div></section>
 <section class="special-section" id="giftSection"><div class="gift-card glass"><div class="eyebrow" id="giftEyebrow">A LITTLE SURPRISE</div><h3 id="giftTitle">A Gift For You 🎁</h3><p id="giftHint">There is something inside. Tap the gift when you are ready.</p><button class="gift-box" id="giftBox" aria-label="Open your gift"><span class="gift-lid"></span><span class="gift-body"></span><span class="gift-ribbon-v"></span><span class="gift-ribbon-h"></span><span class="gift-bow left"></span><span class="gift-bow right"></span></button><div class="gift-reveal glass" id="giftReveal" hidden><img id="giftImage" alt="" hidden><div class="gift-poem" id="giftPoem"></div><div class="gift-confetti" id="giftConfetti"></div></div></div></section>
 <section class="special-section" id="secretSection"><div class="secret-card glass"><div class="eyebrow" id="secretEyebrow">A LITTLE SECRET</div><h3 id="secretTitle">Tap my heart when you miss me.</h3><button class="secret-heart" id="secretHeart" aria-label="Open secret message">♥</button><p id="secretMessage" class="secret-message" hidden></p></div></section>
@@ -61,8 +71,7 @@
     </div>
   </div>
 </section>
-<section class="final-section" id="ending"><div class="final-card"><div class="final-stars"></div><div class="moon small"></div><div class="script-title" id="endingEyebrow">Forever, my love</div><h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2><p id="finalText">• You reached the end of our little story. Keep scrolling for one last secret.</p><button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button></div></section>
-<section class="special-section ending-secret-section" id="letterSection" hidden><div class="letter-card glass" id="loveLetterCard" tabindex="0" role="button" aria-label="Open love letter"><div class="eyebrow" id="letterEyebrow">A LETTER FOR YOU</div><h3 id="loveLetterTitle">A Love Letter</h3><button class="letter-seal-button" id="letterSeal" type="button" aria-label="Open love letter">♥</button><div class="letter-paper"><div class="letter-sound-hint" id="letterSoundHint">Tap the seal to open ♥</div><div class="letter-ribbon">♥</div><p id="loveLetterBody"></p></div><div class="letter-lock" id="loveLetterLock"><div class="eyebrow">LOCKED LOVE NOTE</div><h4 id="loveLetterLockTitle">A secret note waits here.</h4><p id="loveLetterLockHint">Enter the password to unlock it.</p><label class="public-label lock-input">Password<input id="loveLetterPasswordInput" type="password" autocomplete="off" placeholder="Type the password here"></label><div class="gallery-unlock-footer lock-actions"><button class="glow-btn small" id="loveLetterUnlockBtn" type="button">Unlock note</button><div class="gallery-unlock-status" id="loveLetterLockStatus"></div></div></div></div></section>
+<section class="final-section" id="ending"><div class="final-card"><div class="final-stars"></div><div class="moon small"></div><div class="script-title" id="endingEyebrow">Forever, my love</div><h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2><p id="finalText">Thank you for being my favorite chapter of life.</p><button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button></div></section>
 </section></main>
 <div id="galleryUnlockModal" class="gallery-unlock-modal" hidden>
   <div class="gallery-unlock-card glass" role="dialog" aria-modal="true" aria-labelledby="galleryUnlockTitle">

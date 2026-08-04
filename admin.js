@@ -170,8 +170,6 @@ function fillAdminFields(){
   $("#countdownAtInput").value=dt?formatLocalDateTime(dt):"";
 
   $("#loveLetterTitleInput").value=cache.settings.loveLetterTitle||"A Love Letter";
-  $("#loveLetterPasswordInput").value=cache.settings.loveLetterPassword||"";
-  $("#loveLetterHintInput").value=cache.settings.loveLetterHint||"Enter the password to unlock it.";
   $("#loveLetterBodyInput").value=cache.settings.loveLetterBody||"";
 
   $("#giftTitleInput").value=cache.settings.giftTitle||"A Gift For You 🎁";
@@ -191,7 +189,7 @@ function fillAdminFields(){
   safeSetChecked("#tapEffectsEnabledInput", cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1"));
   safeSetChecked("#journeyRibbonEnabledInput", cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1"));
   safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
-  safeSetChecked("#endingSceneEnabledInput", cache.settings.endingSceneEnabled===undefined ? true : (cache.settings.endingSceneEnabled===true || cache.settings.endingSceneEnabled==="true" || cache.settings.endingSceneEnabled===1 || cache.settings.endingSceneEnabled==="1"));
+  safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
 
   $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
   $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
@@ -272,8 +270,6 @@ $("#saveSettingsBtn").addEventListener("click",()=>saveSettingsGroup({
 
 $("#saveLetterBtn").addEventListener("click",()=>saveSettingsGroup({
   loveLetterTitle:$("#loveLetterTitleInput").value.trim(),
-  loveLetterPassword:$("#loveLetterPasswordInput").value.trim(),
-  loveLetterHint:$("#loveLetterHintInput").value.trim(),
   loveLetterBody:$("#loveLetterBodyInput").value
 },"saveLetterBtn","letterSaved","Love letter saved."));
 
@@ -301,8 +297,7 @@ $("#saveMagicBtn").addEventListener("click",()=>saveSettingsGroup({
   shootingStarsEnabled:$("#shootingStarsEnabledInput").checked,
   tapEffectsEnabled:$("#tapEffectsEnabledInput").checked,
   journeyRibbonEnabled:$("#journeyRibbonEnabledInput").checked,
-  memorySkyEnabled:$("#memorySkyEnabledInput").checked,
-  endingSceneEnabled:$("#endingSceneEnabledInput").checked
+  memorySkyEnabled:$("#memorySkyEnabledInput").checked
 },"saveMagicBtn","magicSaved","Magic settings saved."));
 $("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
   galleryLockEnabled:$("#galleryLockEnabledInput").checked,
@@ -798,3 +793,10 @@ $("#savePlaylistBtn").addEventListener("click",()=>saveSettingsGroup({
   musicPlaylist:$("#musicPlaylistInput").value.trim()
 },"savePlaylistBtn","playlistSaved","Playlist saved."));
 
+
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}

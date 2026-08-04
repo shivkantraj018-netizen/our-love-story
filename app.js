@@ -6,7 +6,6 @@ let galleryPrivacyState={unlocked:false,attemptsLeft:3,cooldownUntil:0};
 let galleryRenderKey="";
 let paperAudioCtx=null;
 let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true,starsEnabled:true,petalsEnabled:true,firefliesEnabled:true,shootingStarsEnabled:true,tapEffectsEnabled:true,journeyRibbonEnabled:true,memorySkyEnabled:true};
-let endingState={enabled:true,password:"",hint:"Enter the password to unlock it.",revealed:false,unlocked:false,revealProgress:0,touchActive:false,touchStartY:0};
 let journeyRaf=0;
 let magicTimers={shootingStar:null,heroFloat:null};
 let currentSettings={playlistTitle:"My playlist",playlistNote:"A small note for the playlist"};
@@ -23,89 +22,6 @@ function syncMemorySky(){
   const rect=ending.getBoundingClientRect();
   const visible=rect.top < window.innerHeight*0.72 && rect.bottom > window.innerHeight*0.28;
   mem.classList.toggle("visible", visible && magicState.memorySkyEnabled);
-}
-
-function isAtPageEnd(){
-  const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
-  return window.scrollY >= max - 4;
-}
-function updateEndingFinalCue(){
-  const ending=$("#ending");
-  if(!ending || !endingState.enabled) return;
-  const finalText=$("#finalText");
-  const nearEnd=isAtPageEnd() || ending.getBoundingClientRect().top < window.innerHeight*0.84;
-  document.body.classList.toggle("ending-ready", nearEnd);
-  if(finalText) finalText.classList.toggle("reward-visible", nearEnd);
-}
-function renderEndingLetterLock(){
-  const lock=$("#loveLetterLock");
-  const card=$("#loveLetterCard");
-  if(!lock || !card) return;
-  const hint=$("#loveLetterLockHint");
-  const status=$("#loveLetterLockStatus");
-  const passwordInput=$("#loveLetterPasswordInput");
-  const lockTitle=$("#loveLetterLockTitle");
-  if(lockTitle) lockTitle.textContent = endingState.unlocked ? "The secret note is open." : "A secret note waits here.";
-  if(hint) hint.textContent = endingState.hint || "Enter the password to unlock it.";
-  if(status) status.textContent = endingState.unlocked ? "Unlocked ❤️" : "";
-  if(passwordInput) passwordInput.value = "";
-  lock.hidden = endingState.unlocked;
-  card.classList.toggle("locked", !endingState.unlocked);
-}
-function openEndingLetter(){
-  const card=$("#loveLetterCard"); if(!card || !endingState.enabled || !endingState.revealed || !endingState.unlocked) return;
-  if(card.classList.contains("opened")) return;
-  card.classList.add("opened");
-  card.classList.remove("opened-final");
-  playPaperSound();
-  heartBurst(12);
-  clearTimeout(card._letterTimer);
-  card._letterTimer=setTimeout(()=>card.classList.add("opened-final"),740);
-}
-function revealEndingSurprise(){
-  if(!endingState.enabled || endingState.revealed) return;
-  endingState.revealed = true;
-  const section=$("#letterSection");
-  if(section){
-    section.hidden = false;
-    requestAnimationFrame(()=>section.classList.add("revealed"));
-    section.scrollIntoView({behavior:"smooth",block:"start"});
-  }
-  updateEndingFinalCue();
-  renderEndingLetterLock();
-}
-function tryUnlockEndingLetter(){
-  if(!endingState.enabled || !endingState.revealed) return;
-  const input=$("#loveLetterPasswordInput");
-  const status=$("#loveLetterLockStatus");
-  const value=(input?.value || "").trim();
-  if(!endingState.password){
-    endingState.unlocked=true;
-    if(status) status.textContent="No password set — unlocked.";
-    renderEndingLetterLock();
-    openEndingLetter();
-    return;
-  }
-  if(value === endingState.password){
-    endingState.unlocked=true;
-    if(status) status.textContent="Correct password. Opening now…";
-    renderEndingLetterLock();
-    setTimeout(()=>openEndingLetter(),280);
-  } else {
-    if(status) status.textContent="Wrong password. Try again.";
-    if(input) input.select();
-    heartBurst(4);
-  }
-}
-function handleEndingOverscroll(deltaY){
-  if(!endingState.enabled || endingState.revealed) return;
-  if(!isAtPageEnd()) { endingState.revealProgress = 0; return; }
-  if(deltaY <= 0) return;
-  endingState.revealProgress += deltaY;
-  if(endingState.revealProgress >= 72){
-    revealEndingSurprise();
-    endingState.revealProgress = 0;
-  }
 }
 
 function initSectionDock(){
@@ -541,11 +457,6 @@ async function loadAll(){
     const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
     $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
     $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
-    endingState.enabled = m.endingSceneEnabled===undefined ? true : parseBool(m.endingSceneEnabled);
-    endingState.password = String(m.loveLetterPassword||"");
-    endingState.hint = String(m.loveLetterHint||"Enter the password to unlock it.");
-    endingState.revealed = false;
-    endingState.unlocked = false;
     renderGift(m.giftImageUrl,m.giftPoem);
     const audio=$("#music");
     if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
@@ -570,8 +481,6 @@ async function loadAll(){
     try{ syncGalleryPrivacyUI(); }catch(err){ console.error("syncGalleryPrivacyUI", err); }
     try{ updateJourneyRibbon(); }catch(err){ console.error("updateJourneyRibbon", err); }
     try{ syncMemorySky(); }catch(err){ console.error("syncMemorySky", err); }
-    try{ updateEndingFinalCue(); }catch(err){ console.error("updateEndingFinalCue", err); }
-    try{ renderEndingLetterLock(); }catch(err){ console.error("renderEndingLetterLock", err); }
   }catch(err){
     console.error("loadAll failed", err);
     showBanner(err.message || String(err), false);
@@ -899,12 +808,14 @@ function initHeroRomance(){
   }
 }
 initHeroRomance();
-$("#loveLetterUnlockBtn")?.addEventListener("click",()=>tryUnlockEndingLetter());
-$("#loveLetterPasswordInput")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();tryUnlockEndingLetter();}});
 function openLoveLetter(){
-  if(!endingState.enabled || !endingState.revealed) return;
-  if(!endingState.unlocked){ tryUnlockEndingLetter(); return; }
-  openEndingLetter();
+  const card=$("#loveLetterCard");if(!card||card.classList.contains("opened")) return;
+  card.classList.add("opened");
+  card.classList.remove("opened-final");
+  playPaperSound();
+  heartBurst(12);
+  clearTimeout(card._letterTimer);
+  card._letterTimer=setTimeout(()=>card.classList.add("opened-final"),740);
 }
 function closeLoveLetter(){
   const card=$("#loveLetterCard");if(!card)return;
@@ -922,17 +833,44 @@ window.addEventListener("resize",updateJourneyRibbon,{passive:true});
 window.addEventListener("scroll",syncMemorySky,{passive:true});
 window.addEventListener("resize",syncMemorySky,{passive:true});
 
-window.addEventListener("scroll",updateEndingFinalCue,{passive:true});
-window.addEventListener("resize",updateEndingFinalCue,{passive:true});
-window.addEventListener("wheel",e=>{ if(e.deltaY>0) handleEndingOverscroll(e.deltaY); },{passive:true});
-window.addEventListener("touchstart",e=>{ endingState.touchActive=true; endingState.touchStartY=e.touches[0]?.clientY ?? 0; },{passive:true});
-window.addEventListener("touchmove",e=>{
-  if(!endingState.touchActive) return;
-  const currentY=e.touches[0]?.clientY ?? endingState.touchStartY;
-  const delta=endingState.touchStartY-currentY;
-  if(delta>12) handleEndingOverscroll(delta);
-},{passive:true});
-window.addEventListener("touchend",()=>{ endingState.touchActive=false; endingState.revealProgress=0; },{passive:true});
-window.addEventListener("touchcancel",()=>{ endingState.touchActive=false; endingState.revealProgress=0; },{passive:true});
-
 window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlaylistControls(); });
+
+
+// PWA install + service worker
+(function(){
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  let deferredInstallPrompt = null;
+  const installFab = document.getElementById('installFab');
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (installFab) installFab.hidden = false;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    if (installFab) installFab.hidden = true;
+  });
+
+  if (installFab) {
+    installFab.hidden = true;
+    installFab.addEventListener('click', async () => {
+      if (!deferredInstallPrompt) {
+        installFab.textContent = 'Use browser menu';
+        setTimeout(() => installFab.textContent = '📲 Install', 1800);
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      try { await deferredInstallPrompt.userChoice; } catch(e) {}
+      deferredInstallPrompt = null;
+      installFab.hidden = true;
+    });
+  }
+})();
+

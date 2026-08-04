@@ -9,6 +9,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="application-name" content="Our Love Story">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Our Love Story">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+
 </head>
 <body class="admin-page">
   <div id="stars"></div>
@@ -101,7 +110,6 @@
           <label class="toggle-field"><span>Enable tap effects</span><input type="checkbox" id="tapEffectsEnabledInput"></label>
           <label class="toggle-field"><span>Enable journey ribbon</span><input type="checkbox" id="journeyRibbonEnabledInput"></label>
           <label class="toggle-field"><span>Enable memory sky</span><input type="checkbox" id="memorySkyEnabledInput"></label>
-          <label class="toggle-field"><span>Enable ending scene</span><input type="checkbox" id="endingSceneEnabledInput"></label>
         </div>
         <button class="save-btn" id="saveMagicBtn" type="button">Save magic settings</button>
         <div class="saved-state" id="magicSaved">No unsaved changes</div>
@@ -121,8 +129,6 @@
         </div>
         <div class="form-grid">
           <label>Love letter section name<input id="loveLetterTitleInput"></label>
-          <label>Hidden letter password<input id="loveLetterPasswordInput" placeholder="Password to unlock at the end"></label>
-          <label>Hidden letter hint<input id="loveLetterHintInput" placeholder="Shown before unlock"></label>
           <label style="grid-column:1/-1">Letter<textarea id="loveLetterBodyInput" rows="12" placeholder="Write your letter here..."></textarea></label>
         </div>
         <button class="save-btn" id="saveLetterBtn">Save love letter</button>
