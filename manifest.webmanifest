@@ -2,7 +2,7 @@
   "name": "Our Love Story",
   "short_name": "Love Story",
   "description": "A romantic couple website that can be installed like an app.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -30,5 +30,6 @@
       "sizes": "144x144",
       "type": "image/png"
     }
-  ]
+  ],
+  "id": "./"
 }

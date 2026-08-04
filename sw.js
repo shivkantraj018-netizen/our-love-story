@@ -1,4 +1,4 @@
-const CACHE_NAME = 'our-love-story-pwa-v2';
+const CACHE_NAME = 'our-love-story-pwa-v3';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -11,7 +11,11 @@ const CORE_ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-180.png',
-  './icons/icon-144.png'
+  './icons/icon-144.png',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-180.png',
+  './icon-144.png'
 ];
 
 self.addEventListener('install', event => {
