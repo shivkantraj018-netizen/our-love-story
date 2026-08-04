@@ -9,7 +9,7 @@ let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true
 let endingState={enabled:true,password:"",hint:"Enter the password to unlock it.",revealed:false,unlocked:false,revealProgress:0,touchActive:false,touchStartY:0};
 let journeyRaf=0;
 let magicTimers={shootingStar:null,heroFloat:null};
-let currentSettings={playlistTitle:"My playlist",playlistNote:"A small note for the playlist"};
+let currentSettings={playlistTitle:"My playlist"};
 let playlistTracks=[];
 let playlistIndex=0;
 let playlistShuffle=false;
@@ -551,7 +551,6 @@ async function loadAll(){
     const audio=$("#music");
     if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
     currentSettings.playlistTitle=m.playlistTitle||"My playlist";
-    currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
     playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
       id:t.id||`track-${i}`,
       title:t.title||`Song ${i+1}`,
@@ -712,13 +711,11 @@ function renderGift(imgUrl,poem){const box=$("#giftBox"),rev=$("#giftReveal"),im
 function renderPlaylistSection(){
   const list=$("#playlistList");
   const title=$("#playlistTitle");
-  const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
   const toggle=$("#playlistToggleBtn");
   const active=getActivePlaylistTracks();
   const visible=playlistExpanded ? active : active.slice(0,4);
   if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
-  if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
   if(toggle){
     toggle.hidden = active.length <= 4;
     toggle.textContent = playlistExpanded ? "Show fewer songs ♡" : `Open full playlist (${active.length}) ♫`;
@@ -747,7 +744,7 @@ function renderPlaylistSection(){
     const more=document.createElement("button");
     more.type="button";
     more.className="playlist-item playlist-more";
-    more.innerHTML=`<div><strong>More songs waiting…</strong><div class="muted">Tap to open the full playlist and keep the page beautiful.</div></div><span>Open</span>`;
+    more.innerHTML=`<div><strong>More songs waiting…</strong></div><span>Open</span>`;
     more.addEventListener("click",()=>{ playlistExpanded=true; renderPlaylistSection(); });
     list.appendChild(more);
   }
