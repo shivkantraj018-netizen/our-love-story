@@ -1298,3 +1298,5 @@ body.theme-snow::before{
 .playlist-controls .mini-btn.active{background:rgba(255,255,255,.16);box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
 .playlist-controls .mini-btn[aria-pressed="true"]{background:rgba(255,255,255,.16)}
 #memorySky{mix-blend-mode:screen}
+
+.install-hint{position:fixed;right:14px;top:132px;z-index:21;padding:8px 12px;border-radius:999px;background:rgba(20,10,34,.72);color:#f8e6a7;border:1px solid rgba(255,255,255,.16);font-size:12px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
