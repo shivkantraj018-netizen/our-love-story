@@ -16,7 +16,6 @@ let cache = { settings:{}, chapters:[], reasons:[], gallery:[] };
 function safeSetValue(sel, value){ const el=$(sel); if(el) el.value=value ?? ""; }
 function safeSetChecked(sel, value){ const el=$(sel); if(el) el.checked=!!value; }
 const GALLERY_PRIVACY_DEFAULTS = { enabled:false, title:"Our Precious Memories ❤️", description:"Only someone who truly knows our journey can unlock these memories.", question:"What is our special password?", hint:"Use the answer you know from our journey.", answer:"", wrongTitle:"Wrong answer", wrongMessage:"That is not the correct answer. Try again.", maxAttempts:3, cooldownMinutes:15 };
-const ENDING_SCENE_DEFAULTS = { enabled:true, rewardTitle:"You made it to the end ✨", rewardText:"The page is over, but our love story keeps glowing.", secretTitle:"A hidden message waits here", secretPassword:"", secretMessage:"Write something only the two of you would understand." };
 
 function showBanner(text,ok=true){
   const el=$("#saveBanner");
@@ -171,6 +170,8 @@ function fillAdminFields(){
   $("#countdownAtInput").value=dt?formatLocalDateTime(dt):"";
 
   $("#loveLetterTitleInput").value=cache.settings.loveLetterTitle||"A Love Letter";
+  $("#loveLetterPasswordInput").value=cache.settings.loveLetterPassword||"";
+  $("#loveLetterHintInput").value=cache.settings.loveLetterHint||"Enter the password to unlock it.";
   $("#loveLetterBodyInput").value=cache.settings.loveLetterBody||"";
 
   $("#giftTitleInput").value=cache.settings.giftTitle||"A Gift For You 🎁";
@@ -181,12 +182,6 @@ function fillAdminFields(){
   $("#secretMessageInput").value=cache.settings.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
 
   safeSetChecked("#siteThemeEnabledInput", cache.settings.siteThemeEnabled===undefined ? true : (cache.settings.siteThemeEnabled===true || cache.settings.siteThemeEnabled==="true" || cache.settings.siteThemeEnabled===1 || cache.settings.siteThemeEnabled==="1"));
-  safeSetChecked("#endingSceneEnabledInput", cache.settings.endingSceneEnabled===undefined ? true : (cache.settings.endingSceneEnabled===true || cache.settings.endingSceneEnabled==="true" || cache.settings.endingSceneEnabled===1 || cache.settings.endingSceneEnabled==="1"));
-  $("#endingRewardTitleInput").value=cache.settings.endingRewardTitle||ENDING_SCENE_DEFAULTS.rewardTitle;
-  $("#endingRewardTextInput").value=cache.settings.endingRewardText||ENDING_SCENE_DEFAULTS.rewardText;
-  $("#endingSecretTitleInput").value=cache.settings.endingSecretTitle||ENDING_SCENE_DEFAULTS.secretTitle;
-  $("#endingSecretPasswordInput").value=cache.settings.endingSecretPassword||ENDING_SCENE_DEFAULTS.secretPassword;
-  $("#endingSecretMessageInput").value=cache.settings.endingSecretMessage||ENDING_SCENE_DEFAULTS.secretMessage;
   safeSetValue("#siteThemePresetInput", cache.settings.siteThemePreset||"cherry");
   safeSetChecked("#heroCinematicEnabledInput", cache.settings.heroCinematicEnabled===undefined ? true : (cache.settings.heroCinematicEnabled===true || cache.settings.heroCinematicEnabled==="true" || cache.settings.heroCinematicEnabled===1 || cache.settings.heroCinematicEnabled==="1"));
   safeSetChecked("#starsEnabledInput", cache.settings.starsEnabled===undefined ? true : (cache.settings.starsEnabled===true || cache.settings.starsEnabled==="true" || cache.settings.starsEnabled===1 || cache.settings.starsEnabled==="1"));
@@ -196,7 +191,7 @@ function fillAdminFields(){
   safeSetChecked("#tapEffectsEnabledInput", cache.settings.tapEffectsEnabled===undefined ? true : (cache.settings.tapEffectsEnabled===true || cache.settings.tapEffectsEnabled==="true" || cache.settings.tapEffectsEnabled===1 || cache.settings.tapEffectsEnabled==="1"));
   safeSetChecked("#journeyRibbonEnabledInput", cache.settings.journeyRibbonEnabled===undefined ? true : (cache.settings.journeyRibbonEnabled===true || cache.settings.journeyRibbonEnabled==="true" || cache.settings.journeyRibbonEnabled===1 || cache.settings.journeyRibbonEnabled==="1"));
   safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
-  safeSetChecked("#memorySkyEnabledInput", cache.settings.memorySkyEnabled===undefined ? true : (cache.settings.memorySkyEnabled===true || cache.settings.memorySkyEnabled==="true" || cache.settings.memorySkyEnabled===1 || cache.settings.memorySkyEnabled==="1"));
+  safeSetChecked("#endingSceneEnabledInput", cache.settings.endingSceneEnabled===undefined ? true : (cache.settings.endingSceneEnabled===true || cache.settings.endingSceneEnabled==="true" || cache.settings.endingSceneEnabled===1 || cache.settings.endingSceneEnabled==="1"));
 
   $("#galleryLockEnabledInput").checked=cache.settings.galleryLockEnabled===true||cache.settings.galleryLockEnabled==="true";
   $("#galleryLockTitleInput").value=cache.settings.galleryLockTitle||GALLERY_PRIVACY_DEFAULTS.title;
@@ -219,7 +214,7 @@ function fillAdminFields(){
   renderPlaylistPreview();
   if(typeof renderPlaylistNav==="function") renderPlaylistNav();
 
-  ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved","endingSceneSaved"].forEach(id=>{
+  ["settingsSaved","letterSaved","giftSaved","secretSaved","musicSaved"].forEach(id=>{
     const el=$("#"+id);
     if(el) el.textContent="No unsaved changes";
   });
@@ -254,7 +249,6 @@ async function saveSettingsGroup(values,buttonId,statusId,successMessage){
       :buttonId==="saveGiftBtn"?"Save gift"
       :buttonId==="saveSecretBtn"?"Save secret"
       :buttonId==="saveGalleryPrivacyBtn"?"Save gallery privacy"
-      :buttonId==="saveEndingSceneBtn"?"Save ending scene"
       :"Save song text";
   }
 }
@@ -278,6 +272,8 @@ $("#saveSettingsBtn").addEventListener("click",()=>saveSettingsGroup({
 
 $("#saveLetterBtn").addEventListener("click",()=>saveSettingsGroup({
   loveLetterTitle:$("#loveLetterTitleInput").value.trim(),
+  loveLetterPassword:$("#loveLetterPasswordInput").value.trim(),
+  loveLetterHint:$("#loveLetterHintInput").value.trim(),
   loveLetterBody:$("#loveLetterBodyInput").value
 },"saveLetterBtn","letterSaved","Love letter saved."));
 
@@ -305,7 +301,8 @@ $("#saveMagicBtn").addEventListener("click",()=>saveSettingsGroup({
   shootingStarsEnabled:$("#shootingStarsEnabledInput").checked,
   tapEffectsEnabled:$("#tapEffectsEnabledInput").checked,
   journeyRibbonEnabled:$("#journeyRibbonEnabledInput").checked,
-  memorySkyEnabled:$("#memorySkyEnabledInput").checked
+  memorySkyEnabled:$("#memorySkyEnabledInput").checked,
+  endingSceneEnabled:$("#endingSceneEnabledInput").checked
 },"saveMagicBtn","magicSaved","Magic settings saved."));
 $("#saveGalleryPrivacyBtn").addEventListener("click",()=>saveSettingsGroup({
   galleryLockEnabled:$("#galleryLockEnabledInput").checked,
@@ -327,15 +324,6 @@ $("#saveMusicBtn").addEventListener("click",()=>saveSettingsGroup({
   musicTitle:$("#musicTitleInput").value.trim(),
   musicNote:$("#musicNoteInput").value.trim()
 },"saveMusicBtn","musicSaved","Song text saved."));
-
-$("#saveEndingSceneBtn").addEventListener("click",()=>saveSettingsGroup({
-  endingSceneEnabled:$("#endingSceneEnabledInput").checked,
-  endingRewardTitle:$("#endingRewardTitleInput").value.trim(),
-  endingRewardText:$("#endingRewardTextInput").value.trim(),
-  endingSecretTitle:$("#endingSecretTitleInput").value.trim(),
-  endingSecretPassword:$("#endingSecretPasswordInput").value.trim(),
-  endingSecretMessage:$("#endingSecretMessageInput").value
-},"saveEndingSceneBtn","endingSceneSaved","Ending scene saved."));
 
 function renderMusicState(){
   const url=cache.settings.musicUrl||"";
