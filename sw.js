@@ -1,4 +1,4 @@
-const CACHE_NAME = 'our-love-story-pwa-v1';
+const CACHE_NAME = 'our-love-story-pwa-v2';
 const CORE_ASSETS = [
   './',
   './index.html',

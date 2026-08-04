@@ -14,6 +14,62 @@ let playlistIndex=0;
 let playlistShuffle=false;
 let playlistLoop=true;
 
+const APP_DATA_CACHE_KEY = "our-love-story-app-data-v1";
+function safeJsonParse(text, fallback=null){
+  try { return JSON.parse(text); } catch { return fallback; }
+}
+function loadAppSnapshot(){
+  try {
+    return safeJsonParse(localStorage.getItem(APP_DATA_CACHE_KEY), null);
+  } catch {
+    return null;
+  }
+}
+function saveAppSnapshot(snapshot){
+  try {
+    localStorage.setItem(APP_DATA_CACHE_KEY, JSON.stringify(snapshot));
+  } catch {}
+}
+function applyAppSnapshot(snapshot, fromCache=false){
+  if(!snapshot) return false;
+  const settings = snapshot.settings || [];
+  const chapters = snapshot.chapters || [];
+  const gallery = snapshot.gallery || [];
+  const reasons = snapshot.reasons || [];
+  const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
+  const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow","playlistEyebrow","playlistTitle","playlistIntro"];
+  TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
+  ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
+  const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
+  $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
+  $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
+  renderGift(m.giftImageUrl,m.giftPoem);
+  const audio=$("#music");
+  if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
+  currentSettings.playlistTitle=m.playlistTitle||"My playlist";
+  currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
+  playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
+    id:t.id||`track-${i}`,
+    title:t.title||`Song ${i+1}`,
+    note:t.note||"",
+    public_url:t.public_url||t.url||"",
+    storage_path:t.storage_path||"",
+    is_active:t.is_active!==false
+  }));
+  try{ renderPlaylistSection(); }catch(err){ console.error("renderPlaylistSection", err); }
+  startCountdown(m.countdownAt);
+  galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
+  magicState=getMagicStateFromSettings(m);applyMagicState();
+  try{ renderNav(chapters||[]); }catch(err){ console.error("renderNav", err); }
+  try{ renderChapters(chapters||[]); }catch(err){ console.error("renderChapters", err); }
+  try{ galleryItems=gallery||[]; renderGallery(galleryItems); }catch(err){ console.error("renderGallery", err); }
+  try{ renderReasons(reasons||[]); }catch(err){ console.error("renderReasons", err); }
+  try{ syncGalleryPrivacyUI(); }catch(err){ console.error("syncGalleryPrivacyUI", err); }
+  try{ updateJourneyRibbon(); }catch(err){ console.error("updateJourneyRibbon", err); }
+  try{ syncMemorySky(); }catch(err){ console.error("syncMemorySky", err); }
+  if(fromCache){ showBanner("Offline mode: showing saved memories.", true); }
+  return true;
+}
 
 function syncMemorySky(){
   const mem=$("#memorySky");
@@ -450,42 +506,23 @@ async function loadAll(){
       db.from("gallery_items").select("*").order("sort_order"),
       db.from("love_reasons").select("*").order("sort_order")
     ]);
-    const m=Object.fromEntries((settings||[]).map(x=>[x.key,x.value]));
-    const TEXT_KEYS=["storyEyebrow","storyTitle","storyIntro","photosEyebrow","photosTitle","letterEyebrow","letterSoundHint","reasonsEyebrow","reasonsTitle","reasonsIntro","giftEyebrow","secretEyebrow","gameEyebrow","commentEyebrow","commentIntro","countdownEyebrow","musicEyebrow","endingEyebrow","footerText","galleryPrivacyEyebrow","playlistEyebrow","playlistTitle","playlistIntro"];
-    TEXT_KEYS.forEach(k=>{const el=$("#"+k);if(el&&m[k]!==undefined)el.textContent=m[k];});
-    ["heroTitle","heroHeadline","heroSubline","finalTitle","finalText","loveLetterTitle","giftTitle","giftHint","secretTitle","commentTitle","gameTitle","gameIntro","countdownTitle","musicTitle","musicNote","galleryLockTitle","galleryLockDescription","galleryLockQuestion","galleryLockWrongTitle"].forEach(id=>{const el=$("#"+id);if(el)el.textContent=m[id]||el.textContent});
-    const romanticEl=$("#romanticNote");if(romanticEl)romanticEl.textContent=m.romanticNote||romanticEl.textContent;
-    $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
-    $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
-    renderGift(m.giftImageUrl,m.giftPoem);
-    const audio=$("#music");
-    if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
-    currentSettings.playlistTitle=m.playlistTitle||"My playlist";
-    currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
-    playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
-      id:t.id||`track-${i}`,
-      title:t.title||`Song ${i+1}`,
-      note:t.note||"",
-      public_url:t.public_url||t.url||"",
-      storage_path:t.storage_path||"",
-      is_active:t.is_active!==false
-    }));
-    try{ renderPlaylistSection(); }catch(err){ console.error("renderPlaylistSection", err); }
-    startCountdown(m.countdownAt);
-    galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
-    magicState=getMagicStateFromSettings(m);applyMagicState();
-    try{ renderNav(chapters||[]); }catch(err){ console.error("renderNav", err); }
-    try{ renderChapters(chapters||[]); }catch(err){ console.error("renderChapters", err); }
-    try{ galleryItems=gallery||[]; renderGallery(galleryItems); }catch(err){ console.error("renderGallery", err); }
-    try{ renderReasons(reasons||[]); }catch(err){ console.error("renderReasons", err); }
-    try{ syncGalleryPrivacyUI(); }catch(err){ console.error("syncGalleryPrivacyUI", err); }
-    try{ updateJourneyRibbon(); }catch(err){ console.error("updateJourneyRibbon", err); }
-    try{ syncMemorySky(); }catch(err){ console.error("syncMemorySky", err); }
+    const snapshot = {
+      settings: settings || [],
+      chapters: chapters || [],
+      gallery: gallery || [],
+      reasons: reasons || [],
+      savedAt: Date.now()
+    };
+    saveAppSnapshot(snapshot);
+    applyAppSnapshot(snapshot, false);
   }catch(err){
     console.error("loadAll failed", err);
+    const snapshot = loadAppSnapshot();
+    if(snapshot && applyAppSnapshot(snapshot, true)) return;
     showBanner(err.message || String(err), false);
   }
 }
+
 function renderNav(cs){
   const n=$("#chapterNav");
   if(!n) return;
@@ -855,21 +892,21 @@ window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlayl
 
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
-    if (installFab) installFab.hidden = true;
+    if (installFab) installFab.hidden = false;
   });
 
   if (installFab) {
-    installFab.hidden = true;
+    installFab.hidden = false;
     installFab.addEventListener('click', async () => {
       if (!deferredInstallPrompt) {
-        installFab.textContent = 'Use browser menu';
+        installFab.textContent = 'Add from browser menu';
         setTimeout(() => installFab.textContent = '📲 Install', 1800);
         return;
       }
       deferredInstallPrompt.prompt();
       try { await deferredInstallPrompt.userChoice; } catch(e) {}
       deferredInstallPrompt = null;
-      installFab.hidden = true;
+      installFab.hidden = false;
     });
   }
 })();
