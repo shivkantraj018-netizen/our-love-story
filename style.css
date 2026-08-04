@@ -1198,6 +1198,25 @@ body.theme-snow::before{
 .playlist-player{margin-top:16px;display:grid;gap:10px}
 .playlist-controls{display:flex;gap:10px;flex-wrap:wrap}
 .playlist-nav-admin{margin-top:10px;display:grid;gap:10px}
+.playlist-toggle-btn{
+  width:100%;
+  margin-top:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(248,166,193,.14),rgba(205,185,255,.10));
+  color:#fff;
+  border-radius:20px;
+  padding:14px 16px;
+  font:600 15px Inter,system-ui,sans-serif;
+  letter-spacing:.02em;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.16);
+}
+.playlist-toggle-btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.playlist-more{
+  border-style:dashed;
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04));
+}
+.playlist-more span{font-weight:700;color:var(--gold)}
 .playlist-nav-row{
   display:flex;
   justify-content:space-between;
@@ -1212,6 +1231,11 @@ body.theme-snow::before{
 .empty-state{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);color:#fff;opacity:.8}
 .upload-song-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .current-song-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+
+
+.playlist-list{transition:max-height .35s ease, opacity .35s ease}
+.playlist-item{transition:transform .25s ease, box-shadow .25s ease, background .25s ease}
+.playlist-item:hover{transform:translateY(-2px);background:rgba(255,255,255,.10);box-shadow:0 12px 24px rgba(0,0,0,.16)}
 
 /* Gallery stability fix */
 #photosSection,

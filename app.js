@@ -14,6 +14,7 @@ let playlistTracks=[];
 let playlistIndex=0;
 let playlistShuffle=false;
 let playlistLoop=true;
+let playlistExpanded=false;
 
 
 function syncMemorySky(){
@@ -713,9 +714,16 @@ function renderPlaylistSection(){
   const title=$("#playlistTitle");
   const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
+  const toggle=$("#playlistToggleBtn");
   const active=getActivePlaylistTracks();
+  const visible=playlistExpanded ? active : active.slice(0,4);
   if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
   if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
+  if(toggle){
+    toggle.hidden = active.length <= 4;
+    toggle.textContent = playlistExpanded ? "Show fewer songs ♡" : `Open full playlist (${active.length}) ♫`;
+    toggle.setAttribute("aria-expanded", String(playlistExpanded));
+  }
   if(!list) return;
   list.innerHTML="";
   if(!active.length){
@@ -724,14 +732,26 @@ function renderPlaylistSection(){
     renderPlaylistControls();
     return;
   }
-  active.forEach((track, idx)=>{
+
+  visible.forEach((track, idx)=>{
+    const realIndex = playlistExpanded ? idx : idx;
     const item=document.createElement("button");
     item.className="playlist-item";
     item.type="button";
     item.innerHTML=`<div><strong>${escapeHtml(track.title||`Song ${idx+1}`)}</strong><div class="muted">${escapeHtml(track.note||"")}</div></div><span>Play</span>`;
-    item.addEventListener("click",()=>playPlaylistTrack(idx, true));
+    item.addEventListener("click",()=>playPlaylistTrack(playlistExpanded ? idx : idx, true));
     list.appendChild(item);
   });
+
+  if(!playlistExpanded && active.length>4){
+    const more=document.createElement("button");
+    more.type="button";
+    more.className="playlist-item playlist-more";
+    more.innerHTML=`<div><strong>More songs waiting…</strong><div class="muted">Tap to open the full playlist and keep the page beautiful.</div></div><span>Open</span>`;
+    more.addEventListener("click",()=>{ playlistExpanded=true; renderPlaylistSection(); });
+    list.appendChild(more);
+  }
+
   if(audio && !audio.dataset.playlistBound){
     audio.dataset.playlistBound="1";
     audio.addEventListener("ended",()=>{
@@ -818,12 +838,17 @@ function togglePlaylistLoop(){
   playlistLoop = !playlistLoop;
   renderPlaylistControls();
 }
+function togglePlaylistExpanded(){
+  playlistExpanded = !playlistExpanded;
+  renderPlaylistSection();
+}
 function bindPlaylistControls(){
   $("#playlistPrevBtn")?.addEventListener("click",()=>stepPlaylist(-1));
   $("#playlistNextBtn")?.addEventListener("click",()=>stepPlaylist(1));
   $("#playlistPlayBtn")?.addEventListener("click",togglePlaylistPlayback);
   $("#playlistShuffleBtn")?.addEventListener("click",togglePlaylistShuffle);
   $("#playlistLoopBtn")?.addEventListener("click",togglePlaylistLoop);
+  $("#playlistToggleBtn")?.addEventListener("click",togglePlaylistExpanded);
 }
 bindPlaylistControls();
 function openGift(){const b=$("#giftBox"),r=$("#giftReveal");if(b.classList.contains("opened"))return;b.classList.add("opened");setTimeout(()=>{r.hidden=false;heartBurst(24);confetti(28)},500)}
