@@ -7,10 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body class="public-page">
-<div id="stars"></div><div id="petals"></div><div id="fireflies"></div><div id="memorySky"></div><div id="heartBurst"></div>
+<body class="public-page app-loading">
+<div id="stars" class="deferred-feature" hidden></div><div id="petals" class="deferred-feature" hidden></div><div id="fireflies" class="deferred-feature" hidden></div><div id="memorySky" class="deferred-feature" hidden></div><div id="heartBurst"></div>
 <header class="topbar glass"><button class="brand" id="brandButton">Our Love Story <span>♥</span></button><nav id="chapterNav" aria-label="Chapters"></nav></header>
-<div class="journey-ribbon glass" id="journeyRibbon"><div class="journey-top"><span id="journeyRibbonText">Our story begins…</span></div><div class="journey-track"><div class="journey-fill" id="journeyFill"></div></div></div>
+<div class="journey-ribbon glass deferred-feature" id="journeyRibbon" hidden><div class="journey-top"><span id="journeyRibbonText">Our story begins…</span></div><div class="journey-track"><div class="journey-fill" id="journeyFill"></div></div></div>
 <button class="music-fab glass" id="musicFab" type="button" aria-label="Mute or unmute background music">
   <span id="musicFabIcon">🔇</span><span id="musicFabText">Music off</span>
 </button>
@@ -47,6 +47,7 @@
   <div class="chapter-card glass">
     <div class="eyebrow" id="playlistEyebrow">PLAYLIST</div>
     <h3 id="playlistTitle">Songs I want to keep forever</h3>
+    <p id="playlistIntro" class="muted">A small collection of songs with memories attached.</p>
     <button class="playlist-toggle-btn" id="playlistToggleBtn" type="button" aria-expanded="false">Open full playlist ♫</button>
     <div class="playlist-list" id="playlistList"></div>
     <div class="playlist-player">
@@ -61,7 +62,7 @@
     </div>
   </div>
 </section>
-<section class="final-section" id="ending"><div class="final-card"><div class="final-stars"></div><div class="moon small"></div><div class="script-title" id="endingEyebrow">Forever, my love</div><h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2><p id="finalText">• You reached the end of our little story. Keep scrolling for one last secret.</p><button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button></div></section>
+<section class="final-section deferred-feature" id="ending" hidden><div class="final-card"><div class="final-stars"></div><div class="moon small"></div><div class="script-title" id="endingEyebrow">Forever, my love</div><h2 id="finalTitle">In every lifetime, I would still choose you. ❤️</h2><p id="finalText">• You reached the end of our little story. Keep scrolling for one last secret.</p><button class="final-heart" id="finalHeart" aria-label="Send hearts">♥</button></div></section>
 <section class="special-section ending-secret-section" id="letterSection" hidden><div class="letter-card glass" id="loveLetterCard" tabindex="0" role="button" aria-label="Open love letter"><div class="eyebrow" id="letterEyebrow">A LETTER FOR YOU</div><h3 id="loveLetterTitle">A Love Letter</h3><button class="letter-seal-button" id="letterSeal" type="button" aria-label="Open love letter">♥</button><div class="letter-paper"><div class="letter-sound-hint" id="letterSoundHint">Tap the seal to open ♥</div><div class="letter-ribbon">♥</div><p id="loveLetterBody"></p></div><div class="letter-lock" id="loveLetterLock"><div class="eyebrow">LOCKED LOVE NOTE</div><h4 id="loveLetterLockTitle">A secret note waits here.</h4><p id="loveLetterLockHint">Enter the password to unlock it.</p><label class="public-label lock-input">Password<input id="loveLetterPasswordInput" type="password" autocomplete="off" placeholder="Type the password here"></label><div class="gallery-unlock-footer lock-actions"><button class="glow-btn small" id="loveLetterUnlockBtn" type="button">Unlock note</button><div class="gallery-unlock-status" id="loveLetterLockStatus"></div></div></div></div></section>
 </section></main>
 <div id="galleryUnlockModal" class="gallery-unlock-modal" hidden>

@@ -1,4 +1,10 @@
 
+.deferred-feature{will-change:opacity,transform}
+body.app-loading .deferred-feature{opacity:0;visibility:hidden}
+body.app-loading .hero-cinematic .hero-sparkles,
+body.app-loading .hero-cinematic .hero-ribbon,
+body.app-loading .hero-cinematic .shooting-star{opacity:0}
+
 :root{
   --bg:#140a22;--bg2:#24103d;--card:rgba(163,112,176,.18);--card2:rgba(255,255,255,.08);
   --text:#f9f4ff;--muted:#d8cce4;--gold:#f8e6a7;--pink:#f8a6c1;--lav:#cdb9ff;

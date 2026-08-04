@@ -9,7 +9,7 @@ let magicState={themeEnabled:true,themePreset:"cherry",heroCinematicEnabled:true
 let endingState={enabled:true,password:"",hint:"Enter the password to unlock it.",revealed:false,unlocked:false,revealProgress:0,touchActive:false,touchStartY:0};
 let journeyRaf=0;
 let magicTimers={shootingStar:null,heroFloat:null};
-let currentSettings={playlistTitle:"My playlist"};
+let currentSettings={playlistTitle:"My playlist",playlistNote:"A small note for the playlist"};
 let playlistTracks=[];
 let playlistIndex=0;
 let playlistShuffle=false;
@@ -176,11 +176,11 @@ function applyMagicState(){
     if(meta) meta.setAttribute("content", "#24103d");
   }
   const stars=$("#stars"), petals=$("#petals"), fireflies=$("#fireflies"), ribbon=$("#journeyRibbon"), shooting=$("#shootingStars"), mem=$("#memorySky");
-  if(stars) stars.style.display=magicState.starsEnabled?"":"none";
-  if(petals) petals.style.display=magicState.petalsEnabled?"":"none";
-  if(fireflies) fireflies.style.display=magicState.firefliesEnabled?"":"none";
+  if(stars){ stars.hidden = !magicState.starsEnabled; stars.style.display=magicState.starsEnabled?"":"none"; }
+  if(petals){ petals.hidden = !magicState.petalsEnabled; petals.style.display=magicState.petalsEnabled?"":"none"; }
+  if(fireflies){ fireflies.hidden = !magicState.firefliesEnabled; fireflies.style.display=magicState.firefliesEnabled?"":"none"; }
   if(ribbon) ribbon.hidden=!magicState.journeyRibbonEnabled;
-  if(shooting) shooting.style.display=magicState.shootingStarsEnabled?"":"none";
+  if(shooting){ shooting.hidden = !magicState.shootingStarsEnabled; shooting.style.display=magicState.shootingStarsEnabled?"":"none"; }
   if(mem){
     mem.style.display=magicState.memorySkyEnabled?"":"none";
     mem.hidden = !magicState.memorySkyEnabled;
@@ -543,6 +543,8 @@ async function loadAll(){
     $("#loveLetterBody").textContent=m.loveLetterBody||"Write something only she could understand.";
     $("#secretMessage").textContent=m.secretMessage||"No matter how far away you are, a piece of my heart is always with you.";
     endingState.enabled = m.endingSceneEnabled===undefined ? true : parseBool(m.endingSceneEnabled);
+    const endingSection = $("#ending");
+    if(endingSection) endingSection.hidden = !endingState.enabled;
     endingState.password = String(m.loveLetterPassword||"");
     endingState.hint = String(m.loveLetterHint||"Enter the password to unlock it.");
     endingState.revealed = false;
@@ -551,6 +553,7 @@ async function loadAll(){
     const audio=$("#music");
     if(m.musicUrl){audio.src=m.musicUrl;audio.style.display="block";audio.load()}else{applyMusicSource(audio,"");}
     currentSettings.playlistTitle=m.playlistTitle||"My playlist";
+    currentSettings.playlistNote=m.playlistNote||"A small note for the playlist";
     playlistTracks=parsePlaylistJson(m.musicPlaylist||"[]").map((t,i)=>({
       id:t.id||`track-${i}`,
       title:t.title||`Song ${i+1}`,
@@ -575,6 +578,8 @@ async function loadAll(){
   }catch(err){
     console.error("loadAll failed", err);
     showBanner(err.message || String(err), false);
+  }finally{
+    document.body.classList.remove("app-loading");
   }
 }
 function renderNav(cs){
@@ -711,11 +716,13 @@ function renderGift(imgUrl,poem){const box=$("#giftBox"),rev=$("#giftReveal"),im
 function renderPlaylistSection(){
   const list=$("#playlistList");
   const title=$("#playlistTitle");
+  const intro=$("#playlistIntro");
   const audio=$("#playlistAudio");
   const toggle=$("#playlistToggleBtn");
   const active=getActivePlaylistTracks();
   const visible=playlistExpanded ? active : active.slice(0,4);
   if(title) title.textContent=(currentSettings&&currentSettings.playlistTitle)||"Songs I want to keep forever";
+  if(intro) intro.textContent=(currentSettings&&currentSettings.playlistNote)||"A small collection of songs with memories attached.";
   if(toggle){
     toggle.hidden = active.length <= 4;
     toggle.textContent = playlistExpanded ? "Show fewer songs ♡" : `Open full playlist (${active.length}) ♫`;
@@ -744,7 +751,7 @@ function renderPlaylistSection(){
     const more=document.createElement("button");
     more.type="button";
     more.className="playlist-item playlist-more";
-    more.innerHTML=`<div><strong>More songs waiting…</strong></div><span>Open</span>`;
+    more.innerHTML=`<div><strong>More songs waiting…</strong><div class="muted">Tap to open the full playlist and keep the page beautiful.</div></div><span>Open</span>`;
     more.addEventListener("click",()=>{ playlistExpanded=true; renderPlaylistSection(); });
     list.appendChild(more);
   }
