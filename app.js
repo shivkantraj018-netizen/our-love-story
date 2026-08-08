@@ -15,7 +15,22 @@ let playlistIndex=0;
 let playlistShuffle=false;
 let playlistLoop=true;
 let playlistExpanded=false;
+const motionPerfState={paused:false};
 
+function setMotionSurfacePaused(paused){
+  if(motionPerfState.paused===paused) return;
+  motionPerfState.paused=paused;
+  document.body.classList.toggle("motion-paused", paused);
+  document.querySelectorAll(".motion-surface").forEach(el=>el.classList.toggle("paused", paused));
+}
+function updateMotionSurfaces(){
+  const vh=window.innerHeight || 0;
+  document.querySelectorAll(".motion-surface").forEach(el=>{
+    const r=el.getBoundingClientRect();
+    const visible=r.bottom> -80 && r.top < vh + 80;
+    el.classList.toggle("offscreen", !visible);
+  });
+}
 
 function syncMemorySky(){
   const mem=$("#memorySky");
@@ -109,6 +124,10 @@ function handleEndingOverscroll(deltaY){
   }
 }
 
+function markMotionSurfaces(){
+  document.querySelectorAll(".hero,.section-intro,.special-section,.final-section,.ending-secret-section").forEach(el=>el.classList.add("motion-surface"));
+}
+
 function initSectionDock(){
   const dock=$("#sectionDock");
   if(!dock)return;
@@ -160,11 +179,11 @@ function applyMagicState(){
   if(magicState.themeEnabled){
     body.classList.add(themeClass);
     document.documentElement.style.background = bg;
-    document.documentElement.style.backgroundAttachment = "fixed";
+    document.documentElement.style.backgroundAttachment = "scroll";
     document.documentElement.style.backgroundRepeat = "no-repeat";
     document.documentElement.style.backgroundSize = "cover";
     body.style.background = bg;
-    body.style.backgroundAttachment = "fixed";
+    body.style.backgroundAttachment = "scroll";
     body.style.backgroundRepeat = "no-repeat";
     body.style.backgroundSize = "cover";
     const meta=document.querySelector('meta[name="theme-color"]');
@@ -251,6 +270,7 @@ function renderMemorySky(){
 }
 
 function seedStars(){const wrap=$("#stars");if(!wrap||wrap.dataset.ready)return;wrap.dataset.ready="1";for(let i=0;i<100;i++){const e=document.createElement("span");e.className="star";const z=Math.random()*2.8+1;e.style.width=`${z}px`;e.style.height=`${z}px`;e.style.left=`${Math.random()*100}%`;e.style.top=`${Math.random()*100}%`;e.style.animationDelay=`${Math.random()*4}s`;wrap.appendChild(e)}const petals=$("#petals");for(let i=0;i<18;i++){const p=document.createElement("span");p.className="petal";p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${12+Math.random()*12}s`;p.style.animationDelay=`-${Math.random()*18}s`;petals.appendChild(p)}}seedStars();
+markMotionSurfaces();
 initSectionDock();
 
 function tapHeartsAt(x,y,count=7){
@@ -563,6 +583,7 @@ async function loadAll(){
       is_active:t.is_active!==false
     }));
     try{ renderPlaylistSection(); }catch(err){ console.error("renderPlaylistSection", err); }
+    updateMotionSurfaces();
     startCountdown(m.countdownAt);
     galleryPrivacy=getGalleryPrivacyFromSettings(m);galleryPrivacyState=resetGalleryState(galleryPrivacy);
     magicState=getMagicStateFromSettings(m);applyMagicState();
@@ -953,6 +974,8 @@ window.addEventListener("resize",syncMemorySky,{passive:true});
 
 window.addEventListener("scroll",updateEndingFinalCue,{passive:true});
 window.addEventListener("resize",updateEndingFinalCue,{passive:true});
+window.addEventListener("scroll",updateMotionSurfaces,{passive:true});
+window.addEventListener("resize",updateMotionSurfaces,{passive:true});
 window.addEventListener("wheel",e=>{ if(e.deltaY>0) handleEndingOverscroll(e.deltaY); },{passive:true});
 window.addEventListener("touchstart",e=>{ endingState.touchActive=true; endingState.touchStartY=e.touches[0]?.clientY ?? 0; },{passive:true});
 window.addEventListener("touchmove",e=>{
@@ -964,4 +987,6 @@ window.addEventListener("touchmove",e=>{
 window.addEventListener("touchend",()=>{ endingState.touchActive=false; endingState.revealProgress=0; },{passive:true});
 window.addEventListener("touchcancel",()=>{ endingState.touchActive=false; endingState.revealProgress=0; },{passive:true});
 
+
+document.addEventListener("visibilitychange",()=>setMotionSurfacePaused(document.hidden));
 window.addEventListener("load",()=>{ loadAll().catch(console.error); renderPlaylistControls(); });

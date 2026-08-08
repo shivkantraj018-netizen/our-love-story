@@ -15,6 +15,11 @@ body.app-loading .hero-cinematic .shooting-star{opacity:0}
   color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden
 }
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 30%)}
+
+.motion-surface{contain:layout paint style;content-visibility:auto;contain-intrinsic-size:1px 900px}
+.motion-surface.offscreen .star,.motion-surface.offscreen .petal,.motion-surface.offscreen .hero-heart,.motion-surface.offscreen .burst-heart,.motion-surface.offscreen .confetti,.motion-surface.offscreen .hero-sparkles span,.motion-surface.offscreen .hero-ribbon,.motion-surface.offscreen .shooting-star,.motion-surface.offscreen .firefly,.motion-surface.offscreen .moon,.motion-surface.offscreen .final-stars,.motion-surface.offscreen .envelope-flap,.motion-surface.offscreen .game-heart{animation-play-state:paused !important;transition-duration:0s !important}
+body.motion-paused .star,body.motion-paused .petal,body.motion-paused .hero-heart,body.motion-paused .burst-heart,body.motion-paused .confetti,body.motion-paused .hero-sparkles span,body.motion-paused .hero-ribbon,body.motion-paused .shooting-star,body.motion-paused .firefly,body.motion-paused .moon,body.motion-paused .final-stars,body.motion-paused .envelope-flap,body.motion-paused .game-heart{animation-play-state:paused !important}
+#stars,#petals,#fireflies,#heartBurst,#giftConfetti,#journeyRibbon,#memorySky{contain:paint;transform:translateZ(0);backface-visibility:hidden}
 #stars,#petals{position:fixed;inset:0;pointer-events:none;z-index:0}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:.6;animation:twinkle 4s ease-in-out infinite}
 .petal{position:absolute;width:14px;height:24px;border-radius:90% 15% 90% 15%;background:linear-gradient(145deg,#f8c0d1,#cf9ac4);filter:drop-shadow(0 5px 8px rgba(0,0,0,.18));opacity:.7;animation:fall linear infinite}
